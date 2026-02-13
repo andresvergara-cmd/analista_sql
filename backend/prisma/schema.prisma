@@ -1,0 +1,102 @@
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Tenant {
+  id          String       @id @default(uuid())
+  name        String
+  createdAt   DateTime     @default(now())
+  assessments Assessment[]
+  companies   Company[]
+  users       User[]
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("STUDENT")
+  tenantId  String
+  createdAt DateTime @default(now())
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+}
+
+model Company {
+  id           String   @id @default(uuid())
+  name         String
+  legalId      String?
+  sector       String?
+  size         String?
+  contactEmail String?
+  contactPhone String?
+  address      String?
+  city         String?
+  status       String   @default("Activo")
+  tenantId     String
+  createdAt    DateTime @default(now())
+  answers      Answer[]
+  tenant       Tenant   @relation(fields: [tenantId], references: [id])
+}
+
+model Assessment {
+  id        String      @id @default(uuid())
+  title     String
+  tenantId  String
+  courseId  String?
+  questions Json
+  createdAt DateTime    @default(now())
+  answers   Answer[]
+  course    Course?     @relation(fields: [courseId], references: [id])
+  tenant    Tenant      @relation(fields: [tenantId], references: [id])
+  diagnoses Diagnosis[]
+}
+
+model Course {
+  id          String       @id @default(uuid())
+  name        String
+  createdAt   DateTime     @default(now())
+  assessments Assessment[]
+}
+
+model Answer {
+  id                 String     @id @default(uuid())
+  assessmentId       String
+  studentName        String
+  studentEmail       String
+  respondentName     String?
+  respondentPosition String?
+  respondentEmail    String?
+  responses          Json
+  submittedAt        DateTime   @default(now())
+  companyId          String?
+  assessment         Assessment @relation(fields: [assessmentId], references: [id])
+  company            Company?   @relation(fields: [companyId], references: [id])
+  diagnosis          Diagnosis?
+}
+
+model Diagnosis {
+  id           String     @id @default(uuid())
+  assessmentId String
+  studentEmail String
+  answerId     String?    @unique
+  result       String
+  score        Float?
+  createdAt    DateTime   @default(now())
+  answer       Answer?    @relation(fields: [answerId], references: [id])
+  assessment   Assessment @relation(fields: [assessmentId], references: [id])
+  reports      Report[]
+}
+
+model Report {
+  id          String    @id @default(uuid())
+  diagnosisId String
+  content     String
+  createdAt   DateTime  @default(now())
+  diagnosis   Diagnosis @relation(fields: [diagnosisId], references: [id])
+}

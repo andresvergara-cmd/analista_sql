@@ -1,0 +1,2096 @@
+Technological Forecasting & Social Change 198 (2024) 122942
+Available online 3 November 2023
+0040-1625/© 2023 The Authors. Published by Elsevier Inc. This is an open access article under the CC BY-NC-ND license ( http://creativecommons.org/licenses/by-
+nc-nd/4.0/).
+Micro-foundations of digital innovation capability – A mixed method 
+approach to develop and validate a multi-dimensional 
+measurement instrument 
+Julia Kroh
+a , *
+, Dietfried Globocnik
+b
+, Carsten Schultz
+a
+, Frederike Holdhof
+a
+, S ø ren Salomo
+c 
+a
+Kiel University, Institute for Innovation Research, Westring 425, 24118 Kiel, Germany 
+b
+Alpen-Adria Universitaet, Department of Innovation Management and Entrepreneurship, Universitaetsstrasse 65-67, 9020 Klagenfurt, Austria 
+c
+Berlin Institute of Technology, Institute for Technology and Innovation Management, Stra ß e des 17, Juni 135, 10623 Berlin, Germany   
+ARTICLE INFO  
+Keywords: 
+Digital innovation capabilities 
+Digital innovation 
+Established companies 
+Scale development 
+Dynamic capability view 
+ABSTRACT  
+Digital innovation refers to the creation or adoption value-adding novelty through the incorporation of digital 
+technology. Digital innovation challenges established product-centric companies whose innovation management 
+capabilities are insufficient to manage the reconfiguration and transformation necessary for digital innovation 
+and technology. Recent research has introduced different concepts of for example, digital readiness, digitaliza -
+tion capabilities, and digital innovation readiness. However, these concepts have two shortcomings for use in 
+practice and empirical research: most concepts are theoretical in nature, with limited empirically validated 
+measures. As such, this study takes a dynamic capability view to synthesize prior literature on the organizational 
+antecedents of digital innovation and develops a framework for the micro-foundations of digital innovation 
+capability. By applying a mixed-method approach, existing concepts are extended through qualitative research 
+and then translated into a multi-dimensional measurement instrument. This multi-item operationalization is then 
+subjected to scale validation using quantitative research methods. The results show that a company's digital 
+innovation capability is founded upon seven micro-foundations – digital focus, digital innovation process, digital 
+mindset, digital innovation network, digital technology capability, data management, and overcoming digital 
+innovation resistance – that facilitate established companies in sensing, seizing, and reconfiguring digital 
+innovation.   
+1. Introduction 
+Digital innovation refers to “ the creation or adoption, and exploita -
+tion of an inherently unbounded, value-adding novelty through the 
+incorporation of digital technology ” ( Hund et al., 2021:6 ) whereas the 
+possible outcomes can take the form of, for instance, new products, 
+services, processes, or business models. New digital technologies, such 
+as artificial intelligence, cloud, mobile, social media, and business an -
+alytics, significantly impact how an organization creates and captures 
+value ( Lanzolla et al., 2020 ), operates its routine and innovation pro -
+cesses ( Füller et al., 2022 ; Rauch et al., 2020 ), and organizes the 
+workplace ( Marsh et al., 2022 ). Many digital technologies are accessible 
+from third parties on demand, have numerous flexible and scalable 
+application areas, and enable new linkages with customers, suppliers, 
+and other network partners ( Lokuge et al., 2019 ). 
+Digital innovation often results in a new combination of digital and 
+physical components drawing on digitalization (i.e., the encoding of 
+analog information into a digital format), which allows products to 
+become programmable, addressable, sensible, communicable, memo -
+rable, traceable, and associable ( Yoo, 2010 ). Digital innovations offer 
+companies the possibility of establishing layered product architectures, 
+consisting of device, network, service, and content layers ( Benkler, 
+2008 ), and customers can be provided with digital platform-based ser -
+vices ( Hilbolling et al., 2020 ). This also facilitates new market players to 
+compete, or even change the competitive landscape of an industry 
+( Autio et al., 2018 ). Consequently, digital innovations have the potential 
+to disrupt the product-centric business models of established companies 
+in industries such as mechanical engineering, which have traditionally 
+* Corresponding author. 
+E-mail addresses: kroh@bwl.uni-kiel.de (J. Kroh), dietfried.globocnik@aau.at (D. Globocnik), schultz@bwl.uni-kiel.de (C. Schultz), holdhof@bwl.uni-kiel.de 
+(F. Holdhof), salomo@tu-berlin.de (S. Salomo).  
+Contents lists available at ScienceDirect 
+Technological Forecasting & Social Change 
+journal homep age: www.el sevier.com/l ocate/techfore 
+https://doi.org/10.1016/j.techfore.2023.122942 
+Received 8 November 2022; Received in revised form 18 October 2023; Accepted 19 October 2023   
+Technological Forecasting & Social Change 198 (2024) 122942
+2
+developed, manufactured, and sold physical products by blurring the 
+boundaries between digital and non-digital business models ( de Massis 
+et al., 2018 ; Williams et al., 2022 ). Therefore, this article addresses the 
+following research question: Which micro-foundations build a digital 
+innovation capability for established companies and therewith enable them to 
+reinterpret and reconfigure their knowledge, resources, routines, and capa -
+bilities to take advantage of the changes caused by new digital technologies? 
+The layered nature of digital technology increases the complexity of 
+innovation activities ( Tuomi, 2002 ). Digital innovation requires stake -
+holder contributions to a heterogeneous ecosystem inside and outside a 
+company ( Nambisan et al., 2019 ). This increases the requirement for 
+cross-functional collaboration between different departments and dis -
+ciplines. Digital innovation also requires a wide spectrum of partners, 
+including collaborations with specialized vendors (hardware, software, 
+and IT solutions), suppliers, and customers in an open ecosystem ( Abrell 
+et al., 2016 ; Füller et al., 2022 ; Yoo et al., 2010 ). Consequently, digital 
+innovation and the underlying technologies are often not controlled by a 
+single company but involve different – and sometimes even temporarily 
+– affiliated partners ( Lyytinen et al., 2016 ; Yoo et al., 2012 ). Such digital 
+innovation and value creation networks not only add further complexity 
+to innovation activities, but also create uncertainty about relevant 
+partners, competitors, and potential customers ( Wirtz et al., 2022 ), and 
+how to organize innovation in such an environment ( Hanelt et al., 
+2021 ). Therefore, traditional innovation management practices might 
+not suffice for digital innovation ( Rindfleisch et al., 2017 ), which may 
+require a specific set of capabilities to succeed ( Appio et al., 2021 ; 
+D ą browska et al., 2022 ). 
+These characteristics of digital innovation are particularly critical for 
+established companies, which are the focus of this study. Past research 
+reports that despite existing innovation capabilities for non-digital 
+products, services, and processes. Incumbents tend to struggle to 
+develop innovations in general ( K ¨onig et al., 2013 ), especially digital 
+ones, which fundamentally change opportunities to create value ( Ceipek 
+et al., 2021 ; Rummel et al., 2022 ). Digital startups and software com -
+panies have a native, default, and foundational focus on digital busi -
+nesses. Their digital innovation capabilities enabling them to start and 
+grow a purely digital business, which are built from scratch, might not 
+represent those that are necessary for established companies. They 
+require a set of digital innovation capabilities that enable a continuous 
+reinterpretation of the status quo; reconfiguring their own resource 
+base, routines, and capabilities; and transforming them based on the 
+newly identified opportunities provided by created or emerging digital 
+technologies ( D ą browska et al., 2022 ). This digital innovation capability 
+is a pre-requisite for generating the new digital innovations necessary to 
+enter, develop, and grow established companies` digital businesses. 
+In the search for critical capabilities enabling digital innovation in 
+established companies, recent research has introduced the concepts of 
+digital readiness ( Gfrerer et al., 2021 ), digitalization capabilities 
+( Annarelli et al., 2021 ), digital innovation readiness ( Lokuge et al., 
+2019 ), organization-level factors of digital transformation ( D ą browska 
+et al., 2022 ), digital innovation management ( Nambisan et al., 2017 ), 
+competing digital innovation concerns ( Svahn et al., 2017a ), strategic 
+digital innovation orientation ( Kindermann et al., 2020 ), and AI-based 
+innovation management ( Füller et al., 2022 ). These concepts have two 
+shortcomings for use in practice and empirical research: most concepts 
+are theoretical in nature, with limited empirically validated measures (e. 
+g., Lokuge et al., 2019 ). Furthermore, these concepts organize various 
+resources, capabilities, and competences, similar to the traditional 
+innovation literature, molded into the digital innovation space. Given 
+the particular context of established product-centric companies that 
+must transform, rather than improve, their existing businesses due to 
+new digital technologies, the concept of digital innovation capability for 
+established companies must consider what is needed to enable them to 
+reinterpret and reconfigure their knowledge, resources, routines, and 
+capabilities. Therefore, we aim to develop and validate a new concep -
+tualization of digital innovation capability by taking a dynamic 
+capability view ( Teece, 2007 ) and determining the micro-foundations 
+necessary to transform – that is, to sense, seize, and reconfigure – digital 
+innovation opportunities and resources ( Bj ¨orkdahl, 2020 ). 
+By applying a mixed-method approach, we revisit the existing liter -
+ature to extract the relevant micro-foundations of digital innovation 
+capability that enable a company's digital change and renewal. The 
+initial conceptualization was then tested and refined through a quali -
+tative study on a sample of established companies. The qualitative data 
+also supported the subsequent development of a multi-dimensional 
+multi-item measurement instrument, which was then subjected to 
+quantitative scale validation using survey data collected from two 
+different geographical regions. Responding to the call for research on 
+new realities in the digital age ( Menz et al., 2021 ) and the foundations 
+necessary to innovate in the digital world ( D ą browska et al., 2022 ), we 
+contribute to the literature by determining seven micro-foundations of 
+digital innovation capability for established companies: digital focus, 
+digital innovation process, digital mindset, digital innovation network, 
+digital technology capability, data management, and overcoming digital 
+innovation resistance. Furthermore, we provide future research with a 
+reliable and valid measurement instrument tested across different re -
+gions for psychometric equivalence. 
+The next section explains the dynamic capability view, micro- 
+foundations of the digital innovation capability and includes a struc -
+tured overview of prior conceptualizations of digital innovation capa -
+bilities. Following this, the methodology for the scale development is 
+presented. The section thereafter describes the data collection, analysis, 
+and the results of the qualitative study, followed by data collection, 
+analysis, and results of the quantitative study, presenting the digital 
+innovation capability scale. The final section contains the discussion, 
+implications, and future research. 
+2. Theoretical background 
+2.1. A dynamic capability view of digital innovation capability 
+The dynamic capability view explains how companies can adapt and 
+thrive in a rapidly changing business environment and sustain 
+competitive advantage. Therefore, the approach fits well within the 
+context of established product-centric companies that transform their 
+businesses into digital spaces. This approach proposes three 
+organizational-level capabilities that enable this dynamic adaptation. 
+Sensing involves continuously scanning the external environment for 
+new opportunities and threats. Seizing refers to grasping opportunities 
+through innovation, creativity, or strategic alliances. Reconfiguring is 
+the ability to change an organization's structure, processes, and resource 
+base to successfully exploit new opportunities ( Teece et al., 1997 ). In 
+addition to the capabilities themselves, a company's success depends on 
+how managers use these dynamic capabilities ( Eisenhardt and Martin, 
+2000 ). 
+Therefore, we interpret digital innovation capability as a dynamic 
+capability rather than a contextualized form of “ functional ” innovation 
+capability. The latter also includes the improvement and development of 
+existing products, services, and business processes that operate under 
+stable conditions. “ Dynamic ” capabilities refer to the ability to create, 
+extend, and modify a company's knowledge and resource base to 
+respond to changes in (or even proactively shape) the environment and 
+competitive landscape ( Helfat et al., 2007 ), as required when estab -
+lished product-centric companies must reconfigure to transform into 
+hybrid or digital businesses. Micro-foundations of a dynamic capability 
+are the skills, procedures, mechanisms, structures, and resources un -
+derlying sensing, seizing, and reconfiguring capabilities. They are rooted 
+in the cognitive and behavioral processes of individuals within an or -
+ganization, including their learning processes, problem-solving abilities, 
+and decision-making styles. They also involve the social and cultural 
+aspects of the organization, such as the norms and values that shape the 
+interactions between individuals and teams. Additionally, the micro- 
+J. Kroh et al.                                                                                                                                                                                                                                     
+Technological Forecasting & Social Change 198 (2024) 122942
+3
+foundations of dynamic capabilities include organizational structures 
+and systems that support learning and adaptation (Teece, 2007). 
+Consequently, the conceptualization of digital innovation capability 
+as a dynamic capability requires the identification of relevant micro- 
+foundations that enable established companies to sense, seize, and 
+reconfigure, to take advantage of the new opportunities provided by 
+digital technologies. 
+2.2. Micro-foundations of digital innovation capability 
+Table 1 provides an overview of prior concepts about the 
+organizational-level factors of established companies that are necessary 
+to utilize digital technologies. The table therefore includes articles that 
+focus on digital readiness and digital innovation capabilities. 
+Digital readiness (Gfrerer et al., 2021) emphasizes organizational- 
+level factors that enable digital transformation, including digital 
+empowerment and involvement of employees by managers, appropriate 
+organizational structures, digitally experienced managers, willingness 
+to act on digital trends, and absence of barriers, such as a lack of inno -
+vation culture or technology skills, budgetary or legal restrictions and 
+leadership buy-in. Annarelli et al. (2021) conceptualized digitalization 
+capabilities enabling digital transformation as a higher-order dynamic 
+capability with underlying capabilities like formalized routines that 
+effectively utilize digital resources. The management of digital 
+ecosystem partnerships and supply chain integration enables the orga -
+nization to sense new opportunities, foster digital processes, to use IT 
+resources, and to integrate them with non-IT resources. Managers' 
+cognition of the relevance of change through digitalization determines 
+how the company (i) seizes digital capabilities, (ii) reconfigures the 
+resources to enable digital innovation in a timely manner, and (iii) acts 
+promptly on newly observed trends in the digital environment through 
+the help of improvisational capabilities, thereby enabling the company 
+to reconfigure its digital resources and routines. In their literature re -
+view, Dąbrowska et al. (2022) investigate the phenomenon of digital 
+transformation at the individual, organizational, ecosystem, and 
+geopolitical levels. Organizational-level digital transformation requires the 
+company to consider, or respond to digital technologies in four main 
+areas:  
+i) a change in corporate strategy due to the significant changes 
+caused by digital technologies on internal processes, product of -
+fering, value chain partners, and competitive landscape; 
+ii) organizational designs that facilitate the orchestration, collabo -
+ration, and coordination of internal and external partners, which 
+are necessary to cope with the additional complexity of creating 
+and implementing digital innovations;  
+iii) digital capabilities to use new technologies for faster information 
+processing and better, more objective decision-making, based on 
+data; and  
+iv) changes in value creation and logic, to cope with additional 
+complexity when orchestrating multiple ecosystem partners and 
+taking advantage of new opportunities on how to lower 
+competitive pressure. 
+In their conceptual work on digital innovation management, Nambisan 
+et al. (2017) argued that digitalization challenges the assumptions of 
+traditional innovation management. The authors suggest new “logics,” 
+rather than specific skills or capabilities, as necessary to address these 
+challenges: dynamic problem-solution pairing, instead of linear inno -
+vation processes, wherein digital innovation is: (i) a constant process of 
+generation, merging, and refinement to achieve need-solution fit; (ii) 
+socio-cognitive sensemaking necessary for all actors to frame the po -
+tential and value of digital technologies and change their understanding 
+of possible innovation outcomes; (iii) technology affordability and 
+constraints, which consider that the same digital technology can be 
+repurposed by different actors or used to produce different innovation 
+outcomes; (iv) orchestration emphasizing the role of digital technologies 
+to integrate the activities of diverse internal and external parties. In their 
+organizational setup for AI-based innovation management of the company, 
+Füller et al. (2022) determined three factors: (i) employees skilled in 
+digital and AI technologies, (ii) organizational structures allowing rapid 
+and effective response to major transformations and integration of in -
+ternal and external actors for collaboration, and (iii) an innovation 
+strategy with ambitious AI goals and program activities to achieve them. 
+The concept of strategic digital innovation orientation (Kindermann 
+et al., 2020) defines four dimensions that capture the strategic posture of 
+a company concerning digital innovation: digital technology scope de -
+scribes the company-specific set of technologies that determine the 
+extent to which digitally enabled value for customers can be created; 
+digital capabilities are the organizational routines for a set of technol -
+ogies rooted in employees' technology skills and knowledge; digital 
+ecosystem coordination enables effective interaction with other stake -
+holders on platforms in open technology ecosystems; and digital archi -
+tecture configuration describes how the company organizes its 
+technological infrastructure and working processes to effectively utilize 
+and repurpose technologies. To develop the concept of digital innovation 
+readiness, Lokuge et al. (2019) considered an organizational change 
+perspective and identified factors that determine an organization's 
+readiness for digital innovation. These entail resources (innovation re -
+sources and IT infrastructure), a facilitating climate for the integration of 
+IT into innovation considerations and motivation to engage in innova -
+tion in general, partnerships with external experts, and clear strategic 
+goals for digital innovations. While exploring the primary competing 
+digital innovation concerns of incumbent companies, and the strategies 
+to remedy them, Svahn et al. (2017a,b) highlight four areas: the 
+development of new digital capabilities without jeopardizing estab -
+lished product innovation practices; a balance between continuous 
+improvement of existing solutions by leveraging digital technology, and 
+new development of products and services; a balance between existing 
+internal work arrangements and engaging external partners and re -
+sources; governance structures with less hierarchical control; and more 
+flexibility to freely explore digital opportunities. 
+These conceptualizations focus on different facets of organizational 
+change driven by digital technologies (e.g., digitalization, digital 
+transformation, and AI in innovation management) but overlap in how 
+they organize the necessary company-level skills, procedures, mecha -
+nisms, structures, and resources. To determine the relevant micro- 
+foundations of digital innovation capability, we synthesize these 
+frameworks, through a dynamic capability lens, into five factors that 
+enable an established company to sense, seize, and transform: 
+Digital focus emphasizes explicit digital innovation goals and a formal 
+digital innovation strategy (Lokuge et al., 2019) to guide employees in 
+their innovation-related decisions and activities. The technological 
+scope that directly influences the underlying business model (Schallmo 
+et al., 2022) and might require a full reconfiguration of a company's 
+strategy (Dąbrowska et al., 2022; D'Ippolito et al., 2019), specifically, 
+needs to be defined. Digital focus is also expressed in clear roles and 
+responsibilities for digital innovations, as well as in a flexible infra -
+structure, and financial and human resources necessary for imple -
+mentation (Chen et al., 2017; Füller et al., 2022). Therefore, digital focus 
+is a micro-foundation of digital innovation capability that defines search 
+areas for sensing opportunities, guides strategic innovation portfolios 
+and project selection decisions for seizing opportunities, and reconfig -
+ures them by aligning resources with the digital innovation strategy. 
+The digital innovation process is characterized by mechanisms that 
+support agile and flexible development processes. Organizational agil -
+ity, adaptability, and ambidexterity are crucial for quickly responding to 
+changes in the environment, and are particularly relevant for digital 
+innovation output and economic performance (Del Giudice et al., 2021; 
+Troise et al., 2022). Moderate levels of formal control, coupled with 
+agile and flexible innovation process designs, seem particularly prom -
+ising for digital innovation development (Lane and Lubatkin, 1998; 
+J. Kroh et al.                                                                                                                                                                                                                                     
+Technological Forecasting & Social Change 198 (2024) 122942
+4
+Table 1 
+Overview of prior conceptualizations of digital innovation capabilities.  
+Concept/Author Research objective Key dimensions Research method Theoretical foundation 
+Digital readiness 
+Gfrerer et al. (2021) 
+Systematic differences in digital readiness 
+perceptions among hierarchical levels 
+Organizational level 
+- Digital empowerment 
+- Digital involvement 
+- Appropriate 
+organizational structures 
+- Digitally experienced 
+managers 
+- Willingness to act on 
+digital trends 
+- Innovation barriers and 
+reaction speed 
+Individual level 
+- Individual beliefs 
+(readiness, attitudes) 
+- Individual competences 
+(knowhow, skills) 
+Empirical (banking industry) Change readiness 
+framework 
+Digitalization capabilities 
+Annarelli et al. (2021) 
+Identification of antecedents, consequences, and 
+capabilities underlying higher-order digitalization 
+capability 
+Sensing 
+- Ecosystem capabilities 
+- Supply chain process 
+integration 
+Seizing 
+- Employing 
+heterogeneous resources 
+- Deploying IT 
+- Role of managerial 
+cognition driving change 
+- Organizing IT 
+capabilities 
+Reconfiguring 
+- Improvisational 
+capabilities 
+- Scanning evolution of 
+digital environment 
+- Timely reconfiguration 
+of resources 
+Literature review (co-citation 
+analysis) 
+Dynamic capability 
+view 
+Digital innovation readiness  
+Lokuge et al. (2019) 
+Conceptualization of a formative multi-dimensional 
+construct for organizational readiness enabling 
+digital innovation 
+- Resource readiness 
+- IT readiness 
+- Cognitive readiness 
+- Partnership readiness 
+- Innovation valance 
+- Cultural readiness 
+- Strategic readiness 
+Mixed methods approach 
+(qualitative and quantitative data) 
+Organizational 
+readiness for change 
+theory 
+Digital innovation 
+management  
+Nambisan et al. (2017) 
+Theorize digital innovation management - Dynamic problem- 
+solution pairing 
+- Socio-cognitive sense 
+making 
+- Technology affordances 
+and constraints 
+- Orchestration 
+Conceptual Diverse innovation 
+theories 
+Organizational-level digital 
+transformation  
+Dąbrowska et al. (2022) 
+Development of multi-level framework for digital 
+transformation and agenda for future research 
+- Strategy and strategic 
+response 
+- Change and 
+organizational design 
+- Decision-making 
+capabilities 
+- Change in value 
+creation and capture 
+Conceptual Diverse digital 
+transformation 
+approaches 
+Competing digital 
+innovation concerns 
+Svahn et al. (2017a,b) 
+Digital innovation concerns and how to manage 
+them 
+Competing Concerns: 
+- Capability: Existing vs. 
+requisite 
+- Innovation focus: 
+Product vs. process 
+- Collaboration: Internal 
+vs. external 
+- Governance: Control vs. 
+flexibility 
+Longitudinal case study  
+Strategic digital innovation 
+orientation 
+Kindermann et al. (2020) 
+Development of holistic concept of an organization's 
+strategic orientation concerning digital innovation 
+and transformation initiatives 
+- Digital technology 
+scope 
+- Digital capabilities 
+- Digital ecosystem 
+coordination 
+- Digital architecture 
+configuration 
+Computer-aided text analysis of 
+shareholder letters from US-based 
+companies over 16 years 
+Resource-based view 
+(continued on next page) 
+J. Kroh et al.                                                                                                                                                                                                                                     
+Technological Forecasting & Social Change 198 (2024) 122942
+5
+Schultz et al., 2019 ; Svahn et al., 2017b ). Agility allows for the constant 
+consideration and integration of new digital innovation opportunities in 
+the innovation process, wherein their potential is explored through 
+improvisation ( Annarelli et al., 2021 ) as well as rapid iterative experi -
+mentation and development cycles ( Nambisan et al., 2017 ; Pe ˜na H ¨aufler 
+et al., 2021 ). Therefore, a flexible digital innovation process that sup -
+ports the constant search for and exploration of digital innovations 
+provides a micro-foundation for sensing and seizing opportunities. 
+A digital mindset considers that possessing resources and practices for 
+digital innovation may not be sufficient. It requires shared under -
+standing and knowledge among employees and managers about the 
+potential of digital technologies, to recognize, and respond to, emerging 
+trends ( Huber et al., 2020 ; Nambisan et al., 2017 ). Profound and broadly 
+shared digital knowledge increases employees' self-efficacy in using 
+digital technologies and, therefore, their digital innovativeness ( Mancha 
+and Shankaranarayanan, 2020 ). Furthermore, an entrepreneurial 
+climate is needed so that employees are motivated and empowered to 
+proactively explore new digital opportunities ( Lokuge et al., 2019 ; 
+D ą browska et al., 2022 ). Therefore, a digital mindset is a relevant micro- 
+foundation for seizing digital opportunities. 
+Digital technology adoption and data management subsume the re -
+sources and activities necessary to use data for value creation. Digital 
+innovation requires not only appropriate physical resources in the form 
+of the necessary IT infrastructure and digital platforms ( Sedera et al., 
+2016 ; Yoo et al., 2012 ), but also the ability to utilize them. The latter 
+refers to IT-enabled routines and the ability to collect, analyze, and 
+interpret data from different sources ( Huber et al., 2020 ). Clear re -
+sponsibilities and coordination mechanisms orchestrate the process of 
+accessing and generating data for interpretation. This should eventually 
+support more objective, data-driven decision making ( D ą browska et al., 
+2022 ). Furthermore, IT infrastructure must be adapted to respond to 
+changes in the technological environment ( Chen et al., 2017 ). This re -
+quires the company to develop the ability to recognize new digital 
+technologies and the value of new data sources. Therefore, digital 
+technology adoption and data management is an essential micro- 
+foundation of digital innovation capability, as it supports, (i) sensing 
+new opportunities by creating data-driven insights, (ii) seizing oppor -
+tunities by improving innovation decision-making, and (iii) trans -
+forming by leveraging new businesses through new data sources, and 
+constantly renewing the digital technology base underlying digital 
+innovation. 
+Digital innovation network accounts for the need for companies to 
+engage in digital innovation and cooperate with different partners, 
+including IT vendors, consultants, suppliers, complementors, and cus -
+tomers ( Abrell et al., 2016 ). This requires mechanisms to assess which 
+technology should originate internally ( Muehlburger et al., 2022 ), and 
+which should originate externally, from partners, if internal knowledge 
+is insufficient ( Hanelt et al., 2021 ; Kindermann et al., 2020 ). Therefore, 
+a company must open up its innovation process and facilitate collabo -
+ration with external partners. However, in the context of digital inno -
+vation, such collaborations differ from traditional customer-supplier 
+relationships. Partnerships are often temporary, non-exclusive, and not 
+controlled by a single company ( Lyytinen et al., 2016 ). For instance, 
+digital platforms bring together an ecosystem of heterogeneous actors 
+who innovate and collaboratively create value ( Yoo et al., 2012 ). This 
+requires the ability to orchestrate the partners of such heterogeneous 
+networks ( Svahn et al., 2017b ; Urbinati et al., 2020 ), by cultivating 
+governance structures that allow collaborative innovation, knowledge 
+sharing, and joint value creation and capture (e.g., Kindermann et al., 
+2020 ). Therefore, the ability to establish and orchestrate a network of 
+partners is a micro-foundation of digital innovation capability that 
+supports sensing new opportunities by learning about new digital 
+technological and business possibilities from outside the company, 
+seizing these opportunities through collaboration with external part -
+ners, and transforming the company's structures, processes, and re -
+sources by organizing them in ecosystems. 
+This literature-based conceptualization of the micro-foundations of 
+digital innovation capability is the initial point for subsequent scale 
+development. 
+3. Method for scale development 
+We used an exploratory sequential mixed method approach ( Cres -
+well, 1994 ), thereby following an established scale development pro -
+cedure ( Churchill, 1979 ; Hinkin, 1995 ). Accordingly, this study builds 
+on our initial literature-based conceptualization of the micro- 
+foundations of digital innovation capability. Due to the novelty of the 
+phenomenon and our chosen theoretical lens, we conducted a qualita -
+tive study (Study 1) to derive and detail the specific micro-foundations 
+that need to be included in our measurement instrument, following the 
+suggested evaluation guidelines of qualitative research ( Goffin et al., 
+2019 ). This method allowed us to explore in depth the relevance and 
+limitations of our initial conceptualization of digital innovation capa -
+bility, and to operationalize the measurement instrument ( Eisenhardt, 
+1989 ; Leonard-Barton, 1990 ). The qualitative analysis results formed 
+the basis for developing the items of the multi-dimensional measure of 
+our digital innovation capability scale. We then validated the scale by 
+drawing on quantitative survey data (Study 2), following the established 
+approach of scale purification and the assessment of structural validity, 
+convergent validity, and structural invariance between different 
+geographical contexts ( Hinkin, 1998 ). 
+3.1. Study 1: qualitative scale development 
+3.1.1. Procedure and sample 
+To this end, we considered three relevant cases for qualitative scale 
+development ( Cappa et al., 2022 ) pertaining to three established com -
+panies in North Germany. We selected these three cases for the following 
+reasons. (i) All established companies have already started to shift their 
+business focus to include digital technologies in their products, and offer 
+digital services. (ii) As the majority of other medium-sized companies 
+have a long tradition of selling physical products and certainly face 
+challenges when they start using digital technologies, they tend to be 
+risk averse ( Ceipek et al., 2021 ). Thus, they reflect the transformation 
+from analogous to digital innovation. (iii) The three cases share 
+important similarities (e.g., company history and German headquarters' 
+location) but show important differences (e.g., industry, number of 
+employees, current digital innovation ability, and innovation success), 
+which is crucial for the external validity of the results ( Flick et al., 2004 ). 
+Consequently, the nature of the three cases is consistent with the aim of 
+analyzing and discussing the phenomenon ( Siggelkow, 2007 ). There -
+fore, we employed maximum variation sampling and analyzed cases 
+covering a spectrum of lenses, regarding the phenomenon investigated 
+( Eisenhardt and Graebner, 2007 ). Table 2 summarizes the 
+Table 1 ( continued ) 
+Concept/Author Research objective Key dimensions Research method Theoretical foundation 
+Organizational setup for AI- 
+based innovation 
+management  
+Füller et al. (2022) 
+Impact of AI on innovation management and 
+required organizational setup; innovation manager 
+segmentation 
+- Digital and AI skills of 
+employees 
+- Organizational 
+structures 
+- Innovation strategy 
+Empirical Innovation 
+management literature  
+J. Kroh et al.                                                                                                                                                                                                                                     
+Technological Forecasting & Social Change 198 (2024) 122942
+6
+characteristics of the three cases and the 18 respondents. 
+We conducted personal interviews lasting between 30 and 60 min 
+each in 2019. We started with a set of open-ended questions to allow 
+digital innovation capabilities to evolve naturally from conversations 
+with the interviewees. We then organized our interview guidelines along 
+the micro-foundations of digital innovation capability identified in the 
+literature review (see Table 1). 
+The interview guide is shown in Appendix 1. The interviews were 
+transcribed and subjected to qualitative content analysis using MAXQDA 
+2020 (VERBI Software, 2019). We developed a reference guideline 
+comprising five main micro-foundations as categories (digital focus, 
+digital mindset, digital innovation process, digital technology and data 
+management, digital innovation network) and coded our data accordingly. 
+The initial first-order analysis confirmed five main categories but, in 
+addition, we inductively discovered a new category (overcoming digital 
+innovation resistance) and added it to our reference guidelines. Next, we 
+went through our data again and added subcategories to each category. 
+Therefore, we ensured that the initial codes matched the reference 
+Table 2 
+Case characteristics of qualitative analysis.  
+Company Industry Number of employees 
+(FTE) 
+Number of 
+interviews 
+Interviewees' functional backgrounds Interviewees' hierarchical levels 
+A Marine industry  550  6 Product and Project Management, Business 
+Development, HR 
+Middle and top management 
+B Medical technology 
+industry  
+1960  6 R&D, Quality Management, Operations, 
+Controlling 
+Middle management and 
+employees 
+C Mechanical engineering  1050  6 Product and Project Management, Sales, R&D Top, middle management, and 
+employees  
+Table 3 
+Micro-foundations based on qualitative analysis.  
+Micro- 
+foundation 
+Digital focus Digital innovation 
+process 
+Digital mindset Digital technology 
+adoption and data 
+management 
+Digital innovation 
+network 
+Overcoming digital 
+innovation resistance 
+Description Describes the 
+underlying strategy for 
+digital innovation 
+including a company's 
+digital ambition, 
+strategy formulation, 
+and the availability of 
+relevant resources 
+Describes the flexible 
+and interactive 
+innovation process 
+necessary for digital 
+innovation including 
+agile innovation 
+methods 
+Describes the shared 
+understanding of digital 
+innovations among 
+employees facilitating 
+awareness and proactive 
+search for new digital 
+opportunities 
+Describes availability of 
+technology, data 
+management 
+competences, and 
+ability to translate 
+outputs into business 
+applications 
+Describes the ability to 
+collaborate with 
+external partners for 
+digital innovations (e. 
+g., competitors, 
+suppliers, customers 
+and universities) 
+Describes barriers to 
+digital innovations 
+including resistance 
+from employees and 
+lack of technology 
+availability 
+Facets Formulation of a digital 
+innovation strategy and 
+goals; Flexibility of 
+innovation strategy; 
+Resources for digital 
+innovation; Roles and 
+responsibilities 
+Restructured 
+innovation process; 
+Agile and flexible 
+innovation 
+development methods; 
+digital opportunity 
+search 
+Shared understanding of 
+digital innovation; 
+Employee initiatives; 
+Digital natives 
+Technological 
+infrastructure; Data 
+infrastructure; Data 
+platforms; Ability to 
+collect, process and 
+interpret data; decision 
+relevance of data 
+Collaboration with 
+suppliers, competitors, 
+customers, research 
+institutions; 
+Collaboration in 
+developing core 
+competencies 
+Employee resistance; 
+Lack of skills; 
+Technological barriers; 
+Legal framework; 
+Bureaucratic processes 
+Proof quote 
+(s) 
+“We have a Vision 2025 
+[…], where we define that 
+this company will move 
+strongly toward software- 
+based products […] and 
+our current hardware 
+must be replaced step by 
+step.” (Company A) 
+“It is important, to have a 
+clear strategy and […] 
+basically, we need more 
+speed in developing digital 
+innovations. […]. When 
+we recognize that we do 
+not have the resources to 
+develop digital 
+innovations, […], we 
+have to buy them. We 
+have to take the risk to 
+stay competitive in the 
+future.” (Company C) 
+“We can buy digital 
+technologies to develop 
+digital technologies, of 
+course, but when we do 
+not have a structured 
+innovation process, we 
+can't use it.” (Company 
+C) 
+“We naturally have to 
+work with more agile, 
+more interactive […], 
+and even completely new 
+methods. Digital 
+innovations have 
+different requirements 
+[…], and we need to 
+systematically change 
+our innovation process” 
+(Company B) 
+“You need to lower 
+barriers for idea 
+generation in the 
+company. We […] 
+created a space […], 
+where people can meet 
+easily to be creative, to 
+prototype, to try out.” 
+(Company A) 
+“Digital innovation […] 
+has to get into people's 
+heads and […] that is a 
+challenge for every single 
+employee. Changing a 
+mindset is not easy.” 
+(Company B) 
+“The real challenge is to 
+change the mindset in the 
+company. We have to 
+become more digital from 
+within ourselves.” 
+(Company A) 
+“Uncertainty on digital 
+innovations gives us a lot 
+of new opportunities. […] 
+Of course, we can do 
+something wrong – by 
+turning left or right too 
+early or whatever. But we 
+will definitely be on the 
+right path and learn from 
+our mistakes.” (Company 
+C) 
+“The data are the 
+competitive advantage we 
+have.” (Company B) 
+“It is not enough to 
+develop a platform […]. 
+We have to operate them, 
+we need to combine 
+different data sources to 
+propose value […] and to 
+have a platform-driven 
+business model.” 
+(Company C) 
+“There is high business 
+potential in after-sales, 
+because we have the data 
+on how the customer uses 
+our products. […] We will 
+probably end up with 
+leasing or renting out 
+certain services based on 
+software products.” 
+(Company A) 
+“We […] are working 
+with other companies 
+that have the core 
+competences. We also 
+work with universities 
+and research institutes, 
+[…] because we do not 
+have the resources or 
+skills.” (Company A) 
+“We collect a lot of input 
+from our customers and 
+collaborate closely with 
+them in the innovation 
+development.” 
+(Company B) 
+“The nature of 
+collaboration will change 
+a lot; we have to pay 
+much more attention to 
+what competences 
+suppliers or partners 
+have. […] The speed of 
+digital innovations is 
+extremely high and we 
+can only profit when the 
+whole industry 
+collaborates on artificial 
+intelligence.” (Company 
+C) 
+“Employees who work in 
+our company for 20 to 30 
+years […] fear that they 
+are not able to cope with 
+digital innovations.” 
+(Company B) 
+“We still have 
+communication problems 
+between hardware and 
+software developers. 
+Hardware developers try 
+to defend their empire 
+[…] although software is 
+getting more important 
+than ever.” (Company A) 
+“The legal framework is 
+anti-innovative. Data 
+protection and a lot of 
+other laws and regulations 
+hamper digital 
+technologies' fast market 
+entry.” (Company B) 
+Total 
+number 
+of codes 
+91 64 98 46 117 55  
+J. Kroh et al.                                                                                                                                                                                                                                     
+Technological Forecasting & Social Change 198 (2024) 122942
+7
+categories and changed the codes slightly, where necessary. This facil -
+itates a more fine-grained understanding of the micro-foundation of 
+digital innovation capabilities. Table 3 summarizes the main categories, 
+subcategories, and example quotes. Next, we developed items for each 
+micro-foundation. 
+3.1.2. Results 
+We identified six micro-foundations of established companies' digital 
+innovation capabilities of established companies (see Table 3 ). While 
+the five identified micro-foundations validated our prior conceptuali -
+zation, qualitative research resulted in one additional facet. 
+First, digital focus is the company's ability to evaluate the strategic 
+impact of digital innovation on its business model ( Foss and Saebi, 
+2017 ). Our interviewees emphasized that their companies not only 
+recognized the importance of digital innovation within their current 
+business models but also explored it, along with business opportunities, 
+outside their core industry. Further, they emphasized that a company 
+needs to integrate digital innovation into its innovation goals and 
+strategy, including financial, human resources, and strategic technology 
+planning. This also requires defining clear roles and responsibilities for 
+seizing digital opportunities. One interviewee stated: 
+“ Our business model evolves continuously. We have a written digital 
+innovation strategy, but we still struggle to implement it in our processes. 
+However, we need to strategically align our processes to our future 
+markets . ” 
+Second, we learned from respondents that the digital innovation pro -
+cess constantly considers experiments with digital innovation opportu -
+nities. Consequently, the processes should focus on flexible and agile 
+innovation development methods. Recent research also emphasizes that 
+incumbent companies should balance flexibility and control in their 
+innovation processes ( Svahn et al., 2017a ). The need for the rapid 
+development and protection of digital innovations is driven by the 
+awareness of higher competitive pressure; that is, new market actors 
+might take advantage of emerging digital business opportunities. One 
+employee emphasized the challenge of changing the innovation devel -
+opment process in a company that rigidly formalized innovation 
+processes. 
+“ We had centralized structures and a traditional stage-gate based inno -
+vation process. Therefore, we still use our traditional processes for digital 
+innovation projects. Consequently, not all of our digital innovation pro -
+jects are agile, although they should be. But we try to use agile methods 
+when uncertainty increases . ” 
+Third, the digital mindset emphasizes the necessity for a shared un -
+derstanding of digital technologies and their potential for daily work 
+and business. However, digital innovations increasingly contain 
+advanced digital technologies, such as AI and big data analyses ( Ardo -
+lino et al., 2016 ) that, on the one hand, demand new competencies from 
+employees and, on the other hand, can weaken the long-term value of 
+existing competencies ( Huang and Rust, 2018 ). The interviewees 
+mentioned that the “ fear of missing something ” hampered the devel -
+opment of digital innovation. The generativity and flexibility needed for 
+digital innovation contrast with the rigidity of incumbent employees' 
+routines, procedures, and beliefs ( K ¨onig et al., 2021 ). Thus, a change 
+toward a digital mindset, wherein employees trust their competencies 
+and feel empowered to develop digital innovations, is essential. One 
+interviewee stated the following: 
+“ We have cultural problems, because many employees think that a digital 
+output is not a value proposition. Achieving a change in the mindset is not 
+easy, and communicating our digital strategy is a first, but not the last, 
+step on this journey . ” 
+Fourth, the qualitative content analysis results supported the rele -
+vance of digital technology adoption and data management . Physical re -
+sources are an essential prerequisite for digital technology, and data 
+management capability is a prerequisite for digital innovation. Com -
+panies cannot develop digital innovation without the necessary tech -
+nology and databases ( Yoo et al., 2012 ), therefore digital technology (i. 
+e., infrastructure) and data management abilities (i.e., clear re -
+sponsibility and coordination mechanisms for operational activities) are 
+necessary to gather, analyze, and use data for innovation development. 
+One interviewee highlighted the challenge of data management, despite 
+a proper IT infrastructure: 
+“ We renewed our IT system and have a large amount of data that is a good 
+basis to find new business opportunities. However, we still struggle to 
+analyze the data because of its complexity . ” 
+Fifth, the results emphasize the importance of a digital innovation 
+network, referring to companies' collaboration levels within and beyond 
+their traditional supply chain and industry, a feature that must be 
+enhanced. Developing digital innovation involves acting in a heteroge -
+neous ecosystem ( Selander et al., 2010 ). Companies that want to suc -
+ceed in the digital sphere must not only identify relevant partners, but 
+also generate new contractual models for the flow of components, in -
+formation, value, and product liability. One employee said the 
+following. 
+“ We miss knowledge on every digital technology. We, therefore, collab -
+orate intensively with external partners and develop digital innovations 
+together with them. I think we generate much greater business opportu -
+nities when we collaborate beyond traditional customer and supplier 
+relationships . ” 
+Based on the qualitative results, we extended the set of micro- 
+foundations by an additional sixth factor, which we called, ‘ overcoming 
+digital innovation resistance . ’ We learned that the complexity of digital 
+innovation raises resistance at different levels in a company's ecosystem. 
+Constructive opposition is a source of innovative ideas ( Adomako et al., 
+2019 ; Markham, 2000 ) that can increase innovation quality by broad -
+ening the knowledge base for innovation development ( Hauschildt, 
+2010 ; Juntunen et al., 2019 ). Collaborating with skeptical employees, 
+customers, and suppliers also builds trust, and increases the acceptance 
+and implementation of digital innovation. However, the success of 
+digital innovation relies on overcoming resistance, which can take many 
+forms, such as employees lacking the necessary knowledge or willing -
+ness to develop digital innovations, job insecurity, legal barriers, inter -
+nal bureaucracy, and fear of missing customer acceptance. This is in line 
+with past research, which proposes that digital innovation faces 
+numerous barriers, including lack of innovation culture, leadership buy- 
+in, and technological skills, budget restrictions, legal boundaries, 
+limited understanding of urgency, and a focus on daily business ( Gfrerer 
+et al., 2021 ). These facets also mirror prior research that emphasized the 
+relevance of knowledge of digital technologies and the willingness to 
+engage in digital environments ( Nauhaus et al., 2021 ). One respondent 
+summarized as follows: 
+“ We see a lot of barriers in the development of digital innovations. [ … ] 
+We have to work with employees who are afraid of losing their workplace. 
+However, we have to cope with these barriers because we have to change 
+our business model . ” 
+Following an exploratory approach, we generated a set of 38 initial 
+items for the six foundations of digital innovation capability. Thereby, 
+the items drew on two sources: (i) the description of the micro- 
+foundations resulting from the conceptual synthesis of the (mainly 
+conceptual) literature, and (ii) the qualitative research. Therefore, the 
+subcategories identified in the qualitative research and conceptual 
+synthesis were used to formulate specific items. We ensured that the 
+items capture the conceptual domain specified in the conceptual part as 
+well as validated in the qualitative research. The items were furthermore 
+pre-tested with three interviewees to ensure that they were uniformly 
+and clearly understood, which resulted in only minor changes in 
+wording. The final set of items is listed in Table 4 . 
+J. Kroh et al.                                                                                                                                                                                                                                     
+Technological Forecasting & Social Change 198 (2024) 122942
+8
+3.2. Study 2: quantitative scale validation 
+3.2.1. Procedure and samples 
+The validity and reliability of the developed items and constructs 
+were tested, using quantitative data from a cross-sectional industry 
+sample of German and Chilean companies. To fit the purpose of our 
+study, we collected data from companies that had been established for at 
+least three years, excluded subsidiaries without R & D departments (e.g., 
+sales offices), pure software companies, and companies with < 25 em -
+ployees, since such organizations tend to lack formal organizational 
+controls. We collected data from companies in various industries to test 
+our measurement instrument between 2019 and 2022. The distribution 
+among different industries from two geographical regions aimed to 
+develop a measurement instrument that can be applied independent of 
+the regional context, which requires assessment if the items and ratings 
+do not systematically differ by region (e.g., due to differences regarding 
+culture, infrastructure, economic development state, language, and 
+interpretation) ( Steenkamp and Baumgartner, 1998 ). We used a five- 
+point Likert scale (ranging from “ do not agree at all ” to “ completely 
+agree ” ) for all developed items. We contacted senior managers and 
+informed them of the purpose of the study in considering various aspects 
+of innovation management, which additionally included new items on 
+digital innovation capabilities. The companies nominated a set of em -
+ployees, who regularly worked on innovation tasks, as study partici -
+pants. Subsequently, they received an individual link to an online survey 
+that included the items to be assessed. A total of 417 employees from 59 
+product-centric companies participated in the study. Due to missing 
+values in the core constructs, 23 cases were removed, resulting in 394 
+cases for further analysis. 
+We split the entire sample into three subsamples, because scale pu -
+rification, structural validity, and convergent validity assessments 
+should not be performed using the same dataset. The initial scale puri -
+fication was performed using exploratory factor analysis (EFA), for 
+which the literature recommends a minimum case-to-item ratio of 5:1 
+( Hair et al., 2009 ). To meet this recommendation and given our 38 
+items, we randomly assigned 193 cases from the German sample to the 
+first subsample for scale purification. Structural validity is typically 
+assessed using confirmatory factor analysis (CFA), for which a sample 
+size of > 200 cases is recommended ( Boomsma and Hoogland, 2001 ). 
+Therefore, we used the full German sample ( N = 271) to meet this 
+requirement. For the final convergent validity assessment, we added 
+data collected in Chile ( n = 123) to the final CFA, which was also used to 
+assess structural invariance. The latter requires multi-group modeling, 
+for which at least 100 cases per group are recommended ( Kline, 2005 ). 
+We acknowledge that this subsampling approach with partial case 
+overlaps represents a compromise to the ideal solution of performing 
+each step with independent samples; however, given the amount of data 
+we were able to collect, we believe that to meet the requirements of the 
+applied statistical methods, this approach is justified in the context of 
+scale development. Table 5 summarizes the characteristics of the 
+subsamples. 
+3.2.2. Scale purification 
+EFA allows us to determine how well the observed items reflect the 
+underlying psychological concepts of interest. Drawing on Subsample 1 
+(n = 193), we performed a series of EFAs (principal components and 
+varimax rotation). The initial EFA extracted eight factors with eigen -
+values greater than one, accounting for 66.1 % of the observed variance. 
+The initial item pool of 38 was reduced to 32 after eliminating 6 items 
+with cross-loadings (cutoff point of 0.33) or low loadings (lower than 
+0.50). Before interpreting the results, we assessed the data's suitability 
+for structure detection with the Kaiser-Meyer-Olkin (KMO) measure of 
+sampling adequacy and Bartlett's test of sphericity, which were both 
+supported (KMO = 0.89; χ
+2
+(595) = 2603.10, p < .001). Furthermore, all 
+communality scores of the items were clearly above 0.50, thereby, at 
+satisfactory levels ( Child, 2006 ). The final solution resulted in seven 
+factors with eigenvalues greater than one and an explained variance of 
+66.9 %. All items loaded on the factor were originally designed for 
+measurement. The only difference between the intended and empirical 
+factor structures was with respect to the micro-foundation of digital 
+technology and data management , for which two separate factors were 
+extracted, i.e., digital technology capabilities and data management . All 
+factors showed appropriate levels of reliability, as demonstrated by 
+Cronbach's alpha scores ranging from 0.72 to 0.91 ( Nunnally and 
+Table 4 
+Constructs and initial items.  
+Digital focus 
+I1: We have recognized the importance of digital innovation for our company. 
+I2: We have very ambitious digitization goals. 
+I3: We have formulated and communicated a digital strategy as a guide to develop 
+digital innovation. 
+I4: We have defined roles, responsibilities and decision-making processes for the 
+implementation of the digital strategy. 
+I5: Management acts as a role model for digital innovation. 
+I6: We provide extensive financial resources to implement our digital strategy. 
+I7: We build new capabilities to implement our digital strategy. 
+I8: We hire new employees to implement our digital strategy. 
+I9: We refine our technical infrastructure to implement our digital strategy. 
+I10: We modify our processes to implement our digital strategy. 
+Digital innovation process 
+I11: We consider the innovation possibilities of digital innovation resulting from the 
+combination of hardware and software in our innovation process. 
+I12: We consider the ongoing potential of digital innovations, for example, because 
+of software updates, in our innovation process. 
+I13: We consider new business opportunities beyond the primary intended use (e.g., 
+extended data use) of digital innovations in our innovation process. 
+I14: We are aware that external and unknown market partners may take business 
+opportunities from our digital innovations. 
+I15: We take precautions to protect our digital innovations against competitors. 
+I16: We use agile methods and tools (e.g., SCRUM. digital mock-ups) to develop 
+digital innovations. 
+Digital mindset 
+I17: In our company, digital innovation is established (e.g., information campaigns, 
+events). 
+I18: Our employees understand the possible impact of digital innovation on their 
+daily work. 
+I19: Our employees ask for the implementation of digital innovations. 
+I20: Our employees discuss the impact of digital innovation on the company in 
+teams. 
+I21: A high number of our employees are digital natives. 
+Digital innovation network 
+I22: We are more dependent on external partners in the development of digital 
+innovation than in the development of other kinds of innovation. 
+I23: We collaborate with new external partners in the development of digital 
+innovation. 
+I24: Relationships with external partners have more of a partnership character than 
+a customer-supplier-character. 
+I25: There is no company in our digital innovation network (neither ourselves nor 
+an external partner) that controls the innovation process. 
+Digital technology and data management 
+I26: We are able to identify valuable data (e.g., machine data, user data, etc.). 
+I27: We are able to identify key digital technologies (e.g., cloud solutions, machine 
+learning, etc.). 
+I28: We have the appropriate technical systems to store, evaluate and analyze data 
+that is valuable to us. 
+I29: We are able to generate and merge data from different sources. 
+I30: We are able to gain knowledge from this data. 
+I31: We have clear responsibilities for all operational activities relating to data 
+storage, evaluation and analysis. 
+I32: We coordinate all operational activities relating to data storage, evaluation and 
+analysis across functional and departmental boundaries. 
+I33: We consider the impact of all operational decisions on data storage, evaluation 
+and analysis. 
+Overcoming digital innovation resistance 
+I34: Our employees do not have the competences to develop digital innovations. 
+I35: Our employees are not willing to develop digital innovations. 
+I36: Our employees perceive legal conditions (e.g., data protection laws) as barriers 
+to develop digital innovation. 
+I37: Our employees think that missing customer and supplier acceptance is a barrier 
+to develop digital innovation. 
+I38: Our internal processes and high levels of bureaucracy are barriers to develop 
+digital innovation.  
+J. Kroh et al.                                                                                                                                                                                                                                     
+Technological Forecasting & Social Change 198 (2024) 122942
+9
+Bernstein, 1994 ). We also conducted another EFA at the construct level, 
+which resulted in one factor with all capabilities, except digital innova -
+tion network , which constituted a separate factor. Table 6 summarizes 
+the EFA results. 
+3.2.3. Structural validity assessment 
+CFA enables us to assess whether an a priori defined theoretical 
+factor structure is consistent with the empirical data. Therefore, we 
+specified a correlation model with all latent variables and their corre -
+sponding items and used the larger subsample 2 (n = 271) to perform 
+maximum likelihood estimation (CFA). The multivariate normality test 
+revealed no problematic items. The model fits the data well, as indicated 
+by a χ
+2
+/d. f. ratio of 1.82, comparative fit index (CFI) of 0.91, incre -
+mental fit index (IFI) of 0.91, and root mean square error of approxi -
+mation (RMSEA) of 0.053, thereby falling within the recommended 
+boundaries ( Hu and Bentler, 1998 ). The chi-square test was significant 
+( χ
+2 
+= 804.32; df = 443; p < .001), but this was expected in model sit -
+uations, when the sample size was above 250, with the number of 
+observable variables exceeding 30, as in this study ( Hair et al., 2009 ). 
+We further found that the average item loadings (standardized) for all 
+constructs were > 0.63, that no individual item loading fell below 0.40, 
+and all loadings were significant at the level of p < .001, thereby sup -
+porting indicator reliability. The average variance extracted (AVE) was 
+clearly above 0.50 for all but the reversely coded construct, i.e., over -
+coming digital innovation resistance (AVE = 0.41). However, the data 
+demonstrated discriminant validity because the square root of the AVE 
+of each construct was larger than the highest correlation with all other 
+latent variables ( Fornell and Larcker, 1981 ), which also applied to 
+overcoming digital innovation resistance. Table 7 summarizes all the 
+results (CFA Model A). 
+To further assess whether an alternative factor structure might fit the 
+data better, we estimated the fit of a set of model specifications that 
+collapsed two or more factors into a single factor, and then compared the 
+re-estimated model fit with the original model, using the chi-square 
+difference test ( Anderson and Gerbing, 1988 ). The decision on the fac -
+tors to be merged, was guided by their relationships so that the factors 
+with the highest correlation were merged first. The procedure was 
+continued until the final one-dimensional model. Table 8 summarizes 
+the results; for all comparisons, the alternative models were significantly 
+worse than the original model. We re-evaluated the internal consistency 
+of the constructs in this larger sample, which was supported by Cron -
+bach's alpha values ranging from 0.72 and 0.90. 
+3.2.4. Convergent validity 
+The relationship between the developed measure and another 
+theoretically related construct must be examined to establish convergent 
+Table 5 
+Sample characteristics.   
+Subsample 1 Subsample 2 Subsample 3  
+Number  Number Δ S1  Number Δ S2 
+Total number of informants  193  271 78  394 0 
+Informants Germany  193  271 78  271 0 
+Informants Chile  0  0 0  123 123 
+Job areas (informants) Number Percentage Number Percentage Δ S1 Number Percentage Δ S2 
+Leadership/Strategy 15 7.8 % 18 6.6 % 3 42 10.7 % 24 
+Marketing/Sales/Service/Consulting 49 25.4 % 74 27.3 % 25 97 24.6 % 23 
+R & D/Innovation management 23 11.9 % 37 13.7 % 14 59 15.0 % 22 
+Production/maintenance 25 13.0 % 33 12.2 % 8 47 11.9 % 14 
+Product/Project management 26 13.5 % 35 12.9 % 9 51 12.9 % 16 
+Controlling/Logistics/Process management 11 5.7 % 17 6.3 % 6 23 5.8 % 6 
+Purchasing 2 1.0 % 4 1.5 % 2 8 2.0 % 4 
+IT 13 6.7 % 15 5.5 % 2 16 4.1 % 1 
+Others 29 15.0 % 38 14.0 % 9 51 12.9 % 13 
+Hierarchical position (informants) Number Percentage Number Percentage Δ S1 Number Percentage Δ S2 
+Upper management 18 9.3 % 20 7.4 % 2 58 14.7 % 38 
+Middle management 32 16.6 % 35 12.9 % 3 75 19.0 % 40 
+Lower management/team leader 56 29.0 % 79 29.2 % 23 98 24.9 % 19 
+Employee 87 45.1 % 137 50.6 % 50 163 41.4 % 26 
+Industry Number Percentage Number Percentage Δ S1 Number Percentage Δ S2 
+Manufacturing goods (chemicals, food, plastics, glass, etc.) 7 19.4 % 7 18.4 % 0 8 13.6 % 1 
+Industrial engineering (machine construction, plant engineering, etc.) 3 8.3 % 3 7.9 % 0 10 16.9 % 7 
+Utilities (energy, water, recycling) 11 30.6 % 12 31.6 % 1 14 23.7 % 2 
+Others 15 41.7 % 16 42.1 % 1 27 45.8 % 11 
+Company size (revenue; Mio. EUR) Number Percentage Number Percentage Δ S1 Number Percentage Δ S2 
+Less than 50 Mio. 12 33.3 % 12 31.6 % 0 24 40.7 % 12 
+51 – 250 11 30.6 % 12 31.6 % 1 14 23.7 % 2 
+251 – 500 1 2.8 % 1 2.6 % 0 1 1.7 % 0 
+More than 500 Mio. 9 25.0 % 9 23.7 % 0 12 20.3 % 3 
+n.a. 3 8.3 % 4 11.1 % 1 8 13.6 % 4 
+Company size (FTE) Number Percentage Number Percentage Δ S1 Number Percentage Δ S2 
+Less than 100 FTE 6 16.7 % 8 21.1 % 2 22 37.3 % 14 
+101 – 250 9 25.0 % 9 23.7 % 0 11 18.6 % 2 
+251 – 500 7 19.4 % 7 18.4 % 0 8 13.6 % 1 
+More than 500 FTE 14 38.9 % 14 36.8 % 0 17 28.8 % 3 
+n.a. 0 0.0 % 0 0.0 % 0 1 1.7 % 1 
+Total number of companies  36  38 2  59 21 
+No. informants Number Percentage Number Percentage  Number Percentage  
+1 informant 6 16.67 % 2 5.26 %  3 5.08 %  
+2 – 3 4 11.1 % 3 7.9 %  10 16.9 %  
+4 – 5 15 41.7 % 16 42.1 %  23 39.0 %  
+6 – 7 4 11.1 % 7 18.4 %  9 15.3 %  
+8 – 9 3 8.3 % 2 5.3 %  2 3.4 %  
+More than 10 informants 4 11.1 % 8 21.1 %  12 20.3 %  
+Average no. of informants by company  5.36  7.13   6.68   
+J. Kroh et al.                                                                                                                                                                                                                                     
+Technological Forecasting & Social Change 198 (2024) 122942
+10
+validity. Evidence of such a relationship (e.g., a significant correlation) 
+supports the idea that the new measurement concept identifies mean -
+ingful differences. Therefore, researchers are encouraged to include 
+other measures when collecting data for scale validation, that can then 
+be used to assess convergent validity ( Hinkin, 1998 ). We implemented 
+this approach by including a measure of digital innovation success in the 
+questionnaire. We assumed that digital innovation capability and its 
+underlying micro-foundations result in higher innovation success. Thus, 
+we calculated the correlation between digital innovation capability and 
+digital innovation success. Using established scales from past research to 
+measure the economic success of innovation activities ( Griffin and Page, 
+1993 ; Manion and Cherion, 2009 ), we changed the measure slightly to 
+match digital innovation. In particular, the survey items asked about the 
+current contributions of digital innovations in increasing revenue, 
+profitability, market share, market creation, image, customer satisfac -
+tion, improved product/service quality, and process efficiency 
+(Cronbach's alpha: 0.95). 
+In this step, we drew on subsample 3 ( n = 394), which includes the 
+full dataset collected in Germany and Chile. Before calculating the 
+correlations, we conducted the original CFA to assess the measurement 
+model. Table 7 summarizes the results (CFA Model B). With a larger 
+sample size, the global fit of the model improved ( χ
+2 
+= 932.48; df = 443; 
+χ
+2
+/d. f. = 2.11; p < .001; CFI = 0.93; IFI = 0.93; RMSEA = 0.052). At the 
+indicator level, all factor loadings are significant ( > 0.50 and significant. 
+At the latent variable level, the AVE of all variables was > 0.50, except 
+for overcoming digital innovation resistance, but its AVE also increased 
+to 0.46 in the larger dataset. Each square root of the AVE demonstrated 
+discriminant validity being greater than the highest correlation with all 
+other variables ( Fornell and Larcker, 1981 ). 
+In addition to the scores for the seven constructs, we calculated the 
+overall digital innovation capability score for the correlation analysis. 
+To overcome digital innovation resistance, which is reverse-coded, we 
+Table 6 
+Results of exploratory factor analysis.   
+Factor loadings 2nd-order 
+loading 
+Construct/item DIF DIP DMI DIN DTC DMA DIR 
+Digital focus (DIF) ( α = 0.91; Eigenvalue = 4.86; Variance Explained = 15.19 % )         0.64 
+I1
+a 
+( ¡ ) (   ) (   ) (   ) (   ) (   ) (   )  
+I2
+a 
+( ¡ ) (   ) (   ) (   ) (   ) (   ) (   )  
+I3 0.63 0.26 0.20 0.08 0.05 0.21 0.03  
+I4 0.64 0.19 0.26 0.12   0.06 0.33 0.07  
+I5 0.57 0.26 0.14 0.06 0.17 0.22 0.27  
+I6 0.68 0.08 0.09 0.08 0.33 0.15 0.10  
+I7 0.79 0.21 0.11 0.10 0.06 0.10 0.25  
+I8 0.67 0.12 0.13 0.13 0.14 0.03 0.23  
+I9 0.75 0.18 0.03 0.19 0.24 0.00 0.05  
+I10 0.75 0.16 0.11 0.09 0.19 0.09 0.00  
+Digital innovation process (DIP) ( α = 0.86; Eigenvalue = 2.72; Variance Explained = 8.49 
+% )         
+0.58 
+I11 0.33 0.62 0.20 0.09 0.34   0.01 0.07  
+I12 0.31 0.72 0.13 0.15 0.25   0.01 0.17  
+I13 0.32 0.74 0.09 0.12 0.27 0.05 0.09  
+I14 0.27 0.69 0.09 0.02 0.07 0.17   0.14  
+I15
+a 
+(   ) ( ¡ ) (   ) (   ) (   ) (   ) (   )  
+I16
+a 
+(   ) ( ¡ ) (   ) (   ) (   ) (   ) (   )  
+Digital mindset (DMI) ( α = 0.82; Eigenvalue = 2.69; Variance Explained = 8.39 % )         0.80 
+I17 0.08 0.30 0.59 0.12 0.13 0.16 0.31  
+I18 0.30 0.13 0.70   0.02 0.22 0.04 0.29  
+I19 0.16 0.06 0.78   0.06 0.31 0.05 0.06  
+I20 0.17 0.06 0.79 0.07 0.09 0.15 0.02  
+I21
+a 
+(   ) (   ) ( ¡ ) (   ) (   ) (   ) (   )  
+Digital innovation network (DIN) ( α = 0.81; Eigenvalue = 2.50; Variance Explained = 7.82 
+% )         
+  0.05 
+I22   0.11   0.02 0.00 0.79   0.04   0.01   0.23  
+I23 0.29 0.04   0.07 0.75 0.15 0.03 0.00  
+I24 0.23 0.10 0.08 0.79 0.12 0.09 0.06  
+I25 0.16 0.14 0.05 0.70 0.01 0.07 0.08  
+Digital technology capability (DTC) ( α = 0.88; Eigenvalue = 3.57; Variance Explained =
+11.17 % )         
+0.76 
+I26 0.17 0.06 0.14 0.12 0.69 0.04 0.12  
+I27 0.22 0.31 0.25 0.09 0.60 0.07 0.21  
+I28 0.18 0.15 0.12 0.01 0.74 0.28 0.15  
+I29 0.11 0.17 0.16 0.03 0.81 0.20 0.14  
+I30 0.17 0.20 0.12 0.05 0.72 0.28 0.11  
+Data management (DMA) ( α = 0.89; Eigenvalue = 2.65; Variance Explained = 8.29 % )         0.58 
+I31 0.17 0.03 0.02 0.06 0.22 0.87 0.11  
+I32 0.20 0.05 0.07 0.11 0.24 0.83 0.04  
+I33 0.19 0.10 0.25 0.00 0.20 0.76 0.05  
+Overcoming digital innovation resistance (DIR) ( α = 0.72; Eigenvalue = 2.40; Variance 
+Explained = 7.50 % )         
+  0.78 
+I34   0.14   0.14   0.25 0.07   0.28   0.20 ¡ 0.60  
+I35   0.02   0.26   0.28 0.03   0.01   0.12 ¡ 0.66  
+I36   0.16 0.21   0.04 0.08   0.18 0.14 ¡ 0.69  
+I37
+a 
+(   ) (   ) (   ) (   ) (   ) (   ) ( ¡ )  
+I38   0.27 0.00 0.00   0.06   0.19   0.12 ¡ 0.70  
+n = 193. 
+Bold shows the factor loadings of the items on the construct that they are built of, while the not-bold shows the factor loadings on the other constructs. 
+a
+Eliminated during scale purification due to low loading or cross-loadings; α , Cronbach's alpha. 
+J. Kroh et al.                                                                                                                                                                                                                                     
+Technological Forecasting & Social Change 198 (2024) 122942
+11
+used the inverted construct score to calculate the overall digital inno -
+vation capability score. Table 9 summarizes the results of the subsequent 
+bivariate correlation analysis (Pearson). Following Cohen's judgement 
+that correlations should be interpreted as small, moderate, and large 
+when the correlation coefficients are > 0.10, 0.30, and 0.50 ( Cohen, 
+1992 ), assessing the relationship between the overall concept of digital 
+innovation capability and digital innovation performance provides 
+support for convergent validity, with r = 0.51 ( p < .001). At the level of 
+the seven micro-foundations, correlations can also be considered mod -
+erate to strong, except for the dimension of digital innovation network , 
+which does not correlate with performance. However, the dimension 
+was significantly correlated with the other dimensions of the overall 
+concept, suggesting that digital innovation networks relate to the 
+concept of digital innovation capability. Hence, the relevance of having 
+external digitalization partners for achieving performance is a more 
+complex relationship. Taken together, these results support the 
+convergent validity of the new scale. 
+3.2.5. Measurement invariance and within-group consensus assessment 
+Subsample 3 ( n = 394) includes cases from two countries, allowing 
+us to assess the psychometric equivalence of the digital innovation 
+capability scale across countries. Following the common approach to 
+assess measurement invariance ( Putnick and Bornstein, 2016 ), we 
+applied multi-group CFA with various levels of model constraints, across 
+the two countries. Table 10 summarizes the results. The first model 
+tested configural invariance; that is, the items exhibited the same 
+pattern of salient and non-salient loadings across countries. We esti -
+mated a nested model using two groups without constraints. Configural 
+invariance was supported by a good model fit ( χ
+2 
+= 1615.85, df = 886, 
+χ
+2
+/d. f. = 1.82; p < .001; CFI = 0.90; RMSEA = 0.045), with all loadings 
+significant at > 0.40. Next, we assessed metric invariance – the equiva -
+lence of item loadings on the factors – by constraining the loadings to be 
+equal across groups and comparing the model fit with the configural 
+invariance model ( Chen, 2007 ). The overall model fit was not signifi -
+cantly worse ( Δ χ
+2 
+= 35.74; Δ df = 25; p = .08; Δ CFI = 0.00; Δ RMSEA =
+  0.001), which supports full metric invariance. To assess scalar 
+invariance, that is, whether the mean differences in the latent constructs 
+captured all mean differences in the items' shared variance, we con -
+strained item intercepts to be equal across the two groups, and the 
+overall model fit was then compared with the metric invariance model. 
+Table 7 
+Results of confirmatory factor analyses.
+a   
+CFA Model A CFA Model B 
+Construct/item Loading  AVE α Loading  AVE α 
+Digital focus   0.54  0.90   0.59  0.92 
+I3  0.68 ***    0.68 ***   
+I4  0.71 ***    0.75 ***   
+I5  0.69 ***    0.77 ***   
+I6  0.75 ***    0.79 ***   
+I7  0.82 ***    0.85 ***   
+I8  0.68 ***    0.71 ***   
+I9  0.78 ***    0.80 ***   
+I10  0.74 ***    0.77 ***   
+Digital innovation process   0.63  0.86   0.70  0.91 
+I11  0.82 ***    0.86 ***   
+I12  0.87 ***    0.90 ***   
+I13  0.83 ***    0.86 ***   
+I14  0.61 ***    0.71 ***   
+Digital mindset   0.57  0.84   0.64  0.87 
+I17  0.70 ***    0.75 ***   
+I18  0.85 ***    0.85 ***   
+I19  0.76 ***    0.82 ***   
+I20  0.70 ***    0.78 ***   
+Digital innovation network   0.50  0.81   0.57  0.85 
+I22  0.56 ***    0.66 ***   
+I23  0.78 ***    0.85 ***   
+I24  0.82 ***    0.83 ***   
+I25  0.62 ***    0.68 ***   
+Digital technology capability   0.58  0.87   0.62  0.89 
+I26  0.64 ***    0.70 ***   
+I27  0.72 ***    0.69 ***   
+I28  0.82 ***    0.80 ***   
+I29  0.82 ***    0.87 ***   
+I30  0.78 ***    0.85 ***   
+Data management   0.73  0.89   0.73  0.91 
+I31  0.87 ***    0.89 ***   
+I32  0.91 ***    0.92 ***   
+I33  0.77 ***    0.81 ***   
+Overcoming digital innovation resistance   0.41  0.72   0.46  0.77 
+I34  0.79 ***    0.76 ***   
+I35  0.65 ***    0.68 ***   
+I36  0.47 ***    0.58 ***   
+I38  0.61 ***    0.68 ***   
+χ
+2 
+(df)  804.32  (443)   932.48  (443)  
+χ
+2
+/df  1.82 ***    2.11 ***   
+CFI  0.91     0.93    
+IFI  0.91     0.93    
+RMSEA  0.053     0.052    
+n  271     394     
+a
+AVE, average variance extracted. α , Cronbach's alpha. 
+***
+p < .001 (two-tailed). 
+J. Kroh et al.                                                                                                                                                                                                                                     
+Technological Forecasting & Social Change 198 (2024) 122942
+12
+The significant chi-square difference test ( Δ χ
+2 
+= 165.78; Δ df = 32; p <
+.001) indicated a worse model fit, but the higher sensitivity of the chi- 
+square difference test in larger samples needs to be considered. The 
+changes in the other fit indices presented mixed results (CFI = 0.02; 
+RMSEA = 0.003). This indicates that means across countries should be 
+compared with caution because of the potential additive bias ( Meredith, 
+1993 ). 
+Thus far, we have analyzed the validity of our measurement instru -
+ment to capture respondents' individual perceptions in their assessment 
+of their organization's digital innovation capability. However, this 
+measure is intended to support organization-level research. Therefore, a 
+reliable measurement instrument must demonstrate its ability to 
+Table 8 
+Results of confirmatory factor analysis – Model fit of dimension variations.   
+Model fit 
+Model χ
+2 
+df χ
+2
+/df IFI CFI RMSEA Δ χ
+2  
+Δ df 
+7 dimensions (original)  804.32  443  1.816  0.91  0.91  0.053    
+6 dimensions (merged DIF + DIP)  1018.17  449  2.268  0.86  0.85  0.066  213.84 ***  6 
+6 dimensions (merged DTC + DMI)  1088.49  449  2.424  0.84  0.84  0.070  284.17 ***  6 
+6 dimensions (merged DMA + DTC)  1060.45  449  2.362  0.85  0.84  0.068  256.13 ***  6 
+6 dimensions (merged DIR + DMI)  906.85  449  2.020  0.88  0.88  0.059  102.53 ***  6 
+5 dimensions (merged DIF + DIP + DMI)  1306.53  454  2.878  0.79  0.78  0.080  502.21 ***  11 
+5 dimensions (merged DTC + DMI + DIP)  1287.81  454  2.837  0.79  0.79  0.079  483.49 ***  11 
+5 dimensions (merged DMA + DTC + DIP)  1297.35  454  2.858  0.79  0.78  0.080  493.03 ***  11 
+5 dimensions (merged DIR + DMI + DIR)  1198.23  454  2.639  0.81  0.81  0.075  393.91 ***  11 
+4 dimensions (merged DIF + DIP + DMI + DMA)  1643.75  458  3.589  0.70  0.70  0.094  839.43 ***  15 
+4 dimensions (merged DTC + DMI + DIP + DIF)  1608.11  458  3.511  0.71  0.70  0.093  803.79 ***  15 
+4 dimensions (merged DMA + DTC + DIP + DIR)  1449.43  458  3.165  0.75  0.75  0.086  645.11 ***  15 
+4 dimensions (merged DIR + DMI + DIR + DIF)  1560.85  458  3.408  0.72  0.72  0.091  756.53 ***  15 
+2 dimensions (merged DIF + DIP + DMI + DMA + DTC + DIN)  2081.07  463  4.495  0.59  0.58  0.109  1276.75 ***  20 
+2 dimensions (merged DIF + DIP + DMI + DMA + DTC + DIR)  2003.39  463  4.327  0.61  0.60  0.107  1199.07 ***  20 
+1 dimension (merged DIF + DIP + DMI + DNI + DTC + DMA + DIR)  2186.44  464  4.712  0.56  0.56  0.113  1382.12 ***  21 
+DIF, Digital Focus; DIP, Digital Innovation Process; DMI, Digital Mindset; DNI, DIN, Digital Innovation Network; DTC, Digital Technology Capability; DMA, Data 
+Management; DIR Overcoming Digital Innovation Resistance. CFI, comparative fit index; IFI, incremental fit index; RMSEA, root-mean-square error of approximation. 
+n = 193. 
+***
+p < .001 (two-tailed). 
+Table 9 
+Mean, standard deviations, and correlation matrix.
+a   
+Mean SD 1. 2. 3. 4. 5. 6. 7. 8. 9. 10. ICC 
+(1, k ) 
+1. Country dummy (0 =
+GER))  
+0.30  0.46 ( – )          ( – ) 
+2. Digital focus  3.00  0.97   0.14 ** (0.92)         0.68 
+3. Digital innovation 
+process  
+3.02  1.00   0.15 ** 0.65 *** (0.91)        0.58 
+4. Digital mindset  2.80  0.95   0.07 0.53 *** 0.56 *** (0.87)       0.71 
+5. Digital technology 
+capability  
+3.34  0.92 0.14 ** 0.41 *** 0.50 *** 0.42 *** (0.89)      0.71 
+6. Data management  2.86  1.07 0.05 0.41 *** 0.39 *** 0.36 *** 0.61 *** (0.91)     0.55 
+7. Overcoming digital 
+innovation resistance  
+2.86  0.91   0.33 ***   0.12 *   0.02   0.22 ***   0.30 ***   0.16 ** (0.77)    0.72 
+8. Digital Innovation 
+Network  
+3.27  0.92   0.31 *** 0.44 *** 0.42 *** 0.28 *** 0.12 * 0.08 0.22 *** (0.85)   0.57 
+9. Digital innovation 
+capability  
+3.06  0.64   0.02 0.78 *** 0.78 *** 0.74 *** 0.75 *** 0.68 ***   0.38 *** 0.47 *** ( – )  0.59 
+10. Digital innovation 
+success  
+3.10  1.00 0.27 *** 0.40 *** 0.42 *** 0.49 *** 0.43 *** 0.34 ***   0.17 ** 0.06 0.51 *** (0.95) 0.62 
+n = 394. 
+a
+S.D., standard deviation. Cronbach's alpha reported along the diagonal. ICC(1,k) intra-class correlation coefficient. 
+*
+p < .05. 
+**
+p < .01. 
+***
+p < .001 (two-tailed). 
+Table 10 
+Results of measurement invariance tests.   
+Model fit   
+Model χ
+2 
+df χ
+2
+/df CFI RMSEA Δ χ
+2  
+Δ df Δ CFI Δ RMSEA 
+Configural invariance  1615.84  886  1.824  0.90  0.045      
+Metric invariance  1651.57  911  1.813  0.90  0.044  35.74   25  0.00    0.001 
+Scalar invariance  1817.36  943  1.927  0.88  0.047  165.78 ***  32    0.02  0.003 
+n = 394 (Germany: n = 271; Chile: n = 123). 
+***
+p < .001 (two-tailed). 
+J. Kroh et al.                                                                                                                                                                                                                                     
+Technological Forecasting & Social Change 198 (2024) 122942
+13
+produce a similar assessment of an organization, independent of the 
+employee providing the rating. Employees' ratings within a company 
+might vary slightly because of differences in their exposure to organi -
+zational practices and activities, depending on their function or hierar -
+chical position. Nevertheless, a reliable measure of a company's digital 
+innovation capability must demonstrate appropriate within-group 
+consensus. Our multi-respondent sample was suitable for this investi -
+gation. In particular, we drew on Subsample 3 ( n = 394, organizational 
+level: n = 59) to calculate the intra-class correlation coefficients (ICC 1, 
+k), which indicate inter-rater reliability and agreement ( LeBreton and 
+Senter, 2008 ; Shrout and Fleiss, 1979 ). We report the ICC (1,k) for each 
+subdimension and the overall score for digital innovation capability in 
+Table 9 . The ICC (1,k) values ranged between 0.55 and 0.71, confirming 
+levels of agreement that can be interpreted as good to excellent ( Fleiss, 
+1986 ). This supports the idea that the items allow for a reliable appli -
+cation of the scale to assess the organizational characteristics of digital 
+innovation capability based on individual employees' perceptions. 
+4. Discussion 
+When seeking digital innovation, companies must mobilize and 
+deploy capabilities suitable for a specific task ( Svahn et al., 2017b ). 
+However, digital innovation also requires them to constantly reconfig -
+ure their resources, processes, and structures, to take advantage of new 
+opportunities, and sustain a competitive advantage in the dynamic 
+environment of emerging digital technologies. This study conceptualizes 
+and empirically validates a multi-dimensional measure to capture the 
+digital innovation capability necessary for established product-centric 
+companies to successfully shape their business into the digital space. 
+Therefore, we draw on the dynamic capability view ( Teece, 2007 ), and 
+prior literature on organizational factors fostering digital innovation, to 
+identify the relevant micro-foundations necessary for established com -
+panies to sense, seize, and reconfigure digital innovation. 
+The results reveal seven micro-foundations of digital innovation 
+capability, i.e., digital focus, digital innovation process, digital mindset, 
+digital innovation network, digital technology capability, data man -
+agement, and overcoming digital innovation resistance. Based on a 
+multi-stage empirical design consisting of literature review, qualitative 
+analysis and quantitative validation, we develop and validate a mea -
+surement instrument to determine the status quo of organizational ca -
+pabilities for digital innovation. The results suggest that the 
+measurement instrument covers the relevant dimensions of digital 
+innovation capabilities and is applicable across different industries, 
+employee groups, and countries. Consequently, a valid measurement 
+instrument is available that allows practitioners and researchers to 
+determine the digital innovation capabilities of firms. The strength of 
+our measurement instrument lies in its ability to map the multidimen -
+sionality of digital innovation capabilities. Nevertheless, it is possible to 
+use individual constructs separately. 
+4.1. Theoretical implications 
+By analyzing the challenges of established product-centric com -
+panies, and the capability necessary to enter and grow through digital 
+innovation, we respond to the call for research on how organizations 
+with no experience in using digital technologies should organize for 
+digital innovation ( Kohli and Melville, 2018 ; Menz et al., 2021 ; D ą b -
+rowska et al., 2022 ; Williams et al., 2022 ). We contribute to the litera -
+ture by introducing a dynamic capability view of digital innovation, as 
+this theoretical foundation addresses the need for transformation and 
+reconfiguration required by companies to engage in digital innovation. 
+By synthesizing prior (mainly conceptual) research on organizational- 
+level antecedents of digital innovation and transformation through the 
+lens of the dynamic capability view, we conceptualize a set of micro- 
+foundations, addressing the specific nature and challenges of digital 
+innovation ( Yoo et al., 2012 ), that should enable established companies 
+to succeed in digital innovation. As such, our conceptualization com -
+plements prior research focused on isolated aspects, such as digital 
+innovation management ( Füller et al., 2022 ; Nambisan et al., 2017 ), 
+strategy ( Kindermann et al., 2020 ), or competing concerns inhibiting 
+digital innovations ( Svahn et al., 2017a ). Our approach is also distinct 
+from past frameworks, suggesting sets of resources and capabilities to 
+master digitalization and digital innovation (e.g., Gfrerer et al., 2021 ; 
+Annarelli et al., 2021 ; D ą browska et al., 2022 ). In addition to focusing on 
+the organizational factors that enable established companies to recon -
+figure for digital innovation, we develop a measurement instrument that 
+is empirically tested through qualitative and quantitative research. This 
+study provides a reliable and valid scale to support future research on 
+the antecedents of digital innovation success in the context of estab -
+lished product-centric companies. 
+4.2. Managerial implications 
+Based on prior literature, we developed a multi-dimensional mea -
+surement instrument to capture digital innovation capability and vali -
+dated it through qualitative and quantitative research. The items are 
+easy to understand, the survey could be completed expeditiously, and 
+the analysis in the form of aggregate scores is simple. This measurement 
+concept offers companies and their managers the opportunity to reflect 
+on their digital innovation capabilities. When including employees in 
+different functional departments, entities, or hierarchical levels, detec -
+ted differences in their evaluations can trigger discussions if subgroups 
+only differ in their perceptions or require specific capacity-building 
+measures. A consensus on underperformance with respect to certain 
+micro-foundations can help managers prioritize digital innovation- 
+related interventions at the organizational level; this includes the 
+formulation of a digital innovation strategy when scoring low in this 
+area. The measurement instrument may also allow for a comparison 
+between companies or a benchmarking, which helps identify best 
+practices, and track changes, in digital innovation capability over time. 
+These insights may also help policy makers evaluate the status quo of the 
+industries' digital innovation capabilities. Consequently, policy makers 
+could develop specific education and funding programs to further guide 
+the digital transformation and the building of digital innovation 
+capabilities. 
+4.3. Limitations and future research 
+We used a mixed-method approach to develop and validate our 
+digital innovation capability measures. Thereby, analyzing the rela -
+tionship between digital innovation capability and company success 
+might be important to underline the relevance of the digital innovation 
+capability. For example, future research should investigate the influence 
+of digital innovation capability on digital innovation success and 
+company-level outcomes, such as innovation program performance. 
+Although we already included an analysis that correlates the micro- 
+foundations with digital innovation success (see Table 9 ), regression 
+models using different performance evaluation datasets should be 
+applied. In this context, future research could also apply designs where 
+dependent and independent variables come from different informants, 
+thereby avoiding common method bias concerns ( Globocnik et al., 2022 ; 
+Kroh et al., 2018 ). 
+Further, the performance relevance of digital innovation capabilities 
+may depend on company-level contingency factors. For instance, future 
+research might investigate whether the relevance of certain micro- 
+foundations might differ for companies in high-vs. low-tech industries, 
+high vs. low degrees of servitization, high vs. low risk aversion cultures, 
+or by type of digital technology (AI, IoT, mobile, etc.). This would allow 
+us to learn more about the relative importance of certain micro- 
+foundations in different organizational contexts. 
+The quantitative study supports the validity of the measurement 
+instrument across regions by collecting data from Germany and Chile. 
+J. Kroh et al.                                                                                                                                                                                                                                     
+Technological Forecasting & Social Change 198 (2024) 122942
+14
+These two countries differ in terms of culture, industry structure, and 
+digital innovation experience. Despite the generally high influence of 
+the national context on response patterns in surveys ( de Jong et al., 
+2008 ), we demonstrate the suitability of the measurement instrument 
+for capturing the micro-foundations of digital innovation capabilities in 
+different countries. This is remarkable, given that the questionnaires 
+were completed in the respective local languages. However, our evalu -
+ations also showed limited scalar invariance; that is, the intercepts 
+varied systematically by region. Future research that presents group- 
+mean comparisons across countries should evaluate this bias. In the 
+case of invariance violations, several remedial strategies enable mean -
+ingful mean comparisons. For instance, intercept restrictions can be 
+relaxed, and if less than half of the scale items are not invariant, past 
+research has shown that the latent mean comparison results are still 
+valid ( Steinmetz, 2013 ). In large-scale studies with many subgroups, 
+correction approaches, such as alignment-within-CFA ( Marsh et al., 
+2018 ), can be applied. 
+Finally, our research designs were applied at only one point in time 
+for each company. However, building digitalization capabilities is a 
+long-term process ( Büschgens et al., 2013 ). Future longitudinal studies 
+must further investigate the extent to which the measurement reflects 
+changes in digital innovation capability over time. The evidence pre -
+sented in validating the scales and high inter-rater reliability is opti -
+mistic; however, it is possible that the effect of fundamental company 
+characteristics on the response pattern are so strong that changes in 
+digital innovation capability are limited in their visibility. 
+CRediT authorship contribution statement 
+Julia Kroh: Investigation, Methodology, Formal analysis, Writing – 
+original draft. Dietfried Globocnik: Methodology, Formal analysis, 
+Writing – review & editing. Carsten Schultz: Conceptualization, 
+Writing – review & editing, Supervision. Frederike Holdhof: Concep -
+tualization, Investigation. S ø ren Salomo: Conceptualization, Writing – 
+review & editing, Supervision. 
+Declaration of competing interest 
+During the preparation of the work “ MICRO-FOUNDATIONS OF 
+DIGITAL INNOVATION CAPABILITY – A MIXED METHOD APPROACH 
+TO DEVELOP AND VALIDATE A MULTI-DIMENSIONAL MEASURE -
+MENT INSTRUMENT ” the authors Julia Kroh, Dietfried Globocnik, 
+Carsten Schultz, Frederike Holdhof, and S ø ren Salomo did not use any AI 
+and AI-assisted tools or services. 
+Data availability 
+Data will be made available on request. 
+Acknowledgements 
+The authors would like to thank the helpful and constructive input 
+gained from the IPDM Conference 2021 and the JPIM Research Forum 
+2022, where previous versions of this paper were presented. 
+Appendix 1. Interview guideline 
+Part (A) Digital innovation in theory  
+• What is your understanding of digital innovations? Please define 
+digital innovation.  
+• Based on the definition of digital innovations, what might be the 
+most important requirements for digital innovation development? 
+Part (B) Digital innovation management 
+How do you develop digital innovations? Please describe the digital 
+innovation process from ideation to digital product's / service's market 
+introduction and give examples. 
+How does digital innovation development differ from non-digital 
+innovation management? 
+Please specify with regard to … 
+… data availability and management. 
+… competences and mindset. 
+… strategy and process design. 
+… collaboration intensity with internal and external stakeholders. 
+What did you change in your innovation process to considerate 
+digital innovations' requirements? 
+Part (C) Digital business model 
+How important are digital innovations for your firm? 
+How do digital innovations influence your current and future busi -
+ness model? 
+Which value do you generate from digital innovations today? 
+References 
+Abrell, T., Pihlajamaa, M., Kanto, L., Vom Brocke, J., Uebernickel, F., 2016. The role of 
+users and customers in digital innovation: insights from B2B manufacturing firms. 
+Inf. Manage. 53, 324 – 335. https://doi.org/10.1016/j.im.2015.12.005 . 
+Adomako, S., Amankwah-Amoah, J., Danso, A., 2019. The effects of stakeholder 
+integration on firm – level product innovativeness: insights from small and 
+medium – sized enterprises in Ghana. RD Manag. 49, 734 – 747. https://doi.org/ 
+10.1111/radm.12367 . 
+Anderson, J.C., Gerbing, D.W., 1988. Structural equation modeling in practice: a review 
+and recommended two-step approach. Psychol. Bull. 103, 411 – 423 . 
+Annarelli, A., Battistella, C., Nonino, F., Parida, V., Pessot, E., 2021. Literature review on 
+digitalization capabilities: co-citation analysis of antecedents, conceptualization and 
+consequences. Technol. Forecast. Soc. Change 166, 120635. https://doi.org/ 
+10.1016/j.techfore.2021.120635 . 
+Appio, F.P., Frattini, F., Petruzzelli, A.M., Neirotti, P., 2021. Digital transformation and 
+innovation management: a synthesis of existing research and an agenda for future 
+studies. J. Prod. Innov. Manag. 38, 4 – 20. https://doi.org/10.1111/jpim.12562 . 
+Ardolino, M., Saccani, N., Gaiardelli, P., Rapaccini, M., 2016. Exploring the key enabling 
+role of digital technologies for PSS offerings. Procedia CIRP 47, 561 – 566. https:// 
+doi.org/10.1016/j.procir.2016.03.238 . 
+Autio, E., Nambisan, S., Thomas, L.D.W., Wright, M., 2018. Digital affordances, spatial 
+affordances, and the genesis of entrepreneurial ecosystems. Strateg. Entrep. J. 12, 
+72 – 95. https://doi.org/10.1002/sej.1266 . 
+Benkler, Y., 2008. The Wealth of Networks: How Social Production Transforms Markets 
+and Freedom. Yale University, New Haven and London. https://doi.org/10.1177/ 
+1084713807301373 .  
+Bj ¨orkdahl, J., 2020. Strategies for digitalization in manufacturing firms. Calif. Manage. 
+Rev. 62, 17 – 36. https://doi.org/10.1177/0008125620920349 . 
+Boomsma, A., Hoogland, J.J., 2001. The robustness of LISREL modeling revisited. Struct. 
+Equ. Models Present Future Festschr. Honor Karl J ¨oreskog 2, 139 – 168 . 
+Büschgens, T., Bausch, A., Balkin, D.B., 2013. Organizational culture and innovation: a 
+meta-analytic review: organizational culture and innovation. J. Prod. Innov. Manag. 
+30, 763 – 781. https://doi.org/10.1111/jpim.12021 . 
+Cappa, F., Franco, S., Rosso, F., 2022. Citizens and cities: leveraging citizen science and 
+big data for sustainable urban development. Bus. Strategy Environ. 31, 648 – 667. 
+https://doi.org/10.1002/bse.2942 . 
+Ceipek, R., Hautz, J., de Massis, A., Matzler, K., Ardito, L., 2021. Digital transformation 
+through exploratory and exploitative internet of things innovations: the impact of 
+family management and technological diversification*. J. Prod. Innov. Manag. 38, 
+142 – 165. https://doi.org/10.1111/jpim.12551 . 
+Chen, F.F., 2007. Sensitivity of goodness of fit indexes to lack of measurement 
+invariance. Struct. Equ. Model. Multidiscip. J. 14, 464 – 504. https://doi.org/ 
+10.1080/10705510701301834 . 
+Chen, Y., Wang, Y., Nevo, S., Benitez, J., Kou, G., 2017. Improving strategic flexibility 
+with information technologies: insights for firm performance in an emerging 
+economy. J. Inf. Technol. 32, 10 – 25. https://doi.org/10.1057/jit.2015.26 . 
+Child, D., 2006. The Essentials of Factor Analysis. A & C Black, London .  
+Churchill, G.A., 1979. A paradigm for developing better measures of marketing 
+constructs. J. Market. Res. 16, 64 – 73. https://www.jstor.org/stable/3150876 . 
+Cohen, J., 1992. A power primer. Psychol. Bull. 112, 155 – 159. https://doi.org/10.1037/ 
+0033-2909.112.1.155 . 
+Creswell, J.W., 1994. Research Design: Qualitative and Quantitative Approaches. Sage 
+Publications, Thousand Oaks .  
+D ą browska, J., Almpanopoulou, A., Brem, A., Chesbrough, H., Cucino, V., Di Minin, A., 
+Giones, F., Hakala, H., Marullo, C., Mention, A., Mortara, L., N ø rskov, S., Nylund, P. 
+A., Oddo, C.M., Radziwon, A., Ritala, P., 2022. Digital transformation, for better or 
+worse: a critical multi-level research agenda. RD Manag., radm.12531 https://doi. 
+org/10.1111/radm.12531 . 
+J. Kroh et al.                                                                                                                                                                                                                                     
+Technological Forecasting & Social Change 198 (2024) 122942
+15
+de Jong, M.G., Steenkamp, J.-B.E.M., Fox, J.-P., Baumgartner, H., 2008. Using item 
+response theory to measure extreme response style in marketing research: a global 
+investigation. J. Market. Res. 45, 104 – 115. https://doi.org/10.1509/jmkr.45.1.104 . 
+de Massis, A., Audretsch, D., Uhlaner, L., Kammerlander, N., 2018. Innovation with 
+limited resources: management lessons from the German Mittelstand. J. Prod. Innov. 
+Manag. 35, 125 – 146. https://doi.org/10.1111/jpim.12373 . 
+Del Giudice, M., Scuotto, V., Papa, A., Tarba, S.Y., Bresciani, S., Warkentin, M., 2021. 
+A self – tuning model for smart manufacturing SMEs: effects on digital innovation. 
+J. Prod. Innov. Manag. 38, 68 – 89. https://doi.org/10.1111/jpim.12560 . 
+D ’ Ippolito, B., Messeni Petruzzelli, A., Panniello, U., 2019. Archetypes of incumbents ’ 
+strategic responses to digital innovation. J. Intellect. Cap. 20, 662 – 679. https://doi. 
+org/10.1108/JIC-04-2019-0065 . 
+Eisenhardt, K.M., 1989. Building theories from case study research. Acad. Manage. Rev. 
+14, 532. https://doi.org/10.2307/258557 . 
+Eisenhardt, K.M., Graebner, M.E., 2007. Theory building from cases: opportunities and 
+challenges. Acad. Manage. J. 50, 25 – 32. https://doi.org/10.5465/ 
+amj.2007.24160888 . 
+Eisenhardt, K.M., Martin, J.A., 2000. Dynamic capabilities: what are they? Strateg. 
+Manag. J. 21, 1105 – 1121. https://doi.org/10.1002/1097-0266(200010/11)21:10/ 
+11 < 1105::AID-SMJ133 > 3.0.CO;2-E . 
+Fleiss, J.L., 1986. The Design and Analysis of Clinical Experiments. John Wiley & Sons, 
+Ltd, New York .  
+Flick, U., von Kardorff, E., Steinke, I. (Eds.), 2004. A Companion to Qualitative Research. 
+Sage Publications, London, Thousand Oaks, Calif .  
+Fornell, C., Larcker, D.F., 1981. Evaluating structural equation models with unobservable 
+variables and measurement error. J. Market. Res. 18, 39 – 50. https://doi.org/ 
+10.1177/002224378101800104 . 
+Foss, N.J., Saebi, T., 2017. Fifteen years of research on business model innovation. 
+J. Manag. 43, 200 – 227. https://doi.org/10.1177/0149206316675927 . 
+Füller, J., Hutter, K., Wahl, J., Bilgram, V., Tekic, Z., 2022. How AI revolutionizes 
+innovation management – perceptions and implementation preferences of AI-based 
+innovators. Technol. Forecast. Soc. Change 178, 121598. https://doi.org/10.1016/j. 
+techfore.2022.121598 . 
+Gfrerer, A., Hutter, K., Füller, J., Str ¨ohle, T., 2021. Ready or not: managers ’ and 
+employees ’ different perceptions of digital readiness. Calif. Manage. Rev. 63, 23 – 48. 
+https://doi.org/10.1177/0008125620977487 . 
+Globocnik, D., Pe ˜na H ¨aufler, B., Salomo, S., 2022. Organizational antecedents to 
+bootlegging and consequences for the newness of the innovation portfolio. J. Prod. 
+Innov. Manag. 39, 717 – 745. https://doi.org/10.1111/jpim.12626 . 
+Goffin, K., Ahlstr ¨om, P., Bianchi, M., Richtn ´er, A., 2019. State – of – the – art: the quality of 
+case study research in innovation management. J. Prod. Innov. Manag. 36, 586 – 615. 
+https://doi.org/10.1111/jpim.12492 . 
+Griffin, A., Page, A.L., 1993. An interim report on measuring product development 
+success and failure. J. Prod. Innov. Manag. 10, 291 – 308. https://doi.org/10.1016/ 
+0737-6782(93)90072-X . 
+Hair, J.F., Black, W.C., Babin, B.J., Anderson, R.E., 2009. Multivariate Data Analysis, 7th 
+ed. Pearson, Upper Saddle River .  
+Hanelt, A., Bohnsack, R., Marz, D., Antunes Marante, C., 2021. A systematic review of the 
+literature on digital transformation: insights and implications for strategy and 
+organizational change. J. Manag. Stud. 58, 1159 – 1197. https://doi.org/10.1111/ 
+joms.12639 . 
+Hauschildt, J., 2010. Opposition to innovations — destructive or constructive? In: 
+Brockhoff, K. (Ed.), The Dynamics of Innovation. Springer, Berlin, pp. 213 – 236. 
+https://doi.org/10.1007/978-3-662-03988-5 ‗ 9 . 
+Helfat, C.E., Finkelstein, S., Mitchell, W., Peteraf, M., Singh, H., Teece, D.J., Winter, S.G., 
+2007. Dynamic Capabilities: Understanding Strategic Change in Organizations. 
+Blackwell, Malden, MA .  
+Hilbolling, S., Berends, H., Deken, F., Tuertscher, P., 2020. Complementors as 
+connectors: managing open innovation around digital product platforms. RD Manag. 
+50, 18 – 30. https://doi.org/10.1111/radm.12371 . 
+Hinkin, T.R., 1995. A review of scale development practices in the study of 
+organizations. J. Manag. 21, 967 – 988. https://doi.org/10.1177/ 
+014920639502100509 . 
+Hinkin, T.R., 1998. A brief tutorial on the development of measures for use in survey 
+questionnaires. Organ. Res. Methods 1, 104 – 121. https://doi.org/10.1177/ 
+109442819800100106 . 
+Hu, L., Bentler, P.M., 1998. Fit indices in covariance structure modeling: sensitivity to 
+underparameterized model misspecification. Psychol. Methods 3, 424 – 453. https:// 
+doi.org/10.1037/1082-989X.3.4.424 . 
+Huang, M.-H., Rust, R.T., 2018. Artificial intelligence in service. J. Serv. Res. 21, 
+155 – 172. https://doi.org/10.1177/1094670517752459 . 
+Huber, F., Wainwright, T., Rentocchini, F., 2020. Open data for open innovation: 
+managing absorptive capacity in SMEs. RD Manag. 50, 31 – 46. https://doi.org/ 
+10.1111/radm.12347 . 
+Hund, A., Wagner, H.-T., Beimborn, D., Weitzel, T., 2021. Digital innovation: review and 
+novel perspective. J. Strateg. Inf. Syst. 30, 101695 https://doi.org/10.1016/j. 
+jsis.2021.101695 . 
+Juntunen, J.K., Halme, M., Korsunova, A., Rajala, R., 2019. Strategies for integrating 
+stakeholders into sustainability innovation: a configurational perspective. J. Prod. 
+Innov. Manag. 36, 331 – 355. https://doi.org/10.1111/jpim.12481 . 
+Kindermann, B., Beutel, S., Garcia de Lomana, G., Strese, S., Bendig, D., Brettel, M., 2020. 
+Digital orientation: conceptualization and operationalization of a new strategic 
+orientation. Eur. Manag. J. 18, 513. https://doi.org/10.1016/j.emj.2020.10.009 . 
+Kline, R.B., 2005. Principles and Practice of Structural Equation Modeling, 2nd ed. 
+Guilford Press . 
+Kohli, R., Melville, N.P., 2018. Digital innovation: a review and synthesis. Inf. Syst. J. 29, 
+200 – 223. https://doi.org/10.1111/isj.12193 . 
+K ¨onig, A., Kammerlander, N., Enders, A., 2013. The family innovator ’ s dilemma: how 
+family influence affects the adoption of discontinuous technologies by incumbent 
+firms. Acad. Manage. Rev. 38, 418 – 441. https://doi.org/10.5465/amr.2011.0162 . 
+K ¨onig, A., Graf-Vlachy, L., Sch ¨oberl, M., 2021. Opportunity/threat perception and inertia 
+in response to discontinuous change: replicating and extending Gilbert (2005). 
+J. Manag. 47, 771 – 816. https://doi.org/10.1177/0149206320908630 . 
+Kroh, J., Luetjen, H., Globocnik, D., Schultz, C., 2018. Use and efficacy of information 
+technology in innovation processes: the specific role of servitization. J. Prod. Innov. 
+Manag. 35, 720 – 741. https://doi.org/10.1111/jpim.12445 . 
+Lane, P.J., Lubatkin, M., 1998. Relative absorptive capacity and interorganizational 
+learning. Strateg. Manag. J. 19, 461 – 477 . 
+Lanzolla, G., Lorenz, A., Miron-Spektor, E., Schilling, M., Solinas, G., Tucci, C.L., 2020. 
+Digital transformation: what is new if anything? Emerging patterns and management 
+research. Acad. Manag. Discov. 6, 341 – 350 . 
+LeBreton, J.M., Senter, J.L., 2008. Answers to 20 questions about interrater reliability 
+and interrater agreement. Organ. Res. Methods 11, 815 – 852. https://doi.org/ 
+10.1177/1094428106296642 . 
+Leonard-Barton, D., 1990. A dual methodology for case studies: synergistic use of a 
+longitudinal single site with replicated multiple sites. Organ. Sci. 1, 248 – 266. 
+https://doi.org/10.1287/orsc.1.3.248 . 
+Lokuge, S., Sedera, D., Grover, V., Dongming, X., 2019. Organizational readiness for 
+digital innovation: development and empirical calibration of a construct. Inf. 
+Manage. 56, 445 – 461. https://doi.org/10.1016/j.im.2018.09.001 . 
+Lyytinen, K., Yoo, Y., Boland Jr., R.J., 2016. Digital product innovation within four 
+classes of innovation networks. Inf. Syst. J. 26, 47 – 75. https://doi.org/10.1111/ 
+isj.12093 . 
+Mancha, R., Shankaranarayanan, G., 2020. Making a digital innovator: antecedents of 
+innovativeness with digital technologies. Inf. Technol. People 34, 318 – 335. https:// 
+doi.org/10.1108/ITP-12-2018-0577 . 
+Manion, M.T., Cherion, J., 2009. Impact of strategic type on success measures for product 
+development projects*. J. Prod. Innov. Manag. 26, 71 – 85. https://doi.org/10.1111/ 
+j.1540-5885.2009.00335.x . 
+Markham, S.K., 2000. Corporate championing and antagonism as forms of political 
+behavior: an R & D perspective. Organ. Sci. 11, 429 – 447. https://doi.org/10.1287/ 
+orsc.11.4.429.14599 . 
+Marsh, H.W., Guo, J., Parker, P.D., Nagengast, B., Asparouhov, T., Muth ´en, B., Dicke, T., 
+2018. What to do when scalar invariance fails: the extended alignment method for 
+multi-group factor analysis comparison of latent means across many groups. Psychol. 
+Methods 23, 524 – 545. https://doi.org/10.1037/met0000113 . 
+Marsh, E., Vallejos, E.P., Spence, A., 2022. The digital workplace and its dark side: an 
+integrative review. Comput. Hum. Behav. 128, 107118 https://doi.org/10.1016/j. 
+chb.2021.107118 . 
+Menz, M., Kunisch, S., Birkinshaw, J., Collis, D.J., Foss, N.J., Hoskisson, R.E., Prescott, J. 
+E., 2021. Corporate strategy and the theory of the firm in the digital age. J. Manag. 
+Stud. 58, 1695 – 1720. https://doi.org/10.1111/joms.12760 . 
+Meredith, W., 1993. Measurement invariance, factor analysis and factorial invariance. 
+Psychometrika 58, 525 – 543 . 
+Muehlburger, M., Krumay, B., Koch, S., Currle, S., 2022. Individual digital 
+transformation readiness: conceptualisation and scale development. Int. J. Innov. 
+Manag. 26, 2240013. https://doi.org/10.1142/S1363919622400138 . 
+Nambisan, S., Lyytinen, K., Majchrzak, A., Song, M., 2017. Digital Innovation 
+Management: reinventing innovation management research in a digital world. MIS 
+Q. 41, 223 – 228 . 
+Nambisan, Wright, M., Feldman, M., 2019. The digital transformation of innovation and 
+entrepreneurship: progress, challenges and key themes. Res. Policy 48, 103773. 
+https://doi.org/10.1016/j.respol.2019.03.018 . 
+Nauhaus, S., Luger, J., Raisch, S., 2021. Strategic decision making in the digital age: 
+expert sentiment and corporate capital allocation. J. Manag. Stud. 58, 1933 – 1961. 
+https://doi.org/10.1111/joms.12742 . 
+Nunnally, J.C., Bernstein, I.H., 1994. Psychometric Theory. McGrawHill . 
+Pe ˜na H ¨aufler, B., Globocnik, D., Landaeta Saldías, P., Salomo, S., 2021. Rapid validity 
+testing at the front end of innovation. J. Prod. Innov. Manag. 38, 447 – 472. https:// 
+doi.org/10.1111/jpim.12585 . 
+Putnick, D.L., Bornstein, M.H., 2016. Measurement invariance conventions and 
+reporting: the state of the art and future directions for psychological research. Dev. 
+Rev. 41, 71 – 90. https://doi.org/10.1016/j.dr.2016.06.004 . 
+Rauch, E., Linder, C., Dallasega, P., 2020. Anthropocentric perspective of production 
+before and within Industry 4.0. Comput. Ind. Eng. 139, 105644 https://doi.org/ 
+10.1016/j.cie.2019.01.018 . 
+Rindfleisch, A., O ’ Hern, M., Sachdev, V., 2017. The digital revolution, 3D printing, and 
+innovation as data. J. Prod. Innov. Manag. 34, 681 – 690. https://doi.org/10.1111/ 
+jpim.12402 . 
+Rummel, F., Hüsig, S., Steinhauser, S., 2022. Two archetypes of business model 
+innovation processes for manufacturing firms in the context of digital 
+transformation. RD Manag., radm.12514 https://doi.org/10.1111/radm.12514 . 
+Schallmo, D., Williams, C.A., Tidd, J., 2022. The art of holistic digitalisation: a meta-view 
+on strategy, transformation, implementation, and maturity. Int. J. Innov. Manag. 26, 
+2240007. https://doi.org/10.1142/S1363919622400072 . 
+Schultz, C., Globocnik, D., Kock, A., Salomo, S., 2019. Application and performance 
+impact of stage-gate systems - the role services in the firm ’ s business focus. RD 
+Manag. 49, 534 – 554. https://doi.org/10.1111/radm.12341 . 
+Sedera, D., Lokuge, S., Grover, V., Sarker, Suprateek, Sarker, Saonee, 2016. Innovating 
+with enterprise systems and digital platforms: a contingent resource-based theory 
+view. Inf. Manage. 53, 366 – 379. https://doi.org/10.1016/j.im.2016.01.001 . 
+J. Kroh et al.                                                                                                                                                                                                                                     
+Technological Forecasting & Social Change 198 (2024) 122942
+16
+Selander, L., Henfridsson, O., Svahn, F., 2010. Transforming ecosystem relationships in 
+digital innovation. In: ICIS 2010 Proc, p. 138 . 
+Shrout, P.E., Fleiss, J.L., 1979. Intraclass correlations: uses in assessing rater reliability. 
+Psychol. Bull. 86, 420 – 428. https://doi.org/10.1037/0033-2909.86.2.420 . 
+Siggelkow, N., 2007. Persuasion with case studies. Acad. Manage. J. 50, 20 – 24. https:// 
+doi.org/10.5465/amj.2007.24160882 . 
+Steenkamp, J.E.M., Baumgartner, H., 1998. Assessing measurement invariance in cross- 
+national consumer research. J. Consum. Res. 25, 78 – 107. https://doi.org/10.1086/ 
+209528 . 
+Steinmetz, H., 2013. Analyzing observed composite differences across groups: is partial 
+measurement invariance enough? Methodology 9, 1 – 12. https://doi.org/10.1027/ 
+1614-2241/a000049 . 
+Svahn, F., Mathiassen, L., Lindgren, R., 2017a. Embracing digital innovation in 
+incumbent firms: how Volvo cars managed competing concerns. MIS Q. 41, 
+239 – 253. https://doi.org/10.25300/misq/2017/41.1.12 . 
+Svahn, F., Mathiassen, L., Lindgren, R., Kane, G.C., 2017b. Mastering the digital 
+innovation challenge. MITSloan Manag. Rev. 58, 14 – 16 . 
+Teece, D.J., 2007. Explicating dynamic capabilities: the nature and microfoundations of 
+(sustainable) enterprise performance. Strateg. Manag. J. 28, 1319 – 1350. https://doi. 
+org/10.1002/smj.640 . 
+Teece, D.J., Pisano, G., Shuen, A., 1997. Dynamic capabilities and strategic management. 
+Strateg. Manag. J. 18, 509 – 533. https://doi.org/10.1002/(SICI)1097-0266(199708) 
+18:7 < 509::AID-SMJ882 > 3.0.CO;2-Z . 
+Troise, C., Corvello, V., Ghobadian, A., O ’ Regan, N., 2022. How can SMEs successfully 
+navigate VUCA environment: the role of agility in the digital transformation era. 
+Technol. Forecast. Soc. Change 174, 121227. https://doi.org/10.1016/j. 
+techfore.2021.121227 . 
+Tuomi, I., 2002. Networks of Innovation: Change and Meaning in the Age of the Internet. 
+Oxford University Press, Oxford .  
+Urbinati, A., Chiaroni, D., Chiesa, V., Frattini, F., 2020. The role of digital technologies in 
+open innovation processes: an exploratory multiple case study analysis. RD Manag. 
+50, 136 – 160. https://doi.org/10.1111/radm.12313 . 
+VERBI Software, 2019. MAXQDA 2020 [Computer Software] . 
+Williams, C.A., Schallmo, D., Scornavacca, E., 2022. How applicable are digital maturity 
+models to SMEs?: a conceptual framework and empirical validation approach. Int. J. 
+Innov. Manag. 26, 2240010. https://doi.org/10.1142/S1363919622400102 . 
+Wirtz, B.W., Weyerer, J.C., Heckeroth, J.K., 2022. Digital disruption and digital 
+transformation: a strategic integrative framework. Int. J. Innov. Manag. 26, 
+2240008. https://doi.org/10.1142/S1363919622400084 . 
+Yoo, 2010. Computing in everyday life: a call for research on experiential computing. 
+MIS Q. 34, 213. https://doi.org/10.2307/20721425 . 
+Yoo, Y., Henfridsson, O., Lyytinen, K., 2010. Research commentary — the new organizing 
+logic of digital innovation: an agenda for information systems research. Inf. Syst. 
+Res. 21, 724 – 735. https://doi.org/10.1287/isre.1100.0322 . 
+Yoo, Y., Boland, R.J., Lyytinen, K., Majchrzak, A., 2012. Organizing for innovation in the 
+digitized world. Organ. Sci. 23, 1398 – 1408. https://doi.org/10.1287/ 
+orsc.1120.0771 . 
+Dr. Julia Kroh is a postdoctoral researcher at the Chair of Technology Management at the 
+Institute for Innovation Research at Kiel University, Germany. Her research focuses on 
+stakeholder management in complex innovation processes. Her research fields comprise 
+the management of complex innovation processes like digital innovation, service inno -
+vation, and urban innovation. Her work was already published in the Journal of Product 
+Innovation Management and Technological Forecasting and Social Change. 
+PD Dr. Dietfried Globocnik works as senior scientist at the University of Klagenfurt and 
+the University of Graz. He holds a doctorate in social and economic sciences from the 
+University of Graz and a habilitation in business administration from the University of 
+Klagenfurt. His research interest entails innovation marketing, corporate entrepreneurship 
+and organizing innovation activities in MNEs. His academic work is published in books and 
+journals such as Journal of Product Innovation Management, Technovation and European 
+Management Journal. 
+Prof. Dr. Carsten Schultz is a professor for Technology Management at the Institute for 
+Innovation Research at Kiel University, Germany. He received his doctorate from Berlin 
+University of Technology. His research concentrates on innovation and network man -
+agement with on focus digital services. Further research interests include the management 
+of radical innovations and university – industry collaborations. He has published several 
+articles in academic journals as well as a number of books including a widely used textbook 
+on innovation management. 
+Frederike Holdhof is a PhD student at the Chair of Technology Management at the 
+Institute for Innovation Research at Kiel University, Germany. Her research focuses on 
+digital innovation development in mid-sized and established firms. 
+Prof. Dr. S ø ren Salomo holds the Chair of Technology and Innovation Management at 
+Technische Universit ¨at Berlin. He is also professor for innovation management at the 
+Center for Entrepreneurship at DTU, Copenhagen. He holds a diploma and a doctorate in 
+business administration from Kiel University. His research interests entail corporate 
+innovation management with a special focus on process and organizational system 
+mechanisms for supporting radical innovation. His work is published in journals, such as 
+the Research Policy, Creativity and Innovation, Management, and Journal of Product 
+Innovation Management. 
+J. Kroh et al.                                                                                                                                                                                                                                     
