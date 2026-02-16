@@ -10,19 +10,25 @@ export default function QueryPage() {
     const handleQuery = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsProcessing(true);
+        setResult(null);
 
-        // Simulating API call to NL-to-SQL engine
-        setTimeout(() => {
-            setResult({
-                sql: "SELECT studentEmail, score FROM Diagnosis WHERE score > 4.0 ORDER BY createdAt DESC",
-                data: [
-                    { studentEmail: 'maria.gonzalez@empresa.com', score: 4.8 },
-                    { studentEmail: 'carlos.rodriguez@pyme.co', score: 4.2 },
-                ],
-                explanation: "He encontrado las evaluaciones con un puntaje de madurez superior a 4.0, ordenadas por la fecha de creación más reciente."
+        try {
+            const response = await fetch('http://localhost:3001/api/query', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nlQuery: query }),
             });
+
+            if (!response.ok) throw new Error('Error al procesar la consulta');
+
+            const data = await response.json();
+            setResult(data);
+        } catch (error) {
+            console.error(error);
+            alert('Hubo un error al conectar con el servidor de IA');
+        } finally {
             setIsProcessing(false);
-        }, 2000);
+        }
     };
 
     return (

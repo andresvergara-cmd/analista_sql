@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function AnalysisPage() {
     const [useCases] = useState([
@@ -15,6 +15,32 @@ export default function AnalysisPage() {
         { id: 9, title: 'Pronóstico de Precios de Insumos', impact: 'Alto', effort: 'Alto', type: 'Estratégico', score: 72 },
         { id: 10, title: 'Optimización de Embalaje y Carga', impact: 'Alto', effort: 'Medio', type: 'Quick Win', score: 84 },
     ]);
+
+    const [coords, setCoords] = useState<Record<number, { x: number, y: number }>>({});
+
+    useEffect(() => {
+        const newCoords: Record<number, { x: number, y: number }> = {};
+        useCases.forEach(uc => {
+            const getX = () => {
+                switch (uc.effort) {
+                    case 'Bajo': return 10 + (Math.random() * 10);
+                    case 'Medio': return 40 + (Math.random() * 10);
+                    case 'Alto': return 75 + (Math.random() * 15);
+                    default: return 50;
+                }
+            };
+            const getY = () => {
+                switch (uc.impact) {
+                    case 'Bajo': return 75 + (Math.random() * 15);
+                    case 'Medio': return 40 + (Math.random() * 10);
+                    case 'Alto': return 10 + (Math.random() * 15);
+                    default: return 50;
+                }
+            };
+            newCoords[uc.id] = { x: getX(), y: getY() };
+        });
+        setCoords(newCoords);
+    }, [useCases]);
 
     return (
         <div className="space-y-8">
@@ -57,50 +83,28 @@ export default function AnalysisPage() {
 
                         {/* Use Case Points */}
                         <div className="absolute inset-0">
-                            {/* Dashboard (High Impact, Low Effort) */}
-                            <div className="absolute top-[15%] left-[15%] group">
-                                <div className="w-4 h-4 bg-emerald-500 rounded-full shadow-lg shadow-emerald-500/40 cursor-pointer animate-pulse"></div>
-                                <div className="absolute top-6 left-1/2 -translate-x-1/2 w-48 bg-white dark:bg-slate-800 p-3 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
-                                    <p className="text-xs font-bold leading-tight">Dashboard en Tiempo Real</p>
-                                    <p className="text-[10px] text-emerald-500 mt-1 uppercase font-black">Quick Win</p>
-                                </div>
-                            </div>
+                            {useCases.map(useCase => {
+                                const coord = coords[useCase.id];
+                                if (!coord) return null;
 
-                            {/* Facturación (Med Impact, Low Effort) */}
-                            <div className="absolute top-[50%] left-[10%] group">
-                                <div className="w-3 h-3 bg-emerald-400 rounded-full shadow-lg cursor-pointer"></div>
-                                <div className="absolute top-6 left-1/2 -translate-x-1/2 w-48 bg-white dark:bg-slate-800 p-3 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
-                                    <p className="text-xs font-bold leading-tight">Automatización de Facturación</p>
-                                    <p className="text-[10px] text-emerald-400 mt-1 uppercase font-black">Quick Win</p>
-                                </div>
-                            </div>
+                                const color = useCase.type === 'Quick Win' ? 'bg-emerald-500' : 'bg-blue-500';
+                                const shadow = useCase.type === 'Quick Win' ? 'shadow-emerald-500/40' : 'shadow-blue-500/40';
 
-                            {/* Rutas (High Impact, Med Effort) */}
-                            <div className="absolute top-[20%] left-[45%] group">
-                                <div className="w-4 h-4 bg-emerald-600 rounded-full shadow-lg cursor-pointer"></div>
-                                <div className="absolute top-6 left-1/2 -translate-x-1/2 w-48 bg-white dark:bg-slate-800 p-3 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
-                                    <p className="text-xs font-bold leading-tight">Optimización de Rutas</p>
-                                    <p className="text-[10px] text-emerald-600 mt-1 uppercase font-black">Quick Win</p>
-                                </div>
-                            </div>
-
-                            {/* Predicción Demanda (High Impact, High Effort) */}
-                            <div className="absolute top-[25%] left-[75%] group">
-                                <div className="w-4 h-4 bg-blue-500 rounded-full shadow-lg shadow-blue-500/40 cursor-pointer"></div>
-                                <div className="absolute top-6 left-1/2 -translate-x-1/2 w-48 bg-white dark:bg-slate-800 p-3 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
-                                    <p className="text-xs font-bold leading-tight">Predicción de Demanda</p>
-                                    <p className="text-[10px] text-blue-500 mt-1 uppercase font-black">Estratégico</p>
-                                </div>
-                            </div>
-
-                            {/* Mantenimiento (High Impact, High Effort) */}
-                            <div className="absolute top-[40%] left-[85%] group">
-                                <div className="w-4 h-4 bg-blue-600 rounded-full shadow-lg cursor-pointer"></div>
-                                <div className="absolute top-6 left-1/2 -translate-x-1/2 w-48 bg-white dark:bg-slate-800 p-3 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
-                                    <p className="text-xs font-bold leading-tight">Mantenimiento Predictivo</p>
-                                    <p className="text-[10px] text-blue-600 mt-1 uppercase font-black">Estratégico</p>
-                                </div>
-                            </div>
+                                return (
+                                    <div
+                                        key={useCase.id}
+                                        className="absolute group transition-all duration-500"
+                                        style={{ top: `${coord.y}%`, left: `${coord.x}%` }}
+                                    >
+                                        <div className={`w-3 h-3 ${color} rounded-full shadow-lg ${shadow} cursor-pointer hover:scale-150 transition-transform`}></div>
+                                        <div className="absolute top-6 left-1/2 -translate-x-1/2 w-48 bg-white dark:bg-slate-800 p-3 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
+                                            <p className="text-xs font-bold leading-tight">{useCase.title}</p>
+                                            <p className={`text-[10px] ${useCase.type === 'Quick Win' ? 'text-emerald-500' : 'text-blue-500'} mt-1 uppercase font-black`}>{useCase.type}</p>
+                                            <p className="text-[9px] text-slate-400 mt-1 uppercase">Puntaje: {useCase.score}</p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>

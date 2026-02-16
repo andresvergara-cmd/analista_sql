@@ -25,9 +25,15 @@ export default function ReportsPage() {
         try {
             const res = await fetch('http://localhost:3001/api/reports');
             const data = await res.json();
-            setReports(data);
+            if (Array.isArray(data)) {
+                setReports(data);
+            } else {
+                console.error('Data is not an array:', data);
+                setReports([]);
+            }
         } catch (error) {
             console.error('Error fetching reports:', error);
+            setReports([]);
         } finally {
             setIsLoading(false);
         }
@@ -38,7 +44,7 @@ export default function ReportsPage() {
     }, []);
 
     // Consolidation Logic
-    const companySummaries = reports.reduce((acc: any, report) => {
+    const companySummaries = Array.isArray(reports) ? reports.reduce((acc: any, report) => {
         const companyId = report.company?.id || 'Otro';
         const companyName = report.company?.name || 'Otro';
         // Group by Name to avoid duplicates if multiple IDs exist for the same name
@@ -83,7 +89,7 @@ export default function ReportsPage() {
         }
         acc[groupKey].respondents.push(report.respondentName);
         return acc;
-    }, {});
+    }, {}) : {};
 
     const summaries = Object.values(companySummaries).map((s: any) => {
         // Calculate average foundation scores

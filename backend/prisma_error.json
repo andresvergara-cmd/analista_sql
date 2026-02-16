@@ -1,0 +1,1 @@
+{"error":"\nInvalid `prisma.answer.findMany()` invocation in\n/Users/andres.vergara/proyectos personales/Agente Analista SQL/backend/src/index.ts:235:45\n\n  232 // GET all answers for reports\n  233 app.get('/api/reports', async (req, res) => {\n  234     try {\n→ 235         const answers = await prisma.answer.findMany(\n"}

@@ -9,6 +9,13 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
     console.log('Seeding database...');
 
+    // Clear existing data to avoid duplicates
+    await prisma.report.deleteMany({});
+    await prisma.diagnosis.deleteMany({});
+    await prisma.answer.deleteMany({});
+    await prisma.company.deleteMany({});
+    // We keep Tenant and User for now as they are upserted or core
+
     // Create Default Tenant
     const tenant = await prisma.tenant.upsert({
         where: { id: 'default-tenant' },
@@ -54,11 +61,48 @@ async function main() {
         create: {
             id: 'kroh-2020',
             title: 'Diagnóstico de Madurez Digital (Kroh et al. 2020)',
-            description: 'Evaluación exhaustiva de microfundamentos digitales para organizaciones.',
-            status: 'Activo'
+            tenantId: tenant.id,
+            questions: {} // Initial empty questions
         }
     });
     console.log('Assessment created:', krohAssessment.title);
+
+    // Create Sample Answer
+    const sampleAnswer = await prisma.answer.create({
+        data: {
+            assessmentId: krohAssessment.id,
+            studentName: 'Andrés Vergara',
+            studentEmail: 'andres.vergara@example.com',
+            respondentName: 'Juan Pérez',
+            respondentPosition: 'Gerente TI',
+            respondentEmail: 'juan.perez@alphalogistics.co',
+            responses: { "DMI1": 4, "DMI2": 5, "DIF1": 3 },
+            companyId: sampleOrg.id,
+        }
+    });
+    console.log('Sample answer created for:', sampleAnswer.respondentName);
+
+    // Create Sample Diagnosis
+    await prisma.diagnosis.create({
+        data: {
+            assessmentId: krohAssessment.id,
+            studentEmail: 'andres.vergara@example.com',
+            answerId: sampleAnswer.id,
+            score: 4.2,
+            result: JSON.stringify({
+                foundations: [
+                    { id: 'DIF', name: 'Digital Focus', score: 80, average: 4.0 },
+                    { id: 'DIP', name: 'Digital Innovation Process', score: 90, average: 4.5 },
+                    { id: 'DMI', name: 'Digital Mindset', score: 85, average: 4.25 },
+                    { id: 'DIN', name: 'Digital Innovation Network', score: 70, average: 3.5 },
+                    { id: 'DTC', name: 'Digital Tech Capability', score: 82, average: 4.1 },
+                    { id: 'DMA', name: 'Data Management', score: 78, average: 3.9 },
+                    { id: 'DIR', name: 'Overcoming Resistance', score: 92, average: 4.6 }
+                ]
+            })
+        }
+    });
+    console.log('Sample diagnosis created with all dimensions.');
 
     console.log('Seeding complete.');
 }

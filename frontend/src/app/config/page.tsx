@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function ConfigPage() {
+    const router = useRouter();
     const [knowledgeBases, setKnowledgeBases] = useState([
         { id: 'kb1', name: 'Marco Kroh 2020 - Estrategia', type: 'PDF', status: 'Activo' },
         { id: 'kb2', name: 'Casos de Éxito Transformación Digital', type: 'Doc', status: 'Activo' },
@@ -94,7 +96,7 @@ export default function ConfigPage() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="p-5 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center justify-between group hover:border-primary/30 transition-all cursor-pointer" onClick={() => window.location.href = '/users'}>
+                        <div className="p-5 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center justify-between group hover:border-primary/30 transition-all cursor-pointer" onClick={() => router.push('/users')}>
                             <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm border border-slate-100 dark:border-slate-700">
                                     <span className="material-icons text-primary text-2xl">person_add</span>

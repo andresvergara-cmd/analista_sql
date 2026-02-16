@@ -241,6 +241,7 @@ app.get('/api/reports', async (req, res) => {
         });
         res.json(answers);
     } catch (error: any) {
+        console.error('Error in /api/reports:', error);
         res.status(500).json({ error: error.message });
     }
 });
