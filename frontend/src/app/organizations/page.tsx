@@ -43,9 +43,10 @@ export default function OrganizationsPage() {
         try {
             const res = await fetch('http://localhost:3001/api/organizations');
             const data = await res.json();
-            setOrganizations(data);
+            setOrganizations(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error('Error fetching organizations:', error);
+            setOrganizations([]);
         } finally {
             setIsLoading(false);
         }
