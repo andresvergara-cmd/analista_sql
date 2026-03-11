@@ -17,18 +17,19 @@ model Tenant {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String
-  role      String   @default("STUDENT")
-  tenantId  String
-  createdAt DateTime @default(now())
-  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  id             String              @id @default(uuid())
+  email          String              @unique
+  password       String
+  name           String
+  role           String              @default("STUDENT")
+  tenantId       String
+  createdAt      DateTime            @default(now())
+  tenant         Tenant              @relation(fields: [tenantId], references: [id])
+  companyAccess  UserCompanyAccess[]
 }
 
 model Company {
-  id           String   @id @default(uuid())
+  id           String              @id @default(uuid())
   name         String
   legalId      String?
   sector       String?
@@ -37,11 +38,13 @@ model Company {
   contactPhone String?
   address      String?
   city         String?
-  status       String   @default("Activo")
+  status       String              @default("Activo")
   tenantId     String
-  createdAt    DateTime @default(now())
+  createdAt    DateTime            @default(now())
   answers      Answer[]
-  tenant       Tenant   @relation(fields: [tenantId], references: [id])
+  surveyLinks  SurveyLink[]
+  tenant       Tenant              @relation(fields: [tenantId], references: [id])
+  userAccess   UserCompanyAccess[]
 }
 
 model Assessment {
@@ -99,4 +102,37 @@ model Report {
   content     String
   createdAt   DateTime  @default(now())
   diagnosis   Diagnosis @relation(fields: [diagnosisId], references: [id])
+}
+
+model SurveyLink {
+  id           String    @id @default(uuid())
+  token        String    @unique
+  companyId    String
+  assessmentId String
+  createdBy    String
+  expiresAt    DateTime?
+  maxResponses Int?
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  company      Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([companyId])
+}
+
+model UserCompanyAccess {
+  id               String   @id @default(uuid())
+  userId           String
+  companyId        String
+  canSurvey        Boolean  @default(true)
+  canViewReports   Boolean  @default(true)
+  canRunQueries    Boolean  @default(false)
+  grantedAt        DateTime @default(now())
+  grantedBy        String?
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company          Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, companyId])
+  @@index([userId])
+  @@index([companyId])
 }

@@ -1,19 +1,174 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
+interface KnowledgeBase {
+    id: string;
+    name: string;
+    type: string;
+    size?: number;
+    filename?: string;
+    status: string;
+}
+
+interface Instrument {
+    id: string;
+    title: string;
+    items: number;
+    status: string;
+}
+
+function formatFileSize(bytes: number) {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
 
 export default function ConfigPage() {
     const router = useRouter();
-    const [knowledgeBases, setKnowledgeBases] = useState([
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [knowledgeBases, setKnowledgeBases] = useState<KnowledgeBase[]>([
         { id: 'kb1', name: 'Marco Kroh 2020 - Estrategia', type: 'PDF', status: 'Activo' },
         { id: 'kb2', name: 'Casos de Éxito Transformación Digital', type: 'Doc', status: 'Activo' },
     ]);
+    const [instruments, setInstruments] = useState<Instrument[]>([]);
+    const [showUpload, setShowUpload] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+    const [uploadError, setUploadError] = useState('');
+    const [loading, setLoading] = useState(true);
 
-    const [instruments, setInstruments] = useState([
-        { id: 'kroh-2020', name: 'Kroh et al. 2020 (Madurez)', status: 'Predeterminado' },
-        { id: 'needs-assessment', name: 'Evaluación de Necesidades Específicas', status: 'Inactivo' },
-    ]);
+    // Fetch data on mount
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // Fetch uploaded knowledge bases
+                const kbResponse = await fetch(`${API_URL}/api/knowledge-base/files`);
+                if (kbResponse.ok) {
+                    const files = await kbResponse.json();
+                    const uploaded: KnowledgeBase[] = files.map((file: any, index: number) => ({
+                        id: file.id || `file-${index}-${Date.now()}`, // Ensure unique ID
+                        name: file.name,
+                        type: file.name.split('.').pop()?.toUpperCase() || 'FILE',
+                        size: file.size,
+                        filename: file.id,
+                        status: 'Activo',
+                    }));
+                    setKnowledgeBases(uploaded); // Replace, don't append
+                }
+
+                // Fetch instruments
+                const instResponse = await fetch(`${API_URL}/api/assessments`);
+                if (instResponse.ok) {
+                    const data = await instResponse.json();
+                    setInstruments(data);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const uploadFile = async (file: File) => {
+        setUploadError('');
+        setIsUploading(true);
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const res = await fetch(`${API_URL}/api/knowledge-base/upload`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!res.ok) {
+                const contentType = res.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    const err = await res.json();
+                    throw new Error(err.error || 'Error al subir el archivo');
+                }
+                throw new Error(`Error del servidor (${res.status}). Verifica que el backend esté reiniciado.`);
+            }
+
+            // Refresh the knowledge bases list after upload
+            const kbResponse = await fetch(`${API_URL}/api/knowledge-base/files`);
+            if (kbResponse.ok) {
+                const files = await kbResponse.json();
+                const updated: KnowledgeBase[] = files.map((file: any, index: number) => ({
+                    id: file.id || `file-${index}-${Date.now()}`,
+                    name: file.name,
+                    type: file.name.split('.').pop()?.toUpperCase() || 'FILE',
+                    size: file.size,
+                    filename: file.id,
+                    status: 'Activo',
+                }));
+                setKnowledgeBases(updated);
+            }
+            setShowUpload(false);
+        } catch (err: any) {
+            setUploadError(err.message || 'Error al subir el archivo');
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) uploadFile(file);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+
+    const handleDrop = useCallback((e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(false);
+        const file = e.dataTransfer.files?.[0];
+        if (file) uploadFile(file);
+    }, []);
+
+    const handleDragOver = useCallback((e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(true);
+    }, []);
+
+    const handleDragLeave = useCallback((e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(false);
+    }, []);
+
+    const handleDeleteKB = async (kb: KnowledgeBase) => {
+        if (!confirm('¿Estás seguro de eliminar este documento?')) return;
+
+        if (kb.filename) {
+            try {
+                const res = await fetch(`${API_URL}/api/knowledge-base/${kb.filename}`, { method: 'DELETE' });
+                if (res.ok) {
+                    // Refresh the list after deletion
+                    const kbResponse = await fetch(`${API_URL}/api/knowledge-base/files`);
+                    if (kbResponse.ok) {
+                        const files = await kbResponse.json();
+                        const updated: KnowledgeBase[] = files.map((file: any, index: number) => ({
+                            id: file.id || `file-${index}-${Date.now()}`,
+                            name: file.name,
+                            type: file.name.split('.').pop()?.toUpperCase() || 'FILE',
+                            size: file.size,
+                            filename: file.id,
+                            status: 'Activo',
+                        }));
+                        setKnowledgeBases(updated);
+                    }
+                }
+            } catch (error) {
+                console.error('Error deleting file:', error);
+            }
+        }
+    };
 
     return (
         <div className="space-y-8 max-w-5xl">
@@ -30,10 +185,61 @@ export default function ConfigPage() {
                             <span className="material-icons text-primary">auto_stories</span>
                             Bases de Conocimiento (RAG)
                         </h2>
-                        <button className="text-primary hover:bg-primary/10 p-2 rounded-xl transition-colors">
-                            <span className="material-icons">add_circle</span>
+                        <button onClick={() => { setShowUpload(!showUpload); setUploadError(''); }} className="text-primary hover:bg-primary/10 p-2 rounded-xl transition-colors">
+                            <span className="material-icons">{showUpload ? 'close' : 'add_circle'}</span>
                         </button>
                     </div>
+
+                    {showUpload && (
+                        <div className="mb-4 space-y-3">
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept=".pdf,.doc,.docx,.csv,.xlsx,.txt"
+                                onChange={handleFileSelect}
+                                className="hidden"
+                            />
+                            <div
+                                onClick={() => !isUploading && fileInputRef.current?.click()}
+                                onDrop={handleDrop}
+                                onDragOver={handleDragOver}
+                                onDragLeave={handleDragLeave}
+                                className={`p-6 rounded-2xl border-2 border-dashed cursor-pointer transition-all text-center
+                                    ${isDragging
+                                        ? 'border-primary bg-primary/5 scale-[1.02]'
+                                        : 'border-slate-300 dark:border-slate-600 hover:border-primary/50 hover:bg-slate-50 dark:hover:bg-slate-800/50'
+                                    }
+                                    ${isUploading ? 'opacity-50 cursor-wait' : ''}
+                                `}
+                            >
+                                {isUploading ? (
+                                    <div className="flex flex-col items-center gap-2">
+                                        <span className="material-icons text-primary text-3xl animate-spin">refresh</span>
+                                        <p className="text-sm font-bold text-slate-600 dark:text-slate-300">Subiendo archivo...</p>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col items-center gap-2">
+                                        <span className="material-icons text-primary/60 text-3xl">cloud_upload</span>
+                                        <p className="text-sm font-bold text-slate-600 dark:text-slate-300">
+                                            Arrastra un archivo aquí
+                                        </p>
+                                        <p className="text-xs text-slate-400">
+                                            o haz clic para seleccionar
+                                        </p>
+                                        <p className="text-[10px] text-slate-400 uppercase tracking-wider mt-1">
+                                            PDF, DOC, DOCX, CSV, XLSX, TXT — máx. 20MB
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                            {uploadError && (
+                                <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-center gap-2">
+                                    <span className="material-icons text-red-500 text-[18px]">error</span>
+                                    <p className="text-xs text-red-600 dark:text-red-400 font-medium">{uploadError}</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
 
                     <div className="space-y-3">
                         {knowledgeBases.map((kb) => (
@@ -44,10 +250,12 @@ export default function ConfigPage() {
                                     </div>
                                     <div>
                                         <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{kb.name}</p>
-                                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{kb.type} • {kb.status}</p>
+                                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">
+                                            {kb.type} {kb.size ? `• ${formatFileSize(kb.size)}` : ''} • {kb.status}
+                                        </p>
                                     </div>
                                 </div>
-                                <button className="text-slate-300 group-hover:text-danger p-2 transition-colors">
+                                <button onClick={() => handleDeleteKB(kb)} className="text-slate-300 group-hover:text-danger p-2 transition-colors">
                                     <span className="material-icons text-[18px]">delete</span>
                                 </button>
                             </div>
@@ -71,19 +279,35 @@ export default function ConfigPage() {
                         </h2>
                     </div>
 
-                    <div className="space-y-3">
-                        {instruments.map((inst) => (
-                            <div key={inst.id} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
-                                <div className="flex items-center gap-3">
-                                    <span className={`material-icons ${inst.status === 'Predeterminado' ? 'text-amber-500' : 'text-slate-300'}`}>star</span>
-                                    <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{inst.name}</p>
+                    {loading ? (
+                        <div className="flex items-center justify-center py-8">
+                            <span className="material-icons text-primary text-3xl animate-spin">refresh</span>
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+                            {instruments.length === 0 ? (
+                                <div className="text-center py-8 text-slate-400">
+                                    <span className="material-icons text-4xl mb-2">inbox</span>
+                                    <p className="text-sm">No hay instrumentos disponibles</p>
                                 </div>
-                                <span className={`text-[10px] font-black uppercase px-2 py-1 rounded-full ${inst.status === 'Predeterminado' ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 text-slate-500'}`}>
-                                    {inst.status}
-                                </span>
-                            </div>
-                        ))}
-                    </div>
+                            ) : (
+                                instruments.map((inst) => (
+                                    <div key={inst.id} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                                        <div className="flex items-center gap-3">
+                                            <span className={`material-icons ${inst.status === 'Activo' ? 'text-emerald-500' : 'text-slate-300'}`}>fact_check</span>
+                                            <div>
+                                                <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{inst.title}</p>
+                                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{inst.items} ítems</p>
+                                            </div>
+                                        </div>
+                                        <span className={`text-[10px] font-black uppercase px-2 py-1 rounded-full ${inst.status === 'Activo' ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
+                                            {inst.status}
+                                        </span>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 {/* User Management Module */}

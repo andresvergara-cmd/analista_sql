@@ -2,9 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { user, logout } = useAuth();
 
   const menuItems = [
     { href: "/", label: "Panel Principal", icon: "dashboard" },
@@ -62,12 +64,22 @@ export default function Sidebar() {
 
       <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
         <div className="bg-white dark:bg-slate-800 rounded-2xl p-3 flex items-center gap-3 shadow-sm border border-slate-100 dark:border-slate-700">
-          <img className="w-10 h-10 rounded-full border-2 border-white dark:border-slate-700 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZvWIi5H1URqvvJ0EtQumvwtWsZUx2zIujOw7MAlFCzTBoSGj802fx0gDKBzWLV5jZjswJGBADbLxSlt2NGTxUwA9GtmlQVX0XPoSIdi8VqmmQ6Ua3kFMjldbDQKP8a-5lnFDSs6oZoTEC7NmBrWnTcV6eshzXV1NlvC3NxI1dJTzbK0IK5zhXnIiJQQ7gq7tfSfan9jhz058QMbpN970zjIi1ruppF9NAlGQO4PzMuTmlP-MlAplLNdkYG-atSHy6mYmPxlovfJkw" alt="Perfil" />
-          <div className="flex-1 overflow-hidden">
-            <p className="text-xs font-black truncate">Dr. Ricardo Silva</p>
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter truncate">Administrador</p>
+          <div className="w-10 h-10 rounded-full border-2 border-primary dark:border-primary bg-primary/10 flex items-center justify-center">
+            <span className="material-icons-outlined text-primary text-[20px]">
+              person
+            </span>
           </div>
-          <button className="text-slate-400 hover:text-danger transition-colors">
+          <div className="flex-1 overflow-hidden">
+            <p className="text-xs font-black truncate">{user?.name || 'Usuario'}</p>
+            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter truncate">
+              {user?.role === 'SUPERADMIN' ? 'Superadministrador' : user?.role === 'ADMIN' ? 'Administrador' : 'Estudiante'}
+            </p>
+          </div>
+          <button
+            onClick={logout}
+            className="text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+            title="Cerrar sesión"
+          >
             <span className="material-icons-outlined text-[18px]">logout</span>
           </button>
         </div>

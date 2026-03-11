@@ -1,3 +1,4 @@
+import { getContextForTopic } from './rag-engine';
 
 export interface RoadmapItem {
     id: string;
@@ -6,6 +7,7 @@ export interface RoadmapItem {
     horizon: 'Corto Plazo (Quick Win)' | 'Mediano Plazo' | 'Largo Plazo (Estratégico)';
     type: 'critical' | 'improvement' | 'optimization';
     foundation: string;
+    ragContext?: string; // Context from knowledge base documents
 }
 
 export const generateRoadmap = (foundations: { name: string; score: number; }[]): RoadmapItem[] => {
@@ -50,21 +52,10 @@ export const generateRoadmap = (foundations: { name: string; score: number; }[])
     };
 
     foundations.forEach((f, index) => {
-        // Normalize name to match keys if necessary, strictly it should match 'kroh-logic.ts'
-        // Assuming names match for now.
         const rule = suggestions[f.name] || { low: ['Mejorar capacidades básicas.'], mid: ['Optimizar procesos.'], high: ['Innovar.'] };
 
-        // Score is 0-100 based on previous logic (score * 20), let's check logic.
-        // In kroh-logic.ts: score is 1-5. Wait, frontend showed percentage.
-        // Let's check kroh-logic.ts. 
-        // It returns { score: number (1-5), ... } 
-        // Wait, in frontend/src/app/diagnosis/[id]/page.tsx I saw `f.score%`. 
-        // Let's assume the input `f.score` here is 0-100 or 1-5.
-        // The diagnosis.result stored usually has the raw calculated score.
-        // Let's verify kroh-logic.ts output.
-        // Backend kroh-logic returns: { foundations: { name, score, description }[], ... }
-        // The score there is the average of items (1-5).
-        // So I should treat input score as 1-5.
+        // Retrieve relevant context from uploaded knowledge base documents
+        const context = getContextForTopic(f.name, 2);
 
         if (f.score < 2.5) {
             rule.low.forEach((desc, i) => {
@@ -74,7 +65,8 @@ export const generateRoadmap = (foundations: { name: string; score: number; }[])
                     description: desc,
                     horizon: 'Corto Plazo (Quick Win)',
                     type: 'critical',
-                    foundation: f.name
+                    foundation: f.name,
+                    ...(context && { ragContext: context }),
                 });
             });
         } else if (f.score < 4.0) {
@@ -85,7 +77,8 @@ export const generateRoadmap = (foundations: { name: string; score: number; }[])
                     description: desc,
                     horizon: 'Mediano Plazo',
                     type: 'improvement',
-                    foundation: f.name
+                    foundation: f.name,
+                    ...(context && { ragContext: context }),
                 });
             });
         } else {
@@ -96,7 +89,8 @@ export const generateRoadmap = (foundations: { name: string; score: number; }[])
                     description: desc,
                     horizon: 'Largo Plazo (Estratégico)',
                     type: 'optimization',
-                    foundation: f.name
+                    foundation: f.name,
+                    ...(context && { ragContext: context }),
                 });
             });
         }

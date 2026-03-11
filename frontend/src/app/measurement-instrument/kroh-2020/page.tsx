@@ -162,7 +162,7 @@ export default function KrohAssessmentPage() {
                             </div>
 
                             <div className="mt-10 pt-8 border-t border-slate-100 dark:border-slate-800 text-center">
-                                <Link href="/panel" className="text-slate-400 text-sm font-bold hover:text-slate-600 transition-colors">Volver al Panel Principal</Link>
+                                <Link href="/measurement-instrument" className="text-slate-400 text-sm font-bold hover:text-slate-600 transition-colors">Volver a Instrumentos de Medición</Link>
                             </div>
                         </div>
                     </div>
@@ -280,9 +280,9 @@ export default function KrohAssessmentPage() {
 
                                 <div className="space-y-6">
                                     {currentSection.items.map((item, index) => (
-                                        <div key={item.id} className={`bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm transition-all ${answers[item.id] ? 'ring-1 ring-emerald-500/30' : 'hover:border-primary/50'}`}>
+                                        <div key={item.id} className={`bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm transition-all ${answers[item.id] !== undefined ? 'ring-1 ring-emerald-500/30' : 'hover:border-primary/50'}`}>
                                             <div className="flex items-start gap-4">
-                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm ${answers[item.id] ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
+                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm ${answers[item.id] !== undefined ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
                                                     {index + 1}
                                                 </div>
                                                 <div className="flex-1">
@@ -290,7 +290,7 @@ export default function KrohAssessmentPage() {
                                                         {item.text}
                                                     </label>
 
-                                                    <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                                                    <div className="grid grid-cols-1 md:grid-cols-6 gap-3">
                                                         {[1, 2, 3, 4, 5].map((val) => (
                                                             <button
                                                                 key={val}
@@ -306,6 +306,18 @@ export default function KrohAssessmentPage() {
                                                                 </span>
                                                             </button>
                                                         ))}
+                                                        <button
+                                                            onClick={() => handleAnswer(item.id, 0)}
+                                                            className={`flex flex-col items-center p-3 border rounded-lg transition-all group ${answers[item.id] === 0
+                                                                ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20 ring-2 ring-amber-500/20'
+                                                                : 'border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 hover:border-amber-500'
+                                                                }`}
+                                                        >
+                                                            <span className={`material-icons text-lg mb-1 ${answers[item.id] === 0 ? 'text-amber-500' : 'text-slate-400 group-hover:text-amber-500'}`}>help_outline</span>
+                                                            <span className={`text-[9px] uppercase font-bold ${answers[item.id] === 0 ? 'text-amber-500' : 'text-slate-400 group-hover:text-amber-500'}`}>
+                                                                No Sabe
+                                                            </span>
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>

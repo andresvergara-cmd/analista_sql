@@ -79,5 +79,17 @@ export const KROH_MICROFOUNDATIONS = [
             { id: "I36", text: "Nuestros empleados perciben las condiciones legales (ej. leyes de protección de datos) como barreras." },
             { id: "I38", text: "Nuestros procesos internos y altos niveles de burocracia son barreras para desarrollar innovación digital." }
         ]
+    },
+    {
+        id: "AIA",
+        title: "AI Attention Infrastructure (Angelshaug 2025)",
+        description: "Infraestructura de atención directiva para innovación habilitada por IA.",
+        items: [
+            { id: "A1", text: "Nuestras reuniones de IA se centran en el futuro (5 años) y no solo en resolver ineficiencias del modelo actual." },
+            { id: "A2", text: "Estamos captando señales de competidores tecnológicos/startups de IA y no solo escuchamos reportes internos de TI." },
+            { id: "A3", text: "Tenemos permiso para cuestionar la lógica fundamental de cómo ganamos dinero ante la IA, y la IA no debe solo 'encajar' en lo que ya hacemos." },
+            { id: "A4", text: "El equipo directivo tiene una creencia común sobre qué es la IA para nosotros, y no cada área la entiende de forma fragmentada." },
+            { id: "A5", text: "Dedicamos tiempo intenso y sostenido a la IA, y no es solo un punto de 10 minutos al final de cada sesión." }
+        ]
     }
 ];

@@ -4,8 +4,9 @@ import Link from 'next/link';
 
 export default function DiagnosticsListPage() {
     const diagnostics = [
-        { id: 'kroh-2020', name: 'Madurez Digital (Kroh et al. 2020)', status: 'Activo', items: 32 },
-        { id: 'ind-40', name: 'Preparación Industria 4.0', status: 'Draft', items: 25 },
+        { id: 'kroh-2020', name: 'Madurez Digital (Kroh et al. 2020)', status: 'Activo', items: 32, description: 'Evalúa la madurez digital organizacional' },
+        { id: 'kerzner-2024', name: 'Madurez en Gestión de Proyectos (Kerzner)', status: 'Activo', items: 20, description: 'Evalúa la madurez en gestión de proyectos PM' },
+        { id: 'ind-40', name: 'Preparación Industria 4.0', status: 'Draft', items: 25, description: 'Preparación para transformación digital industrial' },
     ];
 
     return (
@@ -27,10 +28,10 @@ export default function DiagnosticsListPage() {
                             </span>
                         </div>
                         <h3 className="font-bold text-slate-800 dark:text-white mb-1">{d.name}</h3>
-                        <p className="text-xs text-slate-500 mb-6">{d.items} ítems de evaluación científica.</p>
+                        <p className="text-xs text-slate-500 mb-6">{d.items} ítems - {d.description}</p>
 
                         <Link
-                            href={d.id === 'kroh-2020' ? '/measurement-instrument/kroh-2020' : '#'}
+                            href={(d.id === 'kroh-2020' || d.id === 'kerzner-2024') ? `/measurement-instrument/${d.id}` : '#'}
                             className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold text-sm hover:bg-primary hover:text-white transition-all"
                         >
                             Iniciar Evaluación

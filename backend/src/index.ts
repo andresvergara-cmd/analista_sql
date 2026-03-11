@@ -3,11 +3,21 @@ dotenv.config();
 
 import express from 'express';
 import cors from 'cors';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import crypto from 'crypto';
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 import { calculateKrohMaturity } from './utils/kroh-logic';
+import { calculateKerznerMaturity, generateKerznerRecommendations, generateKerznerRoadmap } from './utils/kerzner-logic';
 import { generateRoadmap } from './utils/roadmap-generator';
+import { createAuthRouter } from './routes/auth';
+import { hashPassword } from './utils/password';
+import { authMiddleware, requireRole, checkCompanyAccess } from './middleware/auth';
+import { executeNaturalQuery } from './utils/query-engine';
+import { indexDocuments, getRAGStatus } from './utils/rag-engine';
 
 console.log('BACKEND STARTING...');
 
@@ -29,8 +39,11 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok' });
 });
 
+// Authentication routes
+app.use('/api/auth', createAuthRouter(prisma));
+
 // Submit answers and generate diagnosis (AI placeholder)
-app.post('/api/assessment/submit', async (req, res) => {
+app.post('/api/assessment/submit', authMiddleware, checkCompanyAccess('survey', 'body'), async (req, res) => {
     const { assessmentId, studentName, studentEmail, responses, companyId, respondentName, respondentPosition, respondentEmail } = req.body;
 
     try {
@@ -59,21 +72,44 @@ app.post('/api/assessment/submit', async (req, res) => {
             },
         });
 
-        // Real calculation for Kroh et al. 2020
-        const { foundations, globalScore, status } = calculateKrohMaturity(responses);
+        // Calculate maturity based on assessment type
+        let diagnosisResult: any;
+        let globalScore: number;
+
+        if (assessmentId === 'kerzner-2024') {
+            // Kerzner PM Maturity calculation
+            const { dimensions, globalScore: score, maturityLevel, status } = calculateKerznerMaturity(responses);
+            const recommendations = generateKerznerRecommendations(dimensions);
+            const roadmap = generateKerznerRoadmap(dimensions, score);
+
+            globalScore = score;
+            diagnosisResult = {
+                dimensions,
+                maturityLevel,
+                status,
+                recommendations,
+                roadmap
+            };
+        } else {
+            // Kroh et al. 2020 Digital Maturity calculation (default)
+            const { foundations, globalScore: score, status } = calculateKrohMaturity(responses);
+
+            globalScore = score;
+            diagnosisResult = {
+                foundations,
+                aiInsights: [
+                    { type: 'strength', text: 'Tu enfoque estratégico es sólido.' },
+                    { type: 'warning', text: 'Falta agilidad en los procesos.' }
+                ]
+            };
+        }
 
         const diagnosis = await prisma.diagnosis.create({
             data: {
                 assessmentId,
                 studentEmail,
                 answerId: answer.id,
-                result: JSON.stringify({
-                    foundations,
-                    aiInsights: [
-                        { type: 'strength', text: 'Tu enfoque estratégico es sólido.' },
-                        { type: 'warning', text: 'Falta agilidad en los procesos.' }
-                    ]
-                }),
+                result: JSON.stringify(diagnosisResult),
                 score: globalScore,
             },
         });
@@ -198,11 +234,24 @@ app.put('/api/organizations/:id', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
-app.get('/api/users', async (req, res) => {
+// ==================== USER MANAGEMENT ENDPOINTS ====================
+// Protected with authentication and role-based access control
+
+// Get all users (SUPERADMIN and ADMIN only)
+app.get('/api/users', authMiddleware, requireRole('SUPERADMIN', 'ADMIN'), async (req, res) => {
     try {
         const users = await prisma.user.findMany({
             orderBy: { createdAt: 'desc' },
-            where: { tenantId: 'default-tenant' }
+            where: { tenantId: req.user!.tenantId },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                role: true,
+                tenantId: true,
+                createdAt: true,
+                // Don't return password field
+            }
         });
         res.json(users);
     } catch (error: any) {
@@ -210,20 +259,432 @@ app.get('/api/users', async (req, res) => {
     }
 });
 
-// Create user
-app.post('/api/users', async (req, res) => {
+// Create user (SUPERADMIN only)
+app.post('/api/users', authMiddleware, requireRole('SUPERADMIN'), async (req, res) => {
     const { name, email, password, role } = req.body;
+
     try {
+        // Validate input
+        if (!name || !email || !password || !role) {
+            res.status(400).json({ error: 'Todos los campos son requeridos' });
+            return;
+        }
+
+        // Check if user already exists
+        const existingUser = await prisma.user.findUnique({
+            where: { email }
+        });
+
+        if (existingUser) {
+            res.status(400).json({ error: 'El email ya está registrado' });
+            return;
+        }
+
+        // Hash password
+        const hashedPassword = await hashPassword(password);
+
+        // Create user
         const newUser = await prisma.user.create({
             data: {
                 name,
                 email,
-                password, // In real app, hash this!
+                password: hashedPassword,
                 role,
-                tenantId: 'default-tenant'
+                tenantId: req.user!.tenantId
+            },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                role: true,
+                tenantId: true,
+                createdAt: true,
             }
         });
+
         res.json({ success: true, user: newUser });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Update user (SUPERADMIN only)
+app.put('/api/users/:id', authMiddleware, requireRole('SUPERADMIN'), async (req, res) => {
+    const { id } = req.params;
+    const { name, email, role } = req.body;
+
+    try {
+        // Check if user exists
+        const existingUser = await prisma.user.findUnique({
+            where: { id }
+        });
+
+        if (!existingUser) {
+            res.status(404).json({ error: 'Usuario no encontrado' });
+            return;
+        }
+
+        // If email is being changed, check if new email is available
+        if (email && email !== existingUser.email) {
+            const emailTaken = await prisma.user.findUnique({
+                where: { email }
+            });
+
+            if (emailTaken) {
+                res.status(400).json({ error: 'El email ya está registrado' });
+                return;
+            }
+        }
+
+        // Update user (without password)
+        const updatedUser = await prisma.user.update({
+            where: { id },
+            data: {
+                ...(name && { name }),
+                ...(email && { email }),
+                ...(role && { role }),
+            },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                role: true,
+                tenantId: true,
+                createdAt: true,
+            }
+        });
+
+        res.json({ success: true, user: updatedUser });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Change user password (SUPERADMIN can change any, users can change their own)
+app.post('/api/users/:id/change-password', authMiddleware, async (req, res) => {
+    const { id } = req.params;
+    const { newPassword, currentPassword } = req.body;
+
+    try {
+        // Validate input
+        if (!newPassword) {
+            res.status(400).json({ error: 'La nueva contraseña es requerida' });
+            return;
+        }
+
+        if (newPassword.length < 6) {
+            res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres' });
+            return;
+        }
+
+        // Check permissions: SUPERADMIN can change any password, others only their own
+        if (req.user!.role !== 'SUPERADMIN' && req.user!.userId !== id) {
+            res.status(403).json({ error: 'No tienes permisos para cambiar esta contraseña' });
+            return;
+        }
+
+        // If user is changing their own password, verify current password
+        if (req.user!.userId === id && req.user!.role !== 'SUPERADMIN') {
+            if (!currentPassword) {
+                res.status(400).json({ error: 'La contraseña actual es requerida' });
+                return;
+            }
+
+            const user = await prisma.user.findUnique({
+                where: { id }
+            });
+
+            if (!user) {
+                res.status(404).json({ error: 'Usuario no encontrado' });
+                return;
+            }
+
+            const { comparePassword } = await import('./utils/password');
+            const isValid = await comparePassword(currentPassword, user.password);
+
+            if (!isValid) {
+                res.status(401).json({ error: 'Contraseña actual incorrecta' });
+                return;
+            }
+        }
+
+        // Hash new password
+        const hashedPassword = await hashPassword(newPassword);
+
+        // Update password
+        await prisma.user.update({
+            where: { id },
+            data: { password: hashedPassword }
+        });
+
+        res.json({
+            success: true,
+            message: 'Contraseña actualizada exitosamente'
+        });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Delete user (SUPERADMIN only)
+app.delete('/api/users/:id', authMiddleware, requireRole('SUPERADMIN'), async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // Prevent deleting yourself
+        if (req.user!.userId === id) {
+            res.status(400).json({ error: 'No puedes eliminar tu propia cuenta' });
+            return;
+        }
+
+        // Check if user exists
+        const user = await prisma.user.findUnique({
+            where: { id }
+        });
+
+        if (!user) {
+            res.status(404).json({ error: 'Usuario no encontrado' });
+            return;
+        }
+
+        // Delete user
+        await prisma.user.delete({
+            where: { id }
+        });
+
+        res.json({
+            success: true,
+            message: 'Usuario eliminado exitosamente'
+        });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==================== USER-COMPANY ACCESS MANAGEMENT ====================
+
+// Get companies accessible by user
+app.get('/api/users/:userId/companies', authMiddleware, async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        // Only SUPERADMIN or the user themselves can view their companies
+        if (req.user!.role !== 'SUPERADMIN' && req.user!.userId !== userId) {
+            res.status(403).json({ error: 'No tienes permisos para ver esta información' });
+            return;
+        }
+
+        const access = await prisma.userCompanyAccess.findMany({
+            where: { userId },
+            include: {
+                company: true
+            }
+        });
+
+        res.json(access);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get users with access to a company (SUPERADMIN and ADMIN only)
+app.get('/api/companies/:companyId/users', authMiddleware, requireRole('SUPERADMIN', 'ADMIN'), async (req, res) => {
+    const { companyId } = req.params;
+
+    try {
+        const access = await prisma.userCompanyAccess.findMany({
+            where: { companyId },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        email: true,
+                        name: true,
+                        role: true
+                    }
+                }
+            }
+        });
+
+        res.json(access);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Grant company access to user (SUPERADMIN only)
+app.post('/api/users/:userId/company-access', authMiddleware, requireRole('SUPERADMIN'), async (req, res) => {
+    const { userId } = req.params;
+    const { companyId, canSurvey, canViewReports, canRunQueries } = req.body;
+
+    try {
+        // Validate input
+        if (!companyId) {
+            res.status(400).json({ error: 'companyId es requerido' });
+            return;
+        }
+
+        // Check if user exists
+        const user = await prisma.user.findUnique({ where: { id: userId } });
+        if (!user) {
+            res.status(404).json({ error: 'Usuario no encontrado' });
+            return;
+        }
+
+        // Check if company exists
+        const company = await prisma.company.findUnique({ where: { id: companyId } });
+        if (!company) {
+            res.status(404).json({ error: 'Empresa no encontrada' });
+            return;
+        }
+
+        // Create or update access
+        const access = await prisma.userCompanyAccess.upsert({
+            where: {
+                userId_companyId: {
+                    userId,
+                    companyId
+                }
+            },
+            update: {
+                canSurvey: canSurvey ?? true,
+                canViewReports: canViewReports ?? true,
+                canRunQueries: canRunQueries ?? false,
+                grantedBy: req.user!.userId
+            },
+            create: {
+                userId,
+                companyId,
+                canSurvey: canSurvey ?? true,
+                canViewReports: canViewReports ?? true,
+                canRunQueries: canRunQueries ?? false,
+                grantedBy: req.user!.userId
+            }
+        });
+
+        res.json({ success: true, access });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Update company access permissions (SUPERADMIN only)
+app.put('/api/users/:userId/company-access/:accessId', authMiddleware, requireRole('SUPERADMIN'), async (req, res) => {
+    const { userId, accessId } = req.params;
+    const { canSurvey, canViewReports, canRunQueries } = req.body;
+
+    try {
+        // Check if access exists and belongs to the user
+        const existingAccess = await prisma.userCompanyAccess.findUnique({
+            where: { id: accessId }
+        });
+
+        if (!existingAccess) {
+            res.status(404).json({ error: 'Acceso no encontrado' });
+            return;
+        }
+
+        if (existingAccess.userId !== userId) {
+            res.status(400).json({ error: 'El acceso no pertenece a este usuario' });
+            return;
+        }
+
+        // Update permissions
+        const updated = await prisma.userCompanyAccess.update({
+            where: { id: accessId },
+            data: {
+                canSurvey: canSurvey ?? existingAccess.canSurvey,
+                canViewReports: canViewReports ?? existingAccess.canViewReports,
+                canRunQueries: canRunQueries ?? existingAccess.canRunQueries,
+                grantedBy: req.user!.userId
+            }
+        });
+
+        res.json({ success: true, access: updated });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Revoke company access (SUPERADMIN only)
+app.delete('/api/users/:userId/company-access/:accessId', authMiddleware, requireRole('SUPERADMIN'), async (req, res) => {
+    const { userId, accessId } = req.params;
+
+    try {
+        // Check if access exists and belongs to the user
+        const existingAccess = await prisma.userCompanyAccess.findUnique({
+            where: { id: accessId }
+        });
+
+        if (!existingAccess) {
+            res.status(404).json({ error: 'Acceso no encontrado' });
+            return;
+        }
+
+        if (existingAccess.userId !== userId) {
+            res.status(400).json({ error: 'El acceso no pertenece a este usuario' });
+            return;
+        }
+
+        // Delete access
+        await prisma.userCompanyAccess.delete({
+            where: { id: accessId }
+        });
+
+        res.json({ success: true, message: 'Acceso revocado exitosamente' });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Batch grant/update company access for a user (SUPERADMIN only)
+app.post('/api/users/:userId/companies/batch', authMiddleware, requireRole('SUPERADMIN'), async (req, res) => {
+    const { userId } = req.params;
+    const { companies } = req.body; // Array of { companyId, canSurvey, canViewReports, canRunQueries }
+
+    try {
+        // Validate input
+        if (!Array.isArray(companies)) {
+            res.status(400).json({ error: 'companies debe ser un array' });
+            return;
+        }
+
+        // Check if user exists
+        const user = await prisma.user.findUnique({ where: { id: userId } });
+        if (!user) {
+            res.status(404).json({ error: 'Usuario no encontrado' });
+            return;
+        }
+
+        // Delete existing access for this user
+        await prisma.userCompanyAccess.deleteMany({
+            where: { userId }
+        });
+
+        // Create new access records
+        const accessRecords = companies.map(comp => ({
+            userId,
+            companyId: comp.companyId,
+            canSurvey: comp.canSurvey ?? true,
+            canViewReports: comp.canViewReports ?? true,
+            canRunQueries: comp.canRunQueries ?? false,
+            grantedBy: req.user!.userId
+        }));
+
+        if (accessRecords.length > 0) {
+            await prisma.userCompanyAccess.createMany({
+                data: accessRecords,
+                skipDuplicates: true
+            });
+        }
+
+        // Fetch and return updated access
+        const updatedAccess = await prisma.userCompanyAccess.findMany({
+            where: { userId },
+            include: { company: true }
+        });
+
+        res.json({ success: true, access: updatedAccess });
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
@@ -247,15 +708,18 @@ app.get('/api/reports', async (req, res) => {
 });
 
 // GET aggregated organizational report
-app.get('/api/organizations/:id/report', async (req, res) => {
+app.get('/api/organizations/:id/report', authMiddleware, checkCompanyAccess('reports'), async (req, res) => {
     const { id } = req.params;
+    const instrument = req.query.instrument as string || 'kroh-2020';
+
     try {
         const company = await prisma.company.findUnique({
             where: { id },
             include: {
                 answers: {
                     include: {
-                        diagnosis: true
+                        diagnosis: true,
+                        assessment: true
                     },
                     orderBy: { submittedAt: 'desc' }
                 }
@@ -266,9 +730,11 @@ app.get('/api/organizations/:id/report', async (req, res) => {
             return res.status(404).json({ error: 'Company not found' });
         }
 
-        const answers = company.answers;
+        // Filter answers by instrument
+        const answers = company.answers.filter((a: any) => a.assessment?.id === instrument);
+
         if (answers.length === 0) {
-            return res.json({ company, consolidated: null, answers: [] });
+            return res.json({ company, consolidated: null, answers: [], instrument });
         }
 
         // 1. Calculate averaged responses for each item
@@ -280,49 +746,95 @@ app.get('/api/organizations/:id/report', async (req, res) => {
 
         const averagedResponses: Record<string, number> = {};
         itemKeys.forEach(key => {
-            const values = answers.map((a: any) => (a.responses as any)[key]).filter((v: any) => v !== undefined);
-            const avg = values.reduce((a: number, b: number) => a + b, 0) / values.length;
+            const values = answers.map((a: any) => (a.responses as any)[key]).filter((v: any) => v !== undefined && v !== null && v !== 0);
+            const avg = values.length > 0 ? values.reduce((a: number, b: number) => a + b, 0) / values.length : 0;
             averagedResponses[key] = avg;
         });
 
-        // 2. Run Kroh logic on the "average respondent"
-        const consolidated = calculateKrohMaturity(averagedResponses);
+        // 2. Run instrument-specific logic
+        let consolidated: any;
+        let roadmap: any[];
+        let perceptionByPosition: Record<string, any> = {};
 
-        // 3. Generate Roadmap for organization
-        const roadmap = generateRoadmap(consolidated.foundations);
+        if (instrument === 'kerzner-2024') {
+            // Kerzner PM Maturity Logic
+            consolidated = calculateKerznerMaturity(averagedResponses);
 
-        // 4. Perceptive Gap Analysis (optional but requested)
-        // Group by position to see differences in perception
-        const perceptionByPosition: Record<string, any> = {};
-        answers.forEach((a: any) => {
-            const pos = a.respondentPosition || 'Otro';
-            if (!perceptionByPosition[pos]) {
-                perceptionByPosition[pos] = { count: 0, items: {} };
-            }
-            perceptionByPosition[pos].count++;
-            const resp = a.responses as any;
-            Object.keys(resp).forEach(k => {
-                if (!perceptionByPosition[pos].items[k]) perceptionByPosition[pos].items[k] = 0;
-                perceptionByPosition[pos].items[k] += resp[k];
+            // Get all diagnoses for perception analysis
+            const diagnoses = answers.map((a: any) => a.diagnosis?.result || {});
+            const positions = [...new Set(answers.map((a: any) => a.respondentPosition))].filter(Boolean);
+
+            // Generate perception analysis by position (excluding "No Sabe" = 0)
+            answers.forEach((a: any) => {
+                const pos = a.respondentPosition || 'Otro';
+                if (!perceptionByPosition[pos]) {
+                    perceptionByPosition[pos] = { count: 0, items: {}, itemCounts: {} };
+                }
+                perceptionByPosition[pos].count++;
+                const resp = a.responses as any;
+                Object.keys(resp).forEach(k => {
+                    const val = resp[k];
+                    if (val === 0 || val === undefined || val === null) return;
+                    if (!perceptionByPosition[pos].items[k]) perceptionByPosition[pos].items[k] = 0;
+                    if (!perceptionByPosition[pos].itemCounts[k]) perceptionByPosition[pos].itemCounts[k] = 0;
+                    perceptionByPosition[pos].items[k] += val;
+                    perceptionByPosition[pos].itemCounts[k]++;
+                });
             });
-        });
 
-        // Average the perception by position
-        Object.keys(perceptionByPosition).forEach(pos => {
-            const data = perceptionByPosition[pos];
-            const avgResp: Record<string, number> = {};
-            Object.keys(data.items).forEach(k => {
-                avgResp[k] = data.items[k] / data.count;
+            // Calculate maturity for each position
+            Object.keys(perceptionByPosition).forEach(pos => {
+                const data = perceptionByPosition[pos];
+                const avgResp: Record<string, number> = {};
+                Object.keys(data.items).forEach(k => {
+                    avgResp[k] = data.itemCounts[k] > 0 ? data.items[k] / data.itemCounts[k] : 0;
+                });
+                perceptionByPosition[pos].maturity = calculateKerznerMaturity(avgResp);
             });
-            perceptionByPosition[pos].maturity = calculateKrohMaturity(avgResp);
-        });
+
+            // Generate roadmap using Kerzner logic
+            roadmap = generateKerznerRoadmap(consolidated.dimensions, consolidated.globalScore);
+        } else {
+            // Kroh Digital Maturity Logic (default)
+            consolidated = calculateKrohMaturity(averagedResponses);
+            roadmap = generateRoadmap(consolidated.foundations);
+
+            // Perceptive Gap Analysis (excluding "No Sabe" = 0)
+            answers.forEach((a: any) => {
+                const pos = a.respondentPosition || 'Otro';
+                if (!perceptionByPosition[pos]) {
+                    perceptionByPosition[pos] = { count: 0, items: {}, itemCounts: {} };
+                }
+                perceptionByPosition[pos].count++;
+                const resp = a.responses as any;
+                Object.keys(resp).forEach(k => {
+                    const val = resp[k];
+                    if (val === 0 || val === undefined || val === null) return;
+                    if (!perceptionByPosition[pos].items[k]) perceptionByPosition[pos].items[k] = 0;
+                    if (!perceptionByPosition[pos].itemCounts[k]) perceptionByPosition[pos].itemCounts[k] = 0;
+                    perceptionByPosition[pos].items[k] += val;
+                    perceptionByPosition[pos].itemCounts[k]++;
+                });
+            });
+
+            // Average the perception by position
+            Object.keys(perceptionByPosition).forEach(pos => {
+                const data = perceptionByPosition[pos];
+                const avgResp: Record<string, number> = {};
+                Object.keys(data.items).forEach(k => {
+                    avgResp[k] = data.itemCounts[k] > 0 ? data.items[k] / data.itemCounts[k] : 0;
+                });
+                perceptionByPosition[pos].maturity = calculateKrohMaturity(avgResp);
+            });
+        }
 
         res.json({
             company,
             consolidated,
             roadmap,
             perceptionByPosition,
-            answers // Individual answers for Tab 1
+            answers,
+            instrument
         });
     } catch (error: any) {
         res.status(500).json({ error: error.message });
@@ -338,21 +850,47 @@ app.put('/api/answers/:id', async (req, res) => {
         const updatedAnswer = await prisma.answer.update({
             where: { id },
             data: { responses },
-            include: { diagnosis: true }
+            include: {
+                diagnosis: true,
+                assessment: true
+            }
         });
 
-        // Recalculate maturity
-        const { foundations, globalScore } = calculateKrohMaturity(responses);
+        // Recalculate maturity based on assessment type
+        let diagnosisResult: any;
+        let globalScore: number;
+
+        if (updatedAnswer.assessmentId === 'kerzner-2024') {
+            // Kerzner PM Maturity calculation
+            const { dimensions, globalScore: score, maturityLevel, status } = calculateKerznerMaturity(responses);
+            const recommendations = generateKerznerRecommendations(dimensions);
+            const roadmap = generateKerznerRoadmap(dimensions, score);
+
+            globalScore = score;
+            diagnosisResult = {
+                dimensions,
+                maturityLevel,
+                status,
+                recommendations,
+                roadmap
+            };
+        } else {
+            // Kroh et al. 2020 Digital Maturity calculation (default)
+            const { foundations, globalScore: score } = calculateKrohMaturity(responses);
+
+            globalScore = score;
+            diagnosisResult = {
+                foundations,
+                aiInsights: updatedAnswer.diagnosis?.result ? JSON.parse(updatedAnswer.diagnosis.result).aiInsights : []
+            };
+        }
 
         // Update or Create diagnosis
         if (updatedAnswer.diagnosis) {
             await prisma.diagnosis.update({
                 where: { id: updatedAnswer.diagnosis.id },
                 data: {
-                    result: JSON.stringify({
-                        foundations,
-                        aiInsights: updatedAnswer.diagnosis.result ? JSON.parse(updatedAnswer.diagnosis.result).aiInsights : []
-                    }),
+                    result: JSON.stringify(diagnosisResult),
                     score: globalScore
                 }
             });
@@ -363,19 +901,430 @@ app.put('/api/answers/:id', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
-app.post('/api/query', async (req, res) => {
-    const { nlQuery } = req.body;
 
-    // Real implementation would use an LLM
-    // For now, return mock data matching the frontend's expectation
-    res.json({
-        sql: "SELECT studentEmail, score FROM Diagnosis WHERE score > 4.0 ORDER BY createdAt DESC",
-        data: [
-            { studentEmail: 'maria.gonzalez@empresa.com', score: 4.8 },
-            { studentEmail: 'carlos.rodriguez@pyme.co', score: 4.2 },
-        ],
-        explanation: `He analizado tu pregunta "${nlQuery}" y he generado la consulta SQL correspondiente.`
+// Delete an answer by ID
+app.delete('/api/answers/:id', authMiddleware, async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // Find the answer first to check permissions
+        const answer = await prisma.answer.findUnique({
+            where: { id },
+            include: {
+                diagnosis: true
+            }
+        });
+
+        if (!answer) {
+            res.status(404).json({ error: 'Respuesta no encontrada' });
+            return;
+        }
+
+        // Delete associated diagnosis first if it exists
+        if (answer.diagnosis) {
+            await prisma.diagnosis.delete({
+                where: { id: answer.diagnosis.id }
+            });
+        }
+
+        // Delete the answer
+        await prisma.answer.delete({
+            where: { id }
+        });
+
+        res.json({ success: true, message: 'Respuesta eliminada correctamente' });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==================== SURVEY LINKS (Async Response Links) ====================
+
+// Create a survey link for a company (authenticated)
+app.post('/api/survey-links', authMiddleware, async (req, res) => {
+    const { companyId, assessmentId, expiresInDays, maxResponses } = req.body;
+
+    try {
+        if (!companyId || !assessmentId) {
+            res.status(400).json({ error: 'companyId y assessmentId son requeridos' });
+            return;
+        }
+
+        const company = await prisma.company.findUnique({ where: { id: companyId } });
+        if (!company) {
+            res.status(404).json({ error: 'Empresa no encontrada' });
+            return;
+        }
+
+        const token = crypto.randomBytes(32).toString('hex');
+        const expiresAt = expiresInDays ? new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000) : null;
+
+        const link = await prisma.surveyLink.create({
+            data: {
+                token,
+                companyId,
+                assessmentId,
+                createdBy: req.user!.userId,
+                expiresAt,
+                maxResponses: maxResponses || null,
+            },
+            include: { company: true }
+        });
+
+        res.json({ success: true, link, surveyUrl: `/survey/${token}` });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// List survey links for a company
+app.get('/api/survey-links/company/:companyId', authMiddleware, async (req, res) => {
+    const { companyId } = req.params;
+
+    try {
+        const links = await prisma.surveyLink.findMany({
+            where: { companyId },
+            include: { company: true },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        // Count responses for each link's company+assessment
+        const linksWithCount = await Promise.all(links.map(async (link: any) => {
+            const responseCount = await prisma.answer.count({
+                where: {
+                    companyId: link.companyId,
+                    assessmentId: link.assessmentId,
+                }
+            });
+            return { ...link, responseCount };
+        }));
+
+        res.json(linksWithCount);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Deactivate a survey link
+app.delete('/api/survey-links/:id', authMiddleware, async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        await prisma.surveyLink.update({
+            where: { id },
+            data: { isActive: false }
+        });
+        res.json({ success: true, message: 'Enlace desactivado' });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==================== PUBLIC SURVEY ENDPOINTS (No auth required) ====================
+
+// Validate survey token and get survey info
+app.get('/api/public/survey/:token', async (req, res) => {
+    const { token } = req.params;
+
+    try {
+        const link = await prisma.surveyLink.findUnique({
+            where: { token },
+            include: { company: true }
+        });
+
+        if (!link) {
+            res.status(404).json({ error: 'Enlace no encontrado o inválido' });
+            return;
+        }
+
+        if (!link.isActive) {
+            res.status(410).json({ error: 'Este enlace ha sido desactivado' });
+            return;
+        }
+
+        if (link.expiresAt && new Date() > link.expiresAt) {
+            res.status(410).json({ error: 'Este enlace ha expirado' });
+            return;
+        }
+
+        // Check max responses
+        if (link.maxResponses) {
+            const responseCount = await prisma.answer.count({
+                where: {
+                    companyId: link.companyId,
+                    assessmentId: link.assessmentId,
+                }
+            });
+            if (responseCount >= link.maxResponses) {
+                res.status(410).json({ error: 'Se ha alcanzado el número máximo de respuestas para este enlace' });
+                return;
+            }
+        }
+
+        res.json({
+            companyName: link.company.name,
+            companyId: link.companyId,
+            assessmentId: link.assessmentId,
+            isValid: true
+        });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Submit survey responses via public link (no auth)
+app.post('/api/public/survey/:token/submit', async (req, res) => {
+    const { token } = req.params;
+    const { respondentName, respondentPosition, respondentEmail, responses } = req.body;
+
+    try {
+        const link = await prisma.surveyLink.findUnique({
+            where: { token },
+            include: { company: true }
+        });
+
+        if (!link || !link.isActive) {
+            res.status(404).json({ error: 'Enlace no válido o desactivado' });
+            return;
+        }
+
+        if (link.expiresAt && new Date() > link.expiresAt) {
+            res.status(410).json({ error: 'Este enlace ha expirado' });
+            return;
+        }
+
+        if (link.maxResponses) {
+            const responseCount = await prisma.answer.count({
+                where: { companyId: link.companyId, assessmentId: link.assessmentId }
+            });
+            if (responseCount >= link.maxResponses) {
+                res.status(410).json({ error: 'Número máximo de respuestas alcanzado' });
+                return;
+            }
+        }
+
+        if (!respondentName || !respondentPosition || !respondentEmail || !responses) {
+            res.status(400).json({ error: 'Todos los campos son requeridos' });
+            return;
+        }
+
+        // Ensure assessment exists
+        await prisma.assessment.upsert({
+            where: { id: link.assessmentId },
+            update: {},
+            create: {
+                id: link.assessmentId,
+                title: link.assessmentId === 'kroh-2020'
+                    ? 'Diagnóstico de Madurez Digital (Kroh 2020)'
+                    : link.assessmentId === 'kerzner-2024'
+                        ? 'Diagnóstico de Madurez en Gestión de Proyectos (Kerzner 2024)'
+                        : link.assessmentId,
+                questions: [],
+                tenantId: 'default-tenant'
+            }
+        });
+
+        const answer = await prisma.answer.create({
+            data: {
+                assessmentId: link.assessmentId,
+                companyId: link.companyId,
+                studentName: respondentName,
+                studentEmail: respondentEmail,
+                respondentName,
+                respondentPosition,
+                respondentEmail,
+                responses,
+            },
+        });
+
+        // Calculate maturity
+        let diagnosisResult: any;
+        let globalScore: number;
+
+        if (link.assessmentId === 'kerzner-2024') {
+            const { dimensions, globalScore: score, maturityLevel, status } = calculateKerznerMaturity(responses);
+            const recommendations = generateKerznerRecommendations(dimensions);
+            const roadmap = generateKerznerRoadmap(dimensions, score);
+            globalScore = score;
+            diagnosisResult = { dimensions, maturityLevel, status, recommendations, roadmap };
+        } else {
+            const { foundations, globalScore: score, status } = calculateKrohMaturity(responses);
+            globalScore = score;
+            diagnosisResult = {
+                foundations,
+                aiInsights: [
+                    { type: 'strength', text: 'Tu enfoque estratégico es sólido.' },
+                    { type: 'warning', text: 'Falta agilidad en los procesos.' }
+                ]
+            };
+        }
+
+        const diagnosis = await prisma.diagnosis.create({
+            data: {
+                assessmentId: link.assessmentId,
+                studentEmail: respondentEmail,
+                answerId: answer.id,
+                result: JSON.stringify(diagnosisResult),
+                score: globalScore,
+            },
+        });
+
+        res.json({
+            success: true,
+            message: 'Respuestas enviadas exitosamente. ¡Gracias por participar!',
+            diagnosisId: diagnosis.id
+        });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/query', authMiddleware, checkCompanyAccess('queries', 'body'), async (req, res) => {
+    const { nlQuery, companyId } = req.body;
+
+    if (!companyId) {
+        res.status(400).json({ error: 'Debe seleccionar una empresa para realizar la consulta.' });
+        return;
+    }
+
+    if (!nlQuery || !nlQuery.trim()) {
+        res.status(400).json({ error: 'Debe escribir una pregunta.' });
+        return;
+    }
+
+    try {
+        const company = await prisma.company.findUnique({ where: { id: companyId } });
+        if (!company) {
+            res.status(404).json({ error: 'Empresa no encontrada.' });
+            return;
+        }
+
+        const result = await executeNaturalQuery(prisma, nlQuery.trim(), companyId, company.name);
+        res.json(result);
+    } catch (error: any) {
+        console.error('Query engine error:', error);
+        res.status(500).json({ error: error.message || 'Error al procesar la consulta.' });
+    }
+});
+
+// ==================== KNOWLEDGE BASE FILE UPLOAD ====================
+const uploadsDir = path.join(__dirname, '..', 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+    destination: (_req, _file, cb) => cb(null, uploadsDir),
+    filename: (_req, file, cb) => {
+        const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+        const ext = path.extname(file.originalname);
+        cb(null, `${uniqueSuffix}${ext}`);
+    },
+});
+
+const upload = multer({
+    storage,
+    limits: { fileSize: 20 * 1024 * 1024 }, // 20MB max
+    fileFilter: (_req, file, cb) => {
+        const allowed = ['.pdf', '.doc', '.docx', '.csv', '.xlsx', '.txt'];
+        const ext = path.extname(file.originalname).toLowerCase();
+        if (allowed.includes(ext)) {
+            cb(null, true);
+        } else {
+            cb(new Error(`Tipo de archivo no permitido: ${ext}. Permitidos: ${allowed.join(', ')}`));
+        }
+    },
+});
+
+// Upload knowledge base file
+app.post('/api/knowledge-base/upload', upload.single('file'), (req, res) => {
+    if (!req.file) {
+        res.status(400).json({ error: 'No se proporcionó ningún archivo' });
+        return;
+    }
+
+    const fileInfo = {
+        id: `kb-${Date.now()}`,
+        name: req.file.originalname,
+        type: path.extname(req.file.originalname).replace('.', '').toUpperCase(),
+        size: req.file.size,
+        filename: req.file.filename,
+        status: 'Activo',
+        uploadedAt: new Date().toISOString(),
+    };
+
+    res.json({ success: true, file: fileInfo });
+
+    // Re-index documents for RAG after upload
+    indexDocuments().catch(err => console.error('[RAG] Re-index after upload failed:', err));
+});
+
+// List uploaded files
+app.get('/api/knowledge-base/files', (_req, res) => {
+    const files = fs.readdirSync(uploadsDir).map((filename) => {
+        const filePath = path.join(uploadsDir, filename);
+        const stats = fs.statSync(filePath);
+        return {
+            id: filename,
+            name: filename,
+            size: stats.size,
+            uploadedAt: stats.mtime.toISOString(),
+        };
     });
+    res.json(files);
+});
+
+// Delete uploaded file
+app.delete('/api/knowledge-base/:filename', (req, res) => {
+    const filePath = path.join(uploadsDir, path.basename(req.params.filename));
+    if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        res.json({ success: true });
+
+        // Re-index documents for RAG after deletion
+        indexDocuments().catch(err => console.error('[RAG] Re-index after delete failed:', err));
+    } else {
+        res.status(404).json({ error: 'Archivo no encontrado' });
+    }
+});
+
+// RAG status endpoint
+app.get('/api/knowledge-base/rag-status', (_req, res) => {
+    res.json(getRAGStatus());
+});
+
+// Serve uploaded files
+app.use('/api/knowledge-base/files/download', express.static(uploadsDir));
+
+// ==================== ASSESSMENTS ENDPOINT ====================
+// Get all assessments/instruments
+app.get('/api/assessments', async (req, res) => {
+    try {
+        const assessments = await prisma.assessment.findMany({
+            orderBy: { createdAt: 'desc' }
+        });
+
+        // Known item counts for standardized instruments
+        const ITEM_COUNTS: Record<string, number> = {
+            'kroh-2020': 32,
+            'kerzner-2024': 20
+        };
+
+        // Transform to match frontend expectations
+        const transformed = assessments.map((assessment: any) => ({
+            id: assessment.id,
+            title: assessment.title,
+            items: ITEM_COUNTS[assessment.id] || 0,
+            status: 'Activo',
+            tenantId: assessment.tenantId,
+            createdAt: assessment.createdAt
+        }));
+
+        res.json(transformed);
+    } catch (error: any) {
+        console.error('Error fetching assessments:', error);
+        res.status(500).json({ error: error.message });
+    }
 });
 
 const startServer = async () => {
@@ -383,6 +1332,11 @@ const startServer = async () => {
         // Simple check to see if database is reachable (optional)
         // await prisma.$connect();
         // console.log('Successfully connected to database');
+
+        // Index knowledge base documents for RAG on startup
+        indexDocuments()
+            .then(({ indexed, chunks }) => console.log(`[RAG] Startup indexing: ${indexed} documents, ${chunks} chunks`))
+            .catch(err => console.error('[RAG] Startup indexing failed:', err));
 
         app.listen(port, () => {
             console.log(`Backend server running on port ${port}`);

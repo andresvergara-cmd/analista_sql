@@ -1,8 +1,17 @@
 "use client";
 
 import Link from 'next/link';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 export default function Home() {
+  return (
+    <ProtectedRoute>
+      <HomePage />
+    </ProtectedRoute>
+  );
+}
+
+function HomePage() {
   const modules = [
     {
       title: "Gestión de Organizaciones",

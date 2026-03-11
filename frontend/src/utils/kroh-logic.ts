@@ -45,17 +45,28 @@ export const KROH_DIMENSIONS: Record<string, KrohDimension> = {
         items: ['I34', 'I35', 'I36', 'I38'],
         description: 'Superación de barreras (Escala Invertida).',
         isInverse: true
+    },
+    AIA: {
+        name: 'AI Attention Infrastructure',
+        items: ['A1', 'A2', 'A3', 'A4', 'A5'],
+        description: 'Infraestructura de atención directiva para IA (Angelshaug 2025).'
     }
 };
 
 export function calculateKrohMaturity(responses: Record<string, number>) {
     const foundations = Object.entries(KROH_DIMENSIONS).map(([id, dim]) => {
-        const itemScores = dim.items.map(itemId => {
-            const rawValue = responses[itemId] || 3;
-            return (dim as KrohDimension).isInverse ? (6 - rawValue) : rawValue;
-        });
+        // Filter out "No Sabe" (0) responses - only include valid answers (1-5)
+        const itemScores = dim.items
+            .map(itemId => {
+                const rawValue = responses[itemId];
+                if (rawValue === undefined || rawValue === null || rawValue === 0) return null;
+                return (dim as KrohDimension).isInverse ? (6 - rawValue) : rawValue;
+            })
+            .filter((v): v is number => v !== null);
 
-        const average = itemScores.reduce((a, b) => a + b, 0) / itemScores.length;
+        const average = itemScores.length > 0
+            ? itemScores.reduce((a, b) => a + b, 0) / itemScores.length
+            : 0;
         const percentage = (average / 5) * 100;
 
         return {
