@@ -47,9 +47,9 @@ interface ReportData {
         sector: string;
     };
     consolidated: {
-        dimensions: Dimension[];
+        dimensions?: Dimension[];
         globalScore: number;
-        maturityLevel: string;
+        maturityLevel?: string;
         status: string;
     };
     answers: Answer[];
@@ -114,7 +114,7 @@ export default function KerznerAdvancedAnalysis({ data }: Props) {
                 </p>
 
                 <div className="space-y-4">
-                    {data.consolidated.dimensions.map((dimension, idx) => (
+                    {data.consolidated.dimensions?.map((dimension, idx) => (
                         <div key={dimension.id} className="p-6 rounded-2xl border-2 border-slate-100 dark:border-slate-800 hover:shadow-lg transition-shadow">
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center gap-4">
@@ -208,10 +208,10 @@ export default function KerznerAdvancedAnalysis({ data }: Props) {
                 </p>
 
                 {(() => {
-                    const K1 = data.consolidated.dimensions.find(d => d.id === 'K1')?.average || 0;
-                    const K2 = data.consolidated.dimensions.find(d => d.id === 'K2')?.average || 0;
-                    const K3 = data.consolidated.dimensions.find(d => d.id === 'K3')?.average || 0;
-                    const K4 = data.consolidated.dimensions.find(d => d.id === 'K4')?.average || 0;
+                    const K1 = data.consolidated.dimensions?.find(d => d.id === 'K1')?.average || 0;
+                    const K2 = data.consolidated.dimensions?.find(d => d.id === 'K2')?.average || 0;
+                    const K3 = data.consolidated.dimensions?.find(d => d.id === 'K3')?.average || 0;
+                    const K4 = data.consolidated.dimensions?.find(d => d.id === 'K4')?.average || 0;
 
                     const cresciente = K1 < K2 && K2 < K3 && K3 < K4;
                     const saltoK2K3 = Math.abs(K3 - K2) > 1.5;
@@ -224,7 +224,7 @@ export default function KerznerAdvancedAnalysis({ data }: Props) {
                             <div className="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl">
                                 <h4 className="font-bold text-slate-700 dark:text-slate-300 mb-4 text-sm">Progresión Dimensional</h4>
                                 <div className="flex items-end justify-between gap-2 h-48">
-                                    {data.consolidated.dimensions.map((dim) => (
+                                    {data.consolidated.dimensions?.map((dim) => (
                                         <div key={dim.id} className="flex-1 flex flex-col items-center gap-2">
                                             <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-t-lg relative" style={{ height: `${(dim.average / 7) * 100}%`, minHeight: '20px' }}>
                                                 <div className={`absolute inset-0 rounded-t-lg ${
@@ -441,10 +441,10 @@ export default function KerznerAdvancedAnalysis({ data }: Props) {
                 </h3>
 
                 {(() => {
-                    const K1 = data.consolidated.dimensions.find(d => d.id === 'K1')?.average || 0;
-                    const K2 = data.consolidated.dimensions.find(d => d.id === 'K2')?.average || 0;
-                    const K3 = data.consolidated.dimensions.find(d => d.id === 'K3')?.average || 0;
-                    const K4 = data.consolidated.dimensions.find(d => d.id === 'K4')?.average || 0;
+                    const K1 = data.consolidated.dimensions?.find(d => d.id === 'K1')?.average || 0;
+                    const K2 = data.consolidated.dimensions?.find(d => d.id === 'K2')?.average || 0;
+                    const K3 = data.consolidated.dimensions?.find(d => d.id === 'K3')?.average || 0;
+                    const K4 = data.consolidated.dimensions?.find(d => d.id === 'K4')?.average || 0;
 
                     const metodologiaFormalizada = K2 >= 4.5;
                     const gobernanzaReal = K3 >= 4.5;
@@ -573,7 +573,7 @@ export default function KerznerAdvancedAnalysis({ data }: Props) {
                 </p>
 
                 {(() => {
-                    const sortedDims = [...data.consolidated.dimensions].sort((a, b) => a.average - b.average);
+                    const sortedDims = [...(data.consolidated.dimensions || [])].sort((a, b) => a.average - b.average);
                     const weakest = sortedDims[0];
                     const secondWeakest = sortedDims[1];
 

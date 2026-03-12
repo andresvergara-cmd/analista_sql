@@ -75,7 +75,7 @@ interface ReportData {
         sector: string;
     };
     consolidated: {
-        foundations: Dimension[];
+        foundations?: Dimension[];
         globalScore: number;
         status: string;
     };
@@ -305,7 +305,7 @@ export default function KrohAdvancedAnalysis({ data }: Props) {
                 </h3>
 
                 <div className="space-y-4">
-                    {data.consolidated.foundations.map((foundation, idx) => (
+                    {data.consolidated.foundations?.map((foundation, idx) => (
                         <div key={foundation.id} className="p-5 rounded-2xl border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow">
                             <div className="flex items-center justify-between mb-3">
                                 <div className="flex items-center gap-3">
@@ -472,12 +472,12 @@ export default function KrohAdvancedAnalysis({ data }: Props) {
                                 <div className="text-[10px] font-bold text-slate-500 mb-1">Digital Focus (DIF)</div>
                                 <div className="flex items-center justify-between">
                                     <div className="text-xs text-slate-700 dark:text-slate-300">
-                                        {data.consolidated.foundations.find(f => f.id === 'DIF')?.average.toFixed(2) || 'N/A'}
+                                        {data.consolidated.foundations?.find(f => f.id === 'DIF')?.average.toFixed(2) || 'N/A'}
                                     </div>
                                     <div className="w-16 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                                         <div
                                             className="h-full bg-emerald-500"
-                                            style={{ width: `${data.consolidated.foundations.find(f => f.id === 'DIF')?.score || 0}%` }}
+                                            style={{ width: `${data.consolidated.foundations?.find(f => f.id === 'DIF')?.score || 0}%` }}
                                         ></div>
                                     </div>
                                 </div>
@@ -486,12 +486,12 @@ export default function KrohAdvancedAnalysis({ data }: Props) {
                                 <div className="text-[10px] font-bold text-slate-500 mb-1">Tech Capability (DTC)</div>
                                 <div className="flex items-center justify-between">
                                     <div className="text-xs text-slate-700 dark:text-slate-300">
-                                        {data.consolidated.foundations.find(f => f.id === 'DTC')?.average.toFixed(2) || 'N/A'}
+                                        {data.consolidated.foundations?.find(f => f.id === 'DTC')?.average.toFixed(2) || 'N/A'}
                                     </div>
                                     <div className="w-16 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                                         <div
                                             className="h-full bg-emerald-500"
-                                            style={{ width: `${data.consolidated.foundations.find(f => f.id === 'DTC')?.score || 0}%` }}
+                                            style={{ width: `${data.consolidated.foundations?.find(f => f.id === 'DTC')?.score || 0}%` }}
                                         ></div>
                                     </div>
                                 </div>
@@ -513,12 +513,12 @@ export default function KrohAdvancedAnalysis({ data }: Props) {
                                 <div className="text-[10px] font-bold text-slate-500 mb-1">Innovation Process (DIP)</div>
                                 <div className="flex items-center justify-between">
                                     <div className="text-xs text-slate-700 dark:text-slate-300">
-                                        {data.consolidated.foundations.find(f => f.id === 'DIP')?.average.toFixed(2) || 'N/A'}
+                                        {data.consolidated.foundations?.find(f => f.id === 'DIP')?.average.toFixed(2) || 'N/A'}
                                     </div>
                                     <div className="w-16 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                                         <div
                                             className="h-full bg-blue-500"
-                                            style={{ width: `${data.consolidated.foundations.find(f => f.id === 'DIP')?.score || 0}%` }}
+                                            style={{ width: `${data.consolidated.foundations?.find(f => f.id === 'DIP')?.score || 0}%` }}
                                         ></div>
                                     </div>
                                 </div>
@@ -527,12 +527,12 @@ export default function KrohAdvancedAnalysis({ data }: Props) {
                                 <div className="text-[10px] font-bold text-slate-500 mb-1">Data Management (DMA)</div>
                                 <div className="flex items-center justify-between">
                                     <div className="text-xs text-slate-700 dark:text-slate-300">
-                                        {data.consolidated.foundations.find(f => f.id === 'DMA')?.average.toFixed(2) || 'N/A'}
+                                        {data.consolidated.foundations?.find(f => f.id === 'DMA')?.average.toFixed(2) || 'N/A'}
                                     </div>
                                     <div className="w-16 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                                         <div
                                             className="h-full bg-blue-500"
-                                            style={{ width: `${data.consolidated.foundations.find(f => f.id === 'DMA')?.score || 0}%` }}
+                                            style={{ width: `${data.consolidated.foundations?.find(f => f.id === 'DMA')?.score || 0}%` }}
                                         ></div>
                                     </div>
                                 </div>
@@ -541,12 +541,12 @@ export default function KrohAdvancedAnalysis({ data }: Props) {
                                 <div className="text-[10px] font-bold text-slate-500 mb-1">Innovation Network (DIN)</div>
                                 <div className="flex items-center justify-between">
                                     <div className="text-xs text-slate-700 dark:text-slate-300">
-                                        {data.consolidated.foundations.find(f => f.id === 'DIN')?.average.toFixed(2) || 'N/A'}
+                                        {data.consolidated.foundations?.find(f => f.id === 'DIN')?.average.toFixed(2) || 'N/A'}
                                     </div>
                                     <div className="w-16 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                                         <div
                                             className="h-full bg-blue-500"
-                                            style={{ width: `${data.consolidated.foundations.find(f => f.id === 'DIN')?.score || 0}%` }}
+                                            style={{ width: `${data.consolidated.foundations?.find(f => f.id === 'DIN')?.score || 0}%` }}
                                         ></div>
                                     </div>
                                 </div>
@@ -568,12 +568,12 @@ export default function KrohAdvancedAnalysis({ data }: Props) {
                                 <div className="text-[10px] font-bold text-slate-500 mb-1">Digital Mindset (DMI)</div>
                                 <div className="flex items-center justify-between">
                                     <div className="text-xs text-slate-700 dark:text-slate-300">
-                                        {data.consolidated.foundations.find(f => f.id === 'DMI')?.average.toFixed(2) || 'N/A'}
+                                        {data.consolidated.foundations?.find(f => f.id === 'DMI')?.average.toFixed(2) || 'N/A'}
                                     </div>
                                     <div className="w-16 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                                         <div
                                             className="h-full bg-purple-500"
-                                            style={{ width: `${data.consolidated.foundations.find(f => f.id === 'DMI')?.score || 0}%` }}
+                                            style={{ width: `${data.consolidated.foundations?.find(f => f.id === 'DMI')?.score || 0}%` }}
                                         ></div>
                                     </div>
                                 </div>
@@ -582,12 +582,12 @@ export default function KrohAdvancedAnalysis({ data }: Props) {
                                 <div className="text-[10px] font-bold text-slate-500 mb-1">Overcoming Resistance (DIR)</div>
                                 <div className="flex items-center justify-between">
                                     <div className="text-xs text-slate-700 dark:text-slate-300">
-                                        {data.consolidated.foundations.find(f => f.id === 'DIR')?.average.toFixed(2) || 'N/A'}
+                                        {data.consolidated.foundations?.find(f => f.id === 'DIR')?.average.toFixed(2) || 'N/A'}
                                     </div>
                                     <div className="w-16 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                                         <div
                                             className="h-full bg-purple-500"
-                                            style={{ width: `${data.consolidated.foundations.find(f => f.id === 'DIR')?.score || 0}%` }}
+                                            style={{ width: `${data.consolidated.foundations?.find(f => f.id === 'DIR')?.score || 0}%` }}
                                         ></div>
                                     </div>
                                 </div>
@@ -603,17 +603,17 @@ export default function KrohAdvancedAnalysis({ data }: Props) {
                     </h4>
                     {(() => {
                         const sensing = [
-                            data.consolidated.foundations.find(f => f.id === 'DIF')?.average || 0,
-                            data.consolidated.foundations.find(f => f.id === 'DTC')?.average || 0
+                            data.consolidated.foundations?.find(f => f.id === 'DIF')?.average || 0,
+                            data.consolidated.foundations?.find(f => f.id === 'DTC')?.average || 0
                         ];
                         const seizing = [
-                            data.consolidated.foundations.find(f => f.id === 'DIP')?.average || 0,
-                            data.consolidated.foundations.find(f => f.id === 'DMA')?.average || 0,
-                            data.consolidated.foundations.find(f => f.id === 'DIN')?.average || 0
+                            data.consolidated.foundations?.find(f => f.id === 'DIP')?.average || 0,
+                            data.consolidated.foundations?.find(f => f.id === 'DMA')?.average || 0,
+                            data.consolidated.foundations?.find(f => f.id === 'DIN')?.average || 0
                         ];
                         const transforming = [
-                            data.consolidated.foundations.find(f => f.id === 'DMI')?.average || 0,
-                            data.consolidated.foundations.find(f => f.id === 'DIR')?.average || 0
+                            data.consolidated.foundations?.find(f => f.id === 'DMI')?.average || 0,
+                            data.consolidated.foundations?.find(f => f.id === 'DIR')?.average || 0
                         ];
 
                         const avgSensing = sensing.reduce((a, b) => a + b, 0) / sensing.length;
@@ -664,7 +664,7 @@ export default function KrohAdvancedAnalysis({ data }: Props) {
                 </p>
 
                 {(() => {
-                    const aiaFoundation = data.consolidated.foundations.find(f => f.id === 'AIA');
+                    const aiaFoundation = data.consolidated.foundations?.find(f => f.id === 'AIA');
 
                     if (!aiaFoundation) {
                         return (
@@ -913,7 +913,7 @@ export default function KrohAdvancedAnalysis({ data }: Props) {
 
                 <div className="space-y-4">
                     {(() => {
-                        const sorted = [...data.consolidated.foundations].sort((a, b) => a.average - b.average);
+                        const sorted = [...(data.consolidated.foundations || [])].sort((a, b) => a.average - b.average);
                         const weakest = sorted.slice(0, 2);
                         const strongest = sorted.slice(-1)[0];
 
