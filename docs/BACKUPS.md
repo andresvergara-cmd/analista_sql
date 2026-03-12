@@ -25,6 +25,21 @@ Este documento explica cómo funciona el sistema de backups automáticos de la b
 
 ## 🤖 Configuración de Backups Automáticos (GitHub Actions)
 
+### ⚙️ Implementación Técnica
+
+El sistema usa **Docker con PostgreSQL 17** para garantizar compatibilidad:
+
+```yaml
+container:
+  image: postgres:17  # Misma versión que Railway (17.7)
+```
+
+**Ventajas de usar Docker:**
+- ✅ Versión exacta garantizada (PostgreSQL 17)
+- ✅ No depende de paquetes del sistema
+- ✅ Más rápido (imagen preconstruida)
+- ✅ Mismo comportamiento en todas las ejecuciones
+
 ### Paso 1: Agregar Secret en GitHub
 
 1. Ve a tu repositorio en GitHub
