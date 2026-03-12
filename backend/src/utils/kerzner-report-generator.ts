@@ -325,14 +325,17 @@ function generateImprovementRoadmap(dimensions: any[], globalScore: number): any
  * Generate perception analysis by role/position
  */
 export function generateKerznerPerceptionAnalysis(diagnoses: any[], positions: string[]) {
-    const perceptionByPosition: Record<string, any> = {};
+    const perceptionByPosition: Record<string, {
+        count: number;
+        dimensions: Record<string, { sum: number; count: number }>;
+    }> = {};
 
     diagnoses.forEach(diag => {
         const pos = diag.position || 'Sin especificar';
         if (!perceptionByPosition[pos]) {
             perceptionByPosition[pos] = {
                 count: 0,
-                dimensions: {} as Record<string, { sum: number; count: number }>
+                dimensions: {}
             };
         }
 
