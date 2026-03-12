@@ -3,10 +3,12 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSidebar } from '@/contexts/SidebarContext';
 
 export default function Sidebar() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const { sidebarOpen, setSidebarOpen } = useSidebar();
 
   const menuItems = [
     { href: "/", label: "Panel Principal", icon: "dashboard" },
@@ -26,8 +28,19 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className={`w-64 border-r border-slate-200 dark:border-slate-800 flex flex-col fixed h-full z-50 transition-colors duration-500 ${pathname !== "/" ? "bg-slate-50 dark:bg-slate-950" : "bg-white dark:bg-slate-900"
-      }`}>
+    <>
+      {/* Overlay para cerrar sidebar en móvil */}
+      {sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm"
+          aria-label="Cerrar menú"
+        />
+      )}
+
+      {/* Sidebar responsive */}
+      <aside className={`w-64 border-r border-slate-200 dark:border-slate-800 flex flex-col fixed h-full z-50 transition-all duration-300 ${pathname !== "/" ? "bg-slate-50 dark:bg-slate-950" : "bg-white dark:bg-slate-900"
+      } ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
       <div className="p-6">
         <div className="flex flex-col gap-2">
           <img
@@ -48,6 +61,7 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => setSidebarOpen(false)}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 group ${active
                 ? "bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02]"
                 : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-100"
@@ -85,5 +99,6 @@ export default function Sidebar() {
         </div>
       </div>
     </aside>
+    </>
   );
 }
