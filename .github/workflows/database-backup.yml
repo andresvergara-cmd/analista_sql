@@ -11,47 +11,33 @@ jobs:
   backup:
     runs-on: ubuntu-latest
 
-    # Usar container de PostgreSQL 17 directamente
-    container:
-      image: postgres:17
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Verify PostgreSQL version
-        run: |
-          echo "🔍 PostgreSQL version:"
-          pg_dump --version
-          psql --version
 
       - name: Create backup directory
         run: |
           mkdir -p backups
           echo "✅ Backup directory created"
-          ls -la
 
-      - name: Test database connection
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      - name: Pull PostgreSQL 17 Docker image
         run: |
-          echo "🔍 Testing database connection..."
-          if psql "$DATABASE_URL" -c "SELECT version();" 2>&1; then
-            echo "✅ Database connection successful"
-          else
-            echo "❌ Cannot connect to database"
-            echo "Please verify DATABASE_URL secret is correct"
-            exit 1
-          fi
+          echo "🐳 Pulling PostgreSQL 17 Docker image..."
+          docker pull postgres:17
+          echo "✅ Image pulled successfully"
 
-      - name: Create database backup
+      - name: Verify PostgreSQL version in Docker
+        run: |
+          echo "🔍 PostgreSQL version in Docker container:"
+          docker run --rm postgres:17 pg_dump --version
+
+      - name: Create database backup using Docker
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           # Verificar que DATABASE_URL esté configurada
           if [ -z "$DATABASE_URL" ]; then
             echo "❌ ERROR: DATABASE_URL no está configurada"
-            echo "Por favor configura el secret DATABASE_URL en GitHub"
             exit 1
           fi
 
@@ -59,32 +45,30 @@ jobs:
           echo "🔍 Conectando a: $(echo $DATABASE_URL | sed 's/postgresql:\/\/.*@/postgresql:\/\/***@/')"
 
           TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-          BACKUP_FILE="backups/backup_$TIMESTAMP.sql"
+          BACKUP_FILE="backup_$TIMESTAMP.sql"
 
-          echo "📦 Creating backup: $BACKUP_FILE"
+          echo "📦 Creating backup with Docker PostgreSQL 17..."
 
-          # Ejecutar pg_dump con mejor manejo de errores
-          if pg_dump --no-sync "$DATABASE_URL" > "$BACKUP_FILE" 2>&1; then
-            echo "✅ pg_dump completado exitosamente"
-          else
-            echo "❌ Error ejecutando pg_dump"
-            exit 1
-          fi
+          # Usar Docker para ejecutar pg_dump con PostgreSQL 17
+          docker run --rm \
+            -e PGPASSWORD="" \
+            postgres:17 \
+            pg_dump "$DATABASE_URL" > "backups/$BACKUP_FILE"
 
           # Verificar que el archivo se creó
-          if [ ! -f "$BACKUP_FILE" ]; then
+          if [ ! -f "backups/$BACKUP_FILE" ]; then
             echo "❌ Error: El archivo de backup no se creó"
             exit 1
           fi
 
-          BACKUP_SIZE=$(du -h "$BACKUP_FILE" | cut -f1)
+          BACKUP_SIZE=$(du -h "backups/$BACKUP_FILE" | cut -f1)
           echo "✅ Backup creado: $BACKUP_SIZE"
 
           echo "🗜️ Compressing backup..."
-          gzip "$BACKUP_FILE"
+          gzip "backups/$BACKUP_FILE"
 
-          if [ -f "$BACKUP_FILE.gz" ]; then
-            COMPRESSED_SIZE=$(du -h "$BACKUP_FILE.gz" | cut -f1)
+          if [ -f "backups/$BACKUP_FILE.gz" ]; then
+            COMPRESSED_SIZE=$(du -h "backups/$BACKUP_FILE.gz" | cut -f1)
             echo "✅ Backup comprimido: $COMPRESSED_SIZE"
             ls -lh backups/*.sql.gz
           else
