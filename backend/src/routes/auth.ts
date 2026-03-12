@@ -3,6 +3,8 @@ import { PrismaClient } from '@prisma/client';
 import { comparePassword } from '../utils/password';
 import { generateToken } from '../utils/jwt';
 import { authMiddleware } from '../middleware/auth';
+import { validateBody } from '../middleware/validation';
+import { loginSchema } from '../validation/schemas';
 
 export function createAuthRouter(prisma: PrismaClient): Router {
   const router = Router();
@@ -11,15 +13,9 @@ export function createAuthRouter(prisma: PrismaClient): Router {
    * POST /api/auth/login
    * Authenticate user and return JWT token
    */
-  router.post('/login', async (req: Request, res: Response) => {
+  router.post('/login', validateBody(loginSchema), async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
-
-      // Validate input
-      if (!email || !password) {
-        res.status(400).json({ error: 'Email y contraseña son requeridos' });
-        return;
-      }
 
       // Find user by email
       const user = await prisma.user.findUnique({

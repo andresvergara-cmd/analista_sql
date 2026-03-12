@@ -14,6 +14,18 @@ import { generateRoadmap } from './utils/roadmap-generator';
 import { createAuthRouter } from './routes/auth';
 import { hashPassword } from './utils/password';
 import { authMiddleware, requireRole, checkCompanyAccess } from './middleware/auth';
+import { validateBody, validateParams, validateQuery } from './middleware/validation';
+import {
+  createCompanySchema,
+  updateCompanySchema,
+  createUserSchema,
+  updateUserSchema,
+  submitSurveyResponseSchema,
+  submitPublicSurveyResponseSchema,
+  uuidParamSchema,
+  tokenParamSchema,
+  reportQuerySchema
+} from './validation/schemas';
 import { executeNaturalQuery } from './utils/query-engine';
 import { indexDocuments, getRAGStatus } from './utils/rag-engine';
 
@@ -60,7 +72,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', createAuthRouter(prisma));
 
 // Submit answers and generate diagnosis (AI placeholder)
-app.post('/api/assessment/submit', authMiddleware, checkCompanyAccess('survey', 'body'), async (req, res) => {
+app.post('/api/assessment/submit', authMiddleware, checkCompanyAccess('survey', 'body'), validateBody(submitSurveyResponseSchema), async (req, res) => {
     const { assessmentId, studentName, studentEmail, responses, companyId, respondentName, respondentPosition, respondentEmail } = req.body;
 
     try {
@@ -208,7 +220,7 @@ app.get('/api/organizations', authMiddleware, async (req, res) => {
 });
 
 // Create organization (SUPERADMIN and ADMIN only)
-app.post('/api/organizations', authMiddleware, requireRole('SUPERADMIN', 'ADMIN'), async (req, res) => {
+app.post('/api/organizations', authMiddleware, requireRole('SUPERADMIN', 'ADMIN'), validateBody(createCompanySchema), async (req, res) => {
     const { name, legalId, sector, size, contactEmail } = req.body;
     try {
         const newOrg = await prisma.company.create({
@@ -229,7 +241,7 @@ app.post('/api/organizations', authMiddleware, requireRole('SUPERADMIN', 'ADMIN'
 });
 
 // Delete organization (SUPERADMIN only)
-app.delete('/api/organizations/:id', authMiddleware, requireRole('SUPERADMIN'), async (req, res) => {
+app.delete('/api/organizations/:id', authMiddleware, requireRole('SUPERADMIN'), validateParams(uuidParamSchema), async (req, res) => {
     const id = getParam(req.params.id);
     try {
         // Verify organization belongs to user's tenant
@@ -256,7 +268,7 @@ app.delete('/api/organizations/:id', authMiddleware, requireRole('SUPERADMIN'), 
 });
 
 // Get single organization (with permission check)
-app.get('/api/organizations/:id', authMiddleware, async (req, res) => {
+app.get('/api/organizations/:id', authMiddleware, validateParams(uuidParamSchema), async (req, res) => {
     const id = getParam(req.params.id);
     try {
         const organization = await prisma.company.findUnique({
@@ -296,7 +308,7 @@ app.get('/api/organizations/:id', authMiddleware, async (req, res) => {
 });
 
 // Update organization (SUPERADMIN and ADMIN only)
-app.put('/api/organizations/:id', authMiddleware, requireRole('SUPERADMIN', 'ADMIN'), async (req, res) => {
+app.put('/api/organizations/:id', authMiddleware, requireRole('SUPERADMIN', 'ADMIN'), validateParams(uuidParamSchema), validateBody(updateCompanySchema), async (req, res) => {
     const id = getParam(req.params.id);
     const { name, legalId, sector, size, contactEmail, status } = req.body;
     try {
@@ -356,16 +368,10 @@ app.get('/api/users', authMiddleware, requireRole('SUPERADMIN', 'ADMIN'), async 
 });
 
 // Create user (SUPERADMIN only)
-app.post('/api/users', authMiddleware, requireRole('SUPERADMIN'), async (req, res) => {
+app.post('/api/users', authMiddleware, requireRole('SUPERADMIN'), validateBody(createUserSchema), async (req, res) => {
     const { name, email, password, role } = req.body;
 
     try {
-        // Validate input
-        if (!name || !email || !password || !role) {
-            res.status(400).json({ error: 'Todos los campos son requeridos' });
-            return;
-        }
-
         // Check if user already exists
         const existingUser = await prisma.user.findUnique({
             where: { email }
@@ -405,7 +411,7 @@ app.post('/api/users', authMiddleware, requireRole('SUPERADMIN'), async (req, re
 });
 
 // Update user (SUPERADMIN only)
-app.put('/api/users/:id', authMiddleware, requireRole('SUPERADMIN'), async (req, res) => {
+app.put('/api/users/:id', authMiddleware, requireRole('SUPERADMIN'), validateParams(uuidParamSchema), validateBody(updateUserSchema), async (req, res) => {
     const id = getParam(req.params.id);
     const { name, email, role } = req.body;
 
@@ -523,7 +529,7 @@ app.post('/api/users/:id/change-password', authMiddleware, async (req, res) => {
 });
 
 // Delete user (SUPERADMIN only)
-app.delete('/api/users/:id', authMiddleware, requireRole('SUPERADMIN'), async (req, res) => {
+app.delete('/api/users/:id', authMiddleware, requireRole('SUPERADMIN'), validateParams(uuidParamSchema), async (req, res) => {
     const id = getParam(req.params.id);
 
     try {
@@ -806,15 +812,19 @@ app.get('/api/reports', async (req, res) => {
 });
 
 // GET aggregated organizational report
-app.get('/api/organizations/:id/report', authMiddleware, checkCompanyAccess('reports'), async (req, res) => {
+app.get('/api/organizations/:id/report', authMiddleware, checkCompanyAccess('reports'), validateParams(uuidParamSchema), validateQuery(reportQuerySchema), async (req, res) => {
     const id = getParam(req.params.id);
     const instrument = (typeof req.query.instrument === 'string' ? req.query.instrument : 'kroh-2020');
 
     try {
+        // Optimized: filter answers by instrument at database level to avoid N+1
         const company = await prisma.company.findUnique({
             where: { id },
             include: {
                 answers: {
+                    where: {
+                        assessmentId: instrument
+                    },
                     include: {
                         diagnosis: true,
                         assessment: true
@@ -828,8 +838,8 @@ app.get('/api/organizations/:id/report', authMiddleware, checkCompanyAccess('rep
             return res.status(404).json({ error: 'Company not found' });
         }
 
-        // Filter answers by instrument
-        const answers = company.answers.filter((a: any) => a.assessment?.id === instrument);
+        // Answers are already filtered by database query
+        const answers = company.answers;
 
         if (answers.length === 0) {
             return res.json({ company, consolidated: null, answers: [], instrument });
@@ -1171,7 +1181,7 @@ app.get('/api/public/survey/:token', async (req, res) => {
 });
 
 // Submit survey responses via public link (no auth)
-app.post('/api/public/survey/:token/submit', async (req, res) => {
+app.post('/api/public/survey/:token/submit', validateParams(tokenParamSchema), validateBody(submitPublicSurveyResponseSchema), async (req, res) => {
     const token = getParam(req.params.token);
     const { respondentName, respondentPosition, respondentEmail, responses } = req.body;
 
@@ -1199,11 +1209,6 @@ app.post('/api/public/survey/:token/submit', async (req, res) => {
                 res.status(410).json({ error: 'Número máximo de respuestas alcanzado' });
                 return;
             }
-        }
-
-        if (!respondentName || !respondentPosition || !respondentEmail || !responses) {
-            res.status(400).json({ error: 'Todos los campos son requeridos' });
-            return;
         }
 
         // Ensure assessment exists
