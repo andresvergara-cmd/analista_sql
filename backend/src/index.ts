@@ -3,6 +3,7 @@ dotenv.config();
 
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -26,6 +27,7 @@ import {
   tokenParamSchema,
   reportQuerySchema
 } from './validation/schemas';
+import { apiLimiter, strictLimiter, surveyLimiter } from './middleware/rate-limit';
 import { executeNaturalQuery } from './utils/query-engine';
 import { indexDocuments, getRAGStatus } from './utils/rag-engine';
 
@@ -61,6 +63,23 @@ app.use(cors({
     },
     credentials: true
 }));
+
+// Security headers with Helmet
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            scriptSrc: ["'self'"],
+            imgSrc: ["'self'", "data:", "https:"],
+        },
+    },
+    crossOriginEmbedderPolicy: false, // Allow embedding for development
+}));
+
+// General API rate limiting
+app.use('/api/', apiLimiter);
+
 app.use(express.json());
 
 // Health check
@@ -368,7 +387,7 @@ app.get('/api/users', authMiddleware, requireRole('SUPERADMIN', 'ADMIN'), async 
 });
 
 // Create user (SUPERADMIN only)
-app.post('/api/users', authMiddleware, requireRole('SUPERADMIN'), validateBody(createUserSchema), async (req, res) => {
+app.post('/api/users', strictLimiter, authMiddleware, requireRole('SUPERADMIN'), validateBody(createUserSchema), async (req, res) => {
     const { name, email, password, role } = req.body;
 
     try {
@@ -1181,7 +1200,7 @@ app.get('/api/public/survey/:token', async (req, res) => {
 });
 
 // Submit survey responses via public link (no auth)
-app.post('/api/public/survey/:token/submit', validateParams(tokenParamSchema), validateBody(submitPublicSurveyResponseSchema), async (req, res) => {
+app.post('/api/public/survey/:token/submit', surveyLimiter, validateParams(tokenParamSchema), validateBody(submitPublicSurveyResponseSchema), async (req, res) => {
     const token = getParam(req.params.token);
     const { respondentName, respondentPosition, respondentEmail, responses } = req.body;
 

@@ -5,6 +5,7 @@ import { generateToken } from '../utils/jwt';
 import { authMiddleware } from '../middleware/auth';
 import { validateBody } from '../middleware/validation';
 import { loginSchema } from '../validation/schemas';
+import { authLimiter } from '../middleware/rate-limit';
 
 export function createAuthRouter(prisma: PrismaClient): Router {
   const router = Router();
@@ -12,8 +13,9 @@ export function createAuthRouter(prisma: PrismaClient): Router {
   /**
    * POST /api/auth/login
    * Authenticate user and return JWT token
+   * Rate limited to prevent brute force attacks
    */
-  router.post('/login', validateBody(loginSchema), async (req: Request, res: Response) => {
+  router.post('/login', authLimiter, validateBody(loginSchema), async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
 
