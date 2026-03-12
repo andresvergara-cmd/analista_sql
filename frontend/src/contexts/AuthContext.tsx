@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 interface User {
   id: string;
@@ -88,6 +89,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Set user
       setUser(data.user);
 
+      // Show success toast
+      toast.success(`Bienvenido, ${data.user.name}`);
+
       // Redirect to dashboard
       router.push('/');
     } catch (error: any) {
@@ -101,6 +105,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Clear user
     setUser(null);
+
+    // Show logout toast
+    toast.success('Sesión cerrada correctamente');
 
     // Redirect to login
     router.push('/login');

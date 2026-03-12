@@ -106,8 +106,6 @@ export default function KrohAssessmentPage() {
                             <h1 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">DIAGNÓSTICO <span className="text-primary tracking-tight">PLATAFORMA</span></h1>
                             <div className="flex items-center gap-2 text-[10px] text-slate-500 font-bold uppercase tracking-wider">
                                 <span>Marco Kroh et al. 2020</span>
-                                <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
-                                <span className="text-emerald-500">Auto-save: ON</span>
                             </div>
                         </div>
                     </div>

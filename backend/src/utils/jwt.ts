@@ -1,6 +1,11 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
 
-const JWT_SECRET: string = process.env.JWT_SECRET || 'fallback-secret-CHANGE-IN-PRODUCTION';
+// Ensure JWT_SECRET is set - FAIL FAST if missing
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required. Please set it in .env file.');
+}
+
+const JWT_SECRET: string = process.env.JWT_SECRET;
 const JWT_EXPIRATION: string = process.env.JWT_EXPIRATION || '7d';
 
 export interface JWTPayload {
