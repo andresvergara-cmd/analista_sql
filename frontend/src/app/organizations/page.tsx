@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
 interface Organization {
     id: string;
     name: string;
@@ -41,7 +43,7 @@ export default function OrganizationsPage() {
 
     const fetchOrganizations = async () => {
         try {
-            const res = await fetch('http://localhost:3001/api/organizations');
+            const res = await fetch(`${API_URL}/api/organizations`);
             const data = await res.json();
             setOrganizations(Array.isArray(data) ? data : []);
         } catch (error) {
@@ -57,8 +59,8 @@ export default function OrganizationsPage() {
         setIsSubmitting(true);
         try {
             const url = editingOrg
-                ? `http://localhost:3001/api/organizations/${editingOrg.id}`
-                : 'http://localhost:3001/api/organizations';
+                ? `${API_URL}/api/organizations/${editingOrg.id}`
+                : `${API_URL}/api/organizations`;
 
             const method = editingOrg ? 'PUT' : 'POST';
 
@@ -102,7 +104,7 @@ export default function OrganizationsPage() {
     const handleDelete = async (id: string) => {
         if (!confirm('¿Está seguro de que desea eliminar esta organización?')) return;
         try {
-            const res = await fetch(`http://localhost:3001/api/organizations/${id}`, {
+            const res = await fetch(`${API_URL}/api/organizations/${id}`, {
                 method: 'DELETE'
             });
             if (res.ok) {

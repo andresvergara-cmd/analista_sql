@@ -7,6 +7,8 @@ import { RadarChart } from '@/components/RadarChart';
 import KrohAdvancedAnalysis from '@/components/KrohAdvancedAnalysis';
 import KerznerAdvancedAnalysis from '@/components/KerznerAdvancedAnalysis';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
 interface Answer {
     id: string;
     respondentName: string;
@@ -73,7 +75,7 @@ export default function CompanyReportPage() {
         const fetchReport = async () => {
             try {
                 const token = localStorage.getItem('authToken');
-                const res = await fetch(`http://localhost:3001/api/organizations/${id}/report?instrument=${instrument}`, {
+                const res = await fetch(`${API_URL}/api/organizations/${id}/report?instrument=${instrument}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -92,7 +94,7 @@ export default function CompanyReportPage() {
     const fetchSurveyLinks = async () => {
         try {
             const token = localStorage.getItem('authToken');
-            const res = await fetch(`http://localhost:3001/api/survey-links/company/${id}`, {
+            const res = await fetch(`${API_URL}/api/survey-links/company/${id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -108,7 +110,7 @@ export default function CompanyReportPage() {
         setIsGeneratingLink(true);
         try {
             const token = localStorage.getItem('authToken');
-            const res = await fetch('http://localhost:3001/api/survey-links', {
+            const res = await fetch(`${API_URL}/api/survey-links`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -137,7 +139,7 @@ export default function CompanyReportPage() {
     const deactivateSurveyLink = async (linkId: string) => {
         try {
             const token = localStorage.getItem('authToken');
-            await fetch(`http://localhost:3001/api/survey-links/${linkId}`, {
+            await fetch(`${API_URL}/api/survey-links/${linkId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -169,7 +171,7 @@ export default function CompanyReportPage() {
 
         try {
             const token = localStorage.getItem('authToken');
-            const res = await fetch(`http://localhost:3001/api/answers/${selectedAnswer.id}`, {
+            const res = await fetch(`${API_URL}/api/answers/${selectedAnswer.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -182,7 +184,7 @@ export default function CompanyReportPage() {
 
             if (res.ok) {
                 // Refresh the report data
-                const reportRes = await fetch(`http://localhost:3001/api/organizations/${id}/report?instrument=${instrument}`);
+                const reportRes = await fetch(`${API_URL}/api/organizations/${id}/report?instrument=${instrument}`);
                 const result = await reportRes.json();
                 setData(result);
                 setIsViewModalOpen(false);
@@ -198,7 +200,7 @@ export default function CompanyReportPage() {
 
         try {
             const token = localStorage.getItem('authToken');
-            const res = await fetch(`http://localhost:3001/api/answers/${answerId}`, {
+            const res = await fetch(`${API_URL}/api/answers/${answerId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -207,7 +209,7 @@ export default function CompanyReportPage() {
 
             if (res.ok) {
                 // Refresh the report data
-                const reportRes = await fetch(`http://localhost:3001/api/organizations/${id}/report?instrument=${instrument}`);
+                const reportRes = await fetch(`${API_URL}/api/organizations/${id}/report?instrument=${instrument}`);
                 const result = await reportRes.json();
                 setData(result);
             }

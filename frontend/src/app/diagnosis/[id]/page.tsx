@@ -5,6 +5,8 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { RadarChart } from '@/components/RadarChart';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
 interface Foundation {
     id: string;
     name: string;
@@ -33,7 +35,7 @@ export default function DiagnosisPage() {
     useEffect(() => {
         const fetchDiagnosis = async () => {
             try {
-                const res = await fetch(`http://localhost:3001/api/diagnosis/${id}`);
+                const res = await fetch(`${API_URL}/api/diagnosis/${id}`);
                 const diagnosis = await res.json();
 
                 if (diagnosis && diagnosis.result) {

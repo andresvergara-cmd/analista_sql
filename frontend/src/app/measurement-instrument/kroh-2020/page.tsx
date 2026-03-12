@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { KROH_MICROFOUNDATIONS } from '@/constants/kroh-items';
 import AssessmentSidebar from '@/components/AssessmentSidebar';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
 interface Organization {
     id: string;
     name: string;
@@ -28,7 +30,7 @@ export default function KrohAssessmentPage() {
     useEffect(() => {
         const fetchOrganizations = async () => {
             try {
-                const res = await fetch('http://localhost:3001/api/organizations');
+                const res = await fetch(`${API_URL}/api/organizations`);
                 const data = await res.json();
                 setOrganizations(data);
             } catch (error) {
@@ -67,7 +69,7 @@ export default function KrohAssessmentPage() {
         if (!selectedCompanyId) return;
         setIsSaving(true);
         try {
-            const res = await fetch('http://localhost:3001/api/assessment/submit', {
+            const res = await fetch(`${API_URL}/api/assessment/submit`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
