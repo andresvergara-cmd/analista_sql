@@ -8,6 +8,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "start:migrate": "npx prisma migrate deploy && node dist/index.js",
+    "postinstall": "prisma generate",
     "mcp": "ts-node src/mcp-server.ts",
     "test-data": "ts-node scripts/generate-test-data.ts",
     "check-data": "ts-node scripts/check-data.ts",
