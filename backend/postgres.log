@@ -1,0 +1,16 @@
+2026-02-20 20:19:53.670 UTC [39050] FATAL:  database files are incompatible with server
+2026-02-20 20:19:53.670 UTC [39050] DETAIL:  The data directory was initialized by PostgreSQL version 17, which is not compatible with this version 14.20 (Homebrew).
+2026-02-20 20:25:57.434 UTC [44027] FATAL:  database files are incompatible with server
+2026-02-20 20:25:57.434 UTC [44027] DETAIL:  The database cluster was initialized without USE_FLOAT8_BYVAL but the server was compiled with USE_FLOAT8_BYVAL.
+2026-02-20 20:25:57.434 UTC [44027] HINT:  It looks like you need to recompile or initdb.
+2026-02-20 20:25:57.434 UTC [44027] LOG:  database system is shut down
+2026-02-20 15:26:15.382 -05 [44959] LOG:  starting PostgreSQL 17.8 (Homebrew) on aarch64-apple-darwin25.2.0, compiled by Apple clang version 17.0.0 (clang-1700.6.3.2), 64-bit
+2026-02-20 15:26:15.384 -05 [44959] LOG:  listening on IPv6 address "::1", port 51214
+2026-02-20 15:26:15.384 -05 [44959] LOG:  listening on IPv4 address "127.0.0.1", port 51214
+2026-02-20 15:26:15.384 -05 [44959] LOG:  listening on Unix socket "/tmp/.s.PGSQL.51214"
+2026-02-20 15:26:15.387 -05 [44962] LOG:  database system was shut down at 2026-02-20 15:26:10 -05
+2026-02-20 15:26:15.389 -05 [44959] LOG:  database system is ready to accept connections
+2026-02-20 15:31:15.387 -05 [44960] LOG:  checkpoint starting: time
+2026-02-20 15:31:29.975 -05 [44960] LOG:  checkpoint complete: wrote 147 buffers (0.9%); 0 WAL file(s) added, 0 removed, 0 recycled; write=14.583 s, sync=0.003 s, total=14.588 s; sync files=83, longest=0.001 s, average=0.001 s; distance=698 kB, estimate=698 kB; lsn=0/15C72B8, redo lsn=0/15C7228
+2026-02-20 16:16:50.126 -05 [44960] LOG:  checkpoint starting: time
+2026-02-20 16:16:52.064 -05 [44960] LOG:  checkpoint complete: wrote 20 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.933 s, sync=0.002 s, total=1.939 s; sync files=12, longest=0.001 s, average=0.001 s; distance=97 kB, estimate=638 kB; lsn=0/15DF8D0, redo lsn=0/15DF878

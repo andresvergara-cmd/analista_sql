@@ -1,4 +1,4 @@
-name: Database Backup
+name: Database Backup (Docker)
 
 # Ejecuta automáticamente cada día a las 3:00 AM UTC (10:00 PM hora Colombia)
 # También se puede ejecutar manualmente desde GitHub Actions
@@ -11,17 +11,18 @@ jobs:
   backup:
     runs-on: ubuntu-latest
 
+    # Usar container de PostgreSQL 17 directamente
+    container:
+      image: postgres:17
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install PostgreSQL 17 client
+      - name: Verify PostgreSQL version
         run: |
-          # Agregar repositorio oficial de PostgreSQL para obtener versión 17
-          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client-17
+          echo "🔍 PostgreSQL version:"
+          pg_dump --version
 
       - name: Create backup directory
         run: mkdir -p backups
@@ -34,7 +35,7 @@ jobs:
           BACKUP_FILE="backups/backup_$TIMESTAMP.sql"
 
           echo "📦 Creating backup: $BACKUP_FILE"
-          pg_dump "$DATABASE_URL" > "$BACKUP_FILE"
+          pg_dump --no-sync "$DATABASE_URL" > "$BACKUP_FILE"
 
           echo "🗜️ Compressing backup..."
           gzip "$BACKUP_FILE"
@@ -53,18 +54,3 @@ jobs:
         run: |
           cd backups
           ls -t backup_*.sql.gz 2>/dev/null | tail -n +8 | xargs -r rm || true
-
-      - name: Commit and push backups to repository (optional)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Solo commitear si hay cambios
-          if [ -n "$(git status --porcelain backups/)" ]; then
-            git config user.name "GitHub Actions Bot"
-            git config user.email "actions@github.com"
-            git add backups/*.sql.gz
-            git commit -m "chore: automated database backup $(date +%Y-%m-%d)"
-            git push || echo "No changes to push"
-          else
-            echo "No new backups to commit"
-          fi

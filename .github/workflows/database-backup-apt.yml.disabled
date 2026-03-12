@@ -1,0 +1,85 @@
+name: Database Backup
+
+# Ejecuta automáticamente cada día a las 3:00 AM UTC (10:00 PM hora Colombia)
+# También se puede ejecutar manualmente desde GitHub Actions
+on:
+  schedule:
+    - cron: '0 3 * * *'  # Diariamente a las 3:00 AM UTC
+  workflow_dispatch:  # Permite ejecución manual
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install PostgreSQL 17 client
+        run: |
+          # Agregar repositorio oficial de PostgreSQL para obtener versión 17
+          echo "📦 Adding PostgreSQL official repository..."
+          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+
+          echo "🔑 Adding PostgreSQL GPG key..."
+          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+
+          echo "🔄 Updating package lists..."
+          sudo apt-get update
+
+          echo "📥 Installing PostgreSQL 17 client..."
+          sudo apt-get install -y postgresql-client-17
+
+          echo "✅ Verifying installation..."
+          pg_dump --version
+          which pg_dump
+
+      - name: Create backup directory
+        run: mkdir -p backups
+
+      - name: Create database backup
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+          BACKUP_FILE="backups/backup_$TIMESTAMP.sql"
+
+          echo "📦 Creating backup: $BACKUP_FILE"
+          echo "🔍 Using pg_dump version:"
+          pg_dump --version
+
+          # Usar --no-sync para evitar problemas de permisos y mejorar velocidad
+          pg_dump --no-sync "$DATABASE_URL" > "$BACKUP_FILE"
+
+          echo "🗜️ Compressing backup..."
+          gzip "$BACKUP_FILE"
+
+          echo "✅ Backup created: $BACKUP_FILE.gz"
+          ls -lh backups/*.sql.gz
+
+      - name: Upload backup as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: database-backup-${{ github.run_number }}
+          path: backups/*.sql.gz
+          retention-days: 30  # Mantener por 30 días (gratis en GitHub)
+
+      - name: Clean old backups (keep last 7 locally)
+        run: |
+          cd backups
+          ls -t backup_*.sql.gz 2>/dev/null | tail -n +8 | xargs -r rm || true
+
+      - name: Commit and push backups to repository (optional)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Solo commitear si hay cambios
+          if [ -n "$(git status --porcelain backups/)" ]; then
+            git config user.name "GitHub Actions Bot"
+            git config user.email "actions@github.com"
+            git add backups/*.sql.gz
+            git commit -m "chore: automated database backup $(date +%Y-%m-%d)"
+            git push || echo "No changes to push"
+          else
+            echo "No new backups to commit"
+          fi
