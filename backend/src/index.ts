@@ -8,8 +8,6 @@ import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 import { PrismaClient } from '@prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { Pool } from 'pg';
 import { calculateKrohMaturity } from './utils/kroh-logic';
 import { calculateKerznerMaturity, generateKerznerRecommendations, generateKerznerRoadmap } from './utils/kerzner-logic';
 import { generateRoadmap } from './utils/roadmap-generator';
@@ -22,13 +20,7 @@ import { indexDocuments, getRAGStatus } from './utils/rag-engine';
 console.log('BACKEND STARTING...');
 
 const app = express();
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    max: 1
-});
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter }) as any;
-// const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 const port = process.env.PORT || 3001;
 
 app.use(cors());
