@@ -50,14 +50,25 @@ jobs:
           echo "📦 Creating backup with Docker PostgreSQL 17..."
 
           # Usar Docker para ejecutar pg_dump con PostgreSQL 17
-          docker run --rm \
-            -e PGPASSWORD="" \
+          # Pasamos DATABASE_URL como variable de entorno al container
+          if docker run --rm \
+            -e DATABASE_URL="$DATABASE_URL" \
             postgres:17 \
-            pg_dump "$DATABASE_URL" > "backups/$BACKUP_FILE"
+            bash -c 'pg_dump "$DATABASE_URL"' > "backups/$BACKUP_FILE" 2>&1; then
+            echo "✅ Docker command executed successfully"
+          else
+            EXIT_CODE=$?
+            echo "❌ Docker command failed with exit code: $EXIT_CODE"
+            echo "Checking if backup file was created anyway..."
+            ls -la backups/ || true
+            exit $EXIT_CODE
+          fi
 
           # Verificar que el archivo se creó
           if [ ! -f "backups/$BACKUP_FILE" ]; then
             echo "❌ Error: El archivo de backup no se creó"
+            echo "Listing backups directory:"
+            ls -la backups/ || true
             exit 1
           fi
 
