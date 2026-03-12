@@ -147,6 +147,25 @@ npm run dev          # Inicia en http://localhost:3000
 
 ---
 
+## ☁️ Deployment en Producción
+
+Para desplegar la aplicación en producción, consulta la [Guía de Deployment](./docs/DEPLOYMENT.md) completa.
+
+**Resumen rápido:**
+- **Backend**: Railway (con PostgreSQL incluido)
+  - Variables requeridas: `DATABASE_URL`, `JWT_SECRET`, `FRONTEND_URL`
+  - Build automático con `npm run build`
+  - Migraciones Prisma automáticas con `npm run start:migrate`
+
+- **Frontend**: Vercel
+  - Variable requerida: `NEXT_PUBLIC_API_URL` (URL de Railway)
+  - Build automático con `npm run build`
+  - Deploy automático en cada push a main
+
+**CORS**: El backend está configurado para aceptar requests desde localhost (desarrollo) y la URL especificada en `FRONTEND_URL` (producción).
+
+---
+
 ## 🔗 URLs Locales
 
 | Recurso | URL |
@@ -218,13 +237,17 @@ npx prisma studio                       # GUI de base de datos
 
 - 📄 [Arquitectura de Solución](./docs/ARQUITECTURA_SOLUCION.md) — Diagrama de componentes, flujos y decisiones de diseño.
 - 🗄️ [Arquitectura de Datos](./docs/ARQUITECTURA_DATOS.md) — Modelo entidad-relación, esquemas y estrategia de datos.
+- 🚀 [Guía de Deployment](./docs/DEPLOYMENT.md) — Instrucciones completas para despliegue en Railway y Vercel.
+- 👥 [Gestión de Usuarios](./docs/GESTION_USUARIOS.md) — Autenticación, roles y permisos.
+- 📊 [Instrumento Kerzner](./docs/INSTRUMENTO_KERZNER.md) — Documentación del instrumento de madurez PM.
 
 ---
 
 ## ⚠️ Consideraciones Técnicas
 
 1. **NL-to-SQL simulado**: El endpoint `/api/query` devuelve datos mock. Requiere integración con LLM (Gemini/OpenAI) para traducción real.
-2. **Pool de conexión limitado**: `max: 1` en el Pool de PG — suficiente para desarrollo, aumentar en producción.
-3. **Contraseñas sin hash**: El modelo `User` almacena contraseñas en texto plano. **Implementar bcrypt antes de producción.**
+2. **Pool de conexión**: Configurado con `connection_limit=1` para desarrollo. En producción Railway gestiona el pool automáticamente.
+3. **Seguridad**: Las contraseñas se almacenan hasheadas con bcryptjs. JWT con expiración de 7 días.
 4. **Tenant único**: Actualmente solo existe `default-tenant`. La arquitectura multi-tenant está modelada pero no completamente habilitada.
 5. **PostgreSQL local**: Al reiniciar la Mac, recordar arrancar PostgreSQL manualmente (ver sección Configuración).
+6. **TypeScript**: El build permite errores de tipo (`|| true` en script) para facilitar deployment. Deben corregirse gradualmente.
