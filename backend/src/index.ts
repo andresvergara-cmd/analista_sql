@@ -19,6 +19,12 @@ import { indexDocuments, getRAGStatus } from './utils/rag-engine';
 
 console.log('BACKEND STARTING...');
 
+// Helper to ensure route params are strings
+const getParam = (param: string | string[] | undefined): string => {
+    if (Array.isArray(param)) return param[0];
+    return param || '';
+};
+
 const app = express();
 const prisma = new PrismaClient();
 const port = process.env.PORT || 3001;
@@ -133,7 +139,7 @@ app.post('/api/assessment/submit', authMiddleware, checkCompanyAccess('survey', 
 
 // Fetch diagnosis
 app.get('/api/diagnosis/:id', async (req, res) => {
-    const { id } = req.params;
+    const id = getParam(req.params.id);
     try {
         const diagnosis = await prisma.diagnosis.findUnique({
             where: { id },
@@ -200,7 +206,7 @@ app.post('/api/organizations', async (req, res) => {
 
 // Delete organization
 app.delete('/api/organizations/:id', async (req, res) => {
-    const { id } = req.params;
+    const id = getParam(req.params.id);
     try {
         await prisma.company.delete({
             where: { id }
@@ -213,7 +219,7 @@ app.delete('/api/organizations/:id', async (req, res) => {
 
 // Get single organization
 app.get('/api/organizations/:id', async (req, res) => {
-    const { id } = req.params;
+    const id = getParam(req.params.id);
     try {
         const organization = await prisma.company.findUnique({
             where: { id }
@@ -226,7 +232,7 @@ app.get('/api/organizations/:id', async (req, res) => {
 
 // Update organization
 app.put('/api/organizations/:id', async (req, res) => {
-    const { id } = req.params;
+    const id = getParam(req.params.id);
     const { name, legalId, sector, size, contactEmail, status } = req.body;
     try {
         const updatedOrg = await prisma.company.update({
@@ -321,7 +327,7 @@ app.post('/api/users', authMiddleware, requireRole('SUPERADMIN'), async (req, re
 
 // Update user (SUPERADMIN only)
 app.put('/api/users/:id', authMiddleware, requireRole('SUPERADMIN'), async (req, res) => {
-    const { id } = req.params;
+    const id = getParam(req.params.id);
     const { name, email, role } = req.body;
 
     try {
@@ -373,7 +379,7 @@ app.put('/api/users/:id', authMiddleware, requireRole('SUPERADMIN'), async (req,
 
 // Change user password (SUPERADMIN can change any, users can change their own)
 app.post('/api/users/:id/change-password', authMiddleware, async (req, res) => {
-    const { id } = req.params;
+    const id = getParam(req.params.id);
     const { newPassword, currentPassword } = req.body;
 
     try {
@@ -439,7 +445,7 @@ app.post('/api/users/:id/change-password', authMiddleware, async (req, res) => {
 
 // Delete user (SUPERADMIN only)
 app.delete('/api/users/:id', authMiddleware, requireRole('SUPERADMIN'), async (req, res) => {
-    const { id } = req.params;
+    const id = getParam(req.params.id);
 
     try {
         // Prevent deleting yourself
@@ -476,7 +482,7 @@ app.delete('/api/users/:id', authMiddleware, requireRole('SUPERADMIN'), async (r
 
 // Get companies accessible by user
 app.get('/api/users/:userId/companies', authMiddleware, async (req, res) => {
-    const { userId } = req.params;
+    const userId = getParam(req.params.userId);
 
     try {
         // Only SUPERADMIN or the user themselves can view their companies
@@ -500,7 +506,7 @@ app.get('/api/users/:userId/companies', authMiddleware, async (req, res) => {
 
 // Get users with access to a company (SUPERADMIN and ADMIN only)
 app.get('/api/companies/:companyId/users', authMiddleware, requireRole('SUPERADMIN', 'ADMIN'), async (req, res) => {
-    const { companyId } = req.params;
+    const companyId = getParam(req.params.companyId);
 
     try {
         const access = await prisma.userCompanyAccess.findMany({
@@ -525,7 +531,7 @@ app.get('/api/companies/:companyId/users', authMiddleware, requireRole('SUPERADM
 
 // Grant company access to user (SUPERADMIN only)
 app.post('/api/users/:userId/company-access', authMiddleware, requireRole('SUPERADMIN'), async (req, res) => {
-    const { userId } = req.params;
+    const userId = getParam(req.params.userId);
     const { companyId, canSurvey, canViewReports, canRunQueries } = req.body;
 
     try {
@@ -581,7 +587,8 @@ app.post('/api/users/:userId/company-access', authMiddleware, requireRole('SUPER
 
 // Update company access permissions (SUPERADMIN only)
 app.put('/api/users/:userId/company-access/:accessId', authMiddleware, requireRole('SUPERADMIN'), async (req, res) => {
-    const { userId, accessId } = req.params;
+    const userId = getParam(req.params.userId);
+    const accessId = getParam(req.params.accessId);
     const { canSurvey, canViewReports, canRunQueries } = req.body;
 
     try {
@@ -619,7 +626,8 @@ app.put('/api/users/:userId/company-access/:accessId', authMiddleware, requireRo
 
 // Revoke company access (SUPERADMIN only)
 app.delete('/api/users/:userId/company-access/:accessId', authMiddleware, requireRole('SUPERADMIN'), async (req, res) => {
-    const { userId, accessId } = req.params;
+    const userId = getParam(req.params.userId);
+    const accessId = getParam(req.params.accessId);
 
     try {
         // Check if access exists and belongs to the user
@@ -650,7 +658,7 @@ app.delete('/api/users/:userId/company-access/:accessId', authMiddleware, requir
 
 // Batch grant/update company access for a user (SUPERADMIN only)
 app.post('/api/users/:userId/companies/batch', authMiddleware, requireRole('SUPERADMIN'), async (req, res) => {
-    const { userId } = req.params;
+    const userId = getParam(req.params.userId);
     const { companies } = req.body; // Array of { companyId, canSurvey, canViewReports, canRunQueries }
 
     try {
@@ -720,8 +728,8 @@ app.get('/api/reports', async (req, res) => {
 
 // GET aggregated organizational report
 app.get('/api/organizations/:id/report', authMiddleware, checkCompanyAccess('reports'), async (req, res) => {
-    const { id } = req.params;
-    const instrument = req.query.instrument as string || 'kroh-2020';
+    const id = getParam(req.params.id);
+    const instrument = (typeof req.query.instrument === 'string' ? req.query.instrument : 'kroh-2020');
 
     try {
         const company = await prisma.company.findUnique({
@@ -854,7 +862,7 @@ app.get('/api/organizations/:id/report', authMiddleware, checkCompanyAccess('rep
 
 // UPDATE answer and recalculate diagnosis
 app.put('/api/answers/:id', async (req, res) => {
-    const { id } = req.params;
+    const id = getParam(req.params.id);
     const { responses } = req.body;
 
     try {
@@ -915,7 +923,7 @@ app.put('/api/answers/:id', async (req, res) => {
 
 // Delete an answer by ID
 app.delete('/api/answers/:id', authMiddleware, async (req, res) => {
-    const { id } = req.params;
+    const id = getParam(req.params.id);
 
     try {
         // Find the answer first to check permissions
@@ -990,7 +998,7 @@ app.post('/api/survey-links', authMiddleware, async (req, res) => {
 
 // List survey links for a company
 app.get('/api/survey-links/company/:companyId', authMiddleware, async (req, res) => {
-    const { companyId } = req.params;
+    const companyId = getParam(req.params.companyId);
 
     try {
         const links = await prisma.surveyLink.findMany({
@@ -1018,7 +1026,7 @@ app.get('/api/survey-links/company/:companyId', authMiddleware, async (req, res)
 
 // Deactivate a survey link
 app.delete('/api/survey-links/:id', authMiddleware, async (req, res) => {
-    const { id } = req.params;
+    const id = getParam(req.params.id);
 
     try {
         await prisma.surveyLink.update({
@@ -1035,7 +1043,7 @@ app.delete('/api/survey-links/:id', authMiddleware, async (req, res) => {
 
 // Validate survey token and get survey info
 app.get('/api/public/survey/:token', async (req, res) => {
-    const { token } = req.params;
+    const token = getParam(req.params.token);
 
     try {
         const link = await prisma.surveyLink.findUnique({
@@ -1085,7 +1093,7 @@ app.get('/api/public/survey/:token', async (req, res) => {
 
 // Submit survey responses via public link (no auth)
 app.post('/api/public/survey/:token/submit', async (req, res) => {
-    const { token } = req.params;
+    const token = getParam(req.params.token);
     const { respondentName, respondentPosition, respondentEmail, responses } = req.body;
 
     try {
@@ -1287,7 +1295,7 @@ app.get('/api/knowledge-base/files', (_req, res) => {
 
 // Delete uploaded file
 app.delete('/api/knowledge-base/:filename', (req, res) => {
-    const filePath = path.join(uploadsDir, path.basename(req.params.filename));
+    const filePath = path.join(uploadsDir, path.basename(getParam(req.params.filename)));
     if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
         res.json({ success: true });
