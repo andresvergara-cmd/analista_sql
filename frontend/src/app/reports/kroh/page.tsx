@@ -31,72 +31,32 @@ export default function KrohReportsPage() {
                 return;
             }
 
-            // Decode token to get user info
-            let payload = null;
-            try {
-                payload = JSON.parse(atob(token.split('.')[1]));
-            } catch (e) {
-                console.error('Error decoding token:', e);
-            }
-
-            const userRole = payload?.role;
-            const userId = payload?.userId;
-
-            console.log('User role:', userRole, 'User ID:', userId);
-
-            // Fetch all organizations
+            // Fetch organizations (backend already filters by user permissions)
             const res = await fetch(`${API_URL}/api/organizations`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            const data = await res.json();
-            const orgs = Array.isArray(data) ? data : (data.organizations || []);
 
-            console.log('Total orgs fetched:', orgs.length);
+            if (!res.ok) {
+                console.error('Failed to fetch organizations:', res.status);
+                setLoading(false);
+                return;
+            }
+
+            const orgs = await res.json();
+            const organizations = Array.isArray(orgs) ? orgs : (orgs.organizations || []);
 
             // Filter companies with kroh-2020 answers
-            let companiesWithKroh = orgs.filter((org: any) => {
-                const krohAnswers = org.answers?.filter((a: any) => a.assessmentId === 'kroh-2020') || [];
-                return krohAnswers.length > 0;
-            }).map((org: any) => ({
-                ...org,
-                answersCount: org.answers?.filter((a: any) => a.assessmentId === 'kroh-2020').length || 0
-            }));
-
-            console.log('Companies with Kroh data:', companiesWithKroh.length);
-
-            // If not SUPERADMIN, filter by user's company access with canViewReports permission
-            if (userRole !== 'SUPERADMIN') {
-                console.log('User is not SUPERADMIN, checking company access permissions');
-
-                if (userId) {
-                    const accessRes = await fetch(`${API_URL}/api/users/${userId}/companies`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-
-                    if (accessRes.ok) {
-                        const accessList = await accessRes.json();
-                        console.log('User has access to companies:', accessList);
-
-                        const allowedCompanyIds = accessList
-                            .filter((access: any) => access.canViewReports)
-                            .map((access: any) => access.companyId);
-
-                        console.log('Allowed company IDs with canViewReports:', allowedCompanyIds);
-
-                        companiesWithKroh = companiesWithKroh.filter((company: Company) =>
-                            allowedCompanyIds.includes(company.id)
-                        );
-
-                        console.log('Filtered companies:', companiesWithKroh.length);
-                    }
-                }
-            } else {
-                console.log('User is SUPERADMIN, showing all companies');
-            }
+            const companiesWithKroh = organizations
+                .filter((org: any) => {
+                    const krohAnswers = org.answers?.filter((a: any) => a.assessmentId === 'kroh-2020') || [];
+                    return krohAnswers.length > 0;
+                })
+                .map((org: any) => ({
+                    ...org,
+                    answersCount: org.answers?.filter((a: any) => a.assessmentId === 'kroh-2020').length || 0
+                }));
 
             setCompanies(companiesWithKroh);
         } catch (error) {

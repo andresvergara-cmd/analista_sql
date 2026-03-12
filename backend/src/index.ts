@@ -167,24 +167,48 @@ app.get('/api/diagnosis/:id', async (req, res) => {
     }
 });
 
-// List organizations
-app.get('/api/organizations', async (req, res) => {
+// List organizations (with authentication and permission filtering)
+app.get('/api/organizations', authMiddleware, async (req, res) => {
     try {
+        // SUPERADMIN can see all organizations
+        if (req.user!.role === 'SUPERADMIN') {
+            const organizations = await prisma.company.findMany({
+                include: {
+                    answers: true
+                },
+                orderBy: { createdAt: 'desc' },
+                where: { tenantId: req.user!.tenantId }
+            });
+            return res.json(organizations);
+        }
+
+        // For other users, only return companies they have access to
+        const userCompanyAccess = await prisma.userCompanyAccess.findMany({
+            where: { userId: req.user!.userId },
+            select: { companyId: true }
+        });
+
+        const allowedCompanyIds = userCompanyAccess.map(access => access.companyId);
+
         const organizations = await prisma.company.findMany({
+            where: {
+                id: { in: allowedCompanyIds },
+                tenantId: req.user!.tenantId
+            },
             include: {
                 answers: true
             },
-            orderBy: { createdAt: 'desc' },
-            where: { tenantId: 'default-tenant' }
+            orderBy: { createdAt: 'desc' }
         });
+
         res.json(organizations);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Create organization
-app.post('/api/organizations', async (req, res) => {
+// Create organization (SUPERADMIN and ADMIN only)
+app.post('/api/organizations', authMiddleware, requireRole('SUPERADMIN', 'ADMIN'), async (req, res) => {
     const { name, legalId, sector, size, contactEmail } = req.body;
     try {
         const newOrg = await prisma.company.create({
@@ -194,7 +218,7 @@ app.post('/api/organizations', async (req, res) => {
                 sector,
                 size,
                 contactEmail,
-                tenantId: 'default-tenant', // Standardize on default-tenant for now
+                tenantId: req.user!.tenantId,
                 status: 'Activo'
             }
         });
@@ -204,37 +228,91 @@ app.post('/api/organizations', async (req, res) => {
     }
 });
 
-// Delete organization
-app.delete('/api/organizations/:id', async (req, res) => {
+// Delete organization (SUPERADMIN only)
+app.delete('/api/organizations/:id', authMiddleware, requireRole('SUPERADMIN'), async (req, res) => {
     const id = getParam(req.params.id);
     try {
+        // Verify organization belongs to user's tenant
+        const organization = await prisma.company.findUnique({
+            where: { id }
+        });
+
+        if (!organization) {
+            return res.status(404).json({ error: 'Organization not found' });
+        }
+
+        if (organization.tenantId !== req.user!.tenantId) {
+            return res.status(403).json({ error: 'Not authorized to delete this organization' });
+        }
+
         await prisma.company.delete({
             where: { id }
         });
+
         res.json({ success: true, message: 'Organization deleted' });
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Get single organization
-app.get('/api/organizations/:id', async (req, res) => {
+// Get single organization (with permission check)
+app.get('/api/organizations/:id', authMiddleware, async (req, res) => {
     const id = getParam(req.params.id);
     try {
         const organization = await prisma.company.findUnique({
             where: { id }
         });
+
+        if (!organization) {
+            return res.status(404).json({ error: 'Organization not found' });
+        }
+
+        // SUPERADMIN can access all organizations in their tenant
+        if (req.user!.role === 'SUPERADMIN') {
+            if (organization.tenantId !== req.user!.tenantId) {
+                return res.status(403).json({ error: 'Not authorized to access this organization' });
+            }
+            return res.json(organization);
+        }
+
+        // Other users need explicit access
+        const access = await prisma.userCompanyAccess.findUnique({
+            where: {
+                userId_companyId: {
+                    userId: req.user!.userId,
+                    companyId: id
+                }
+            }
+        });
+
+        if (!access) {
+            return res.status(403).json({ error: 'Not authorized to access this organization' });
+        }
+
         res.json(organization);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Update organization
-app.put('/api/organizations/:id', async (req, res) => {
+// Update organization (SUPERADMIN and ADMIN only)
+app.put('/api/organizations/:id', authMiddleware, requireRole('SUPERADMIN', 'ADMIN'), async (req, res) => {
     const id = getParam(req.params.id);
     const { name, legalId, sector, size, contactEmail, status } = req.body;
     try {
+        // Verify organization belongs to user's tenant
+        const organization = await prisma.company.findUnique({
+            where: { id }
+        });
+
+        if (!organization) {
+            return res.status(404).json({ error: 'Organization not found' });
+        }
+
+        if (organization.tenantId !== req.user!.tenantId) {
+            return res.status(403).json({ error: 'Not authorized to update this organization' });
+        }
+
         const updatedOrg = await prisma.company.update({
             where: { id },
             data: {
@@ -246,6 +324,7 @@ app.put('/api/organizations/:id', async (req, res) => {
                 status
             }
         });
+
         res.json({ success: true, organization: updatedOrg });
     } catch (error: any) {
         res.status(500).json({ error: error.message });

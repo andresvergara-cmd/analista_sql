@@ -31,72 +31,32 @@ export default function KerznerReportsPage() {
                 return;
             }
 
-            // Decode token to get user info
-            let payload = null;
-            try {
-                payload = JSON.parse(atob(token.split('.')[1]));
-            } catch (e) {
-                console.error('Error decoding token:', e);
-            }
-
-            const userRole = payload?.role;
-            const userId = payload?.userId;
-
-            console.log('User role:', userRole, 'User ID:', userId);
-
-            // Fetch all organizations
+            // Fetch organizations (backend already filters by user permissions)
             const res = await fetch(`${API_URL}/api/organizations`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            const data = await res.json();
-            const orgs = Array.isArray(data) ? data : (data.organizations || []);
 
-            console.log('Total orgs fetched:', orgs.length);
+            if (!res.ok) {
+                console.error('Failed to fetch organizations:', res.status);
+                setLoading(false);
+                return;
+            }
+
+            const orgs = await res.json();
+            const organizations = Array.isArray(orgs) ? orgs : (orgs.organizations || []);
 
             // Filter companies with kerzner-2024 answers
-            let companiesWithKerzner = orgs.filter((org: any) => {
-                const kerznerAnswers = org.answers?.filter((a: any) => a.assessmentId === 'kerzner-2024') || [];
-                return kerznerAnswers.length > 0;
-            }).map((org: any) => ({
-                ...org,
-                answersCount: org.answers?.filter((a: any) => a.assessmentId === 'kerzner-2024').length || 0
-            }));
-
-            console.log('Companies with Kerzner data:', companiesWithKerzner.length);
-
-            // If not SUPERADMIN, filter by user's company access with canViewReports permission
-            if (userRole !== 'SUPERADMIN') {
-                console.log('User is not SUPERADMIN, checking company access permissions');
-
-                if (userId) {
-                    const accessRes = await fetch(`${API_URL}/api/users/${userId}/companies`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-
-                    if (accessRes.ok) {
-                        const accessList = await accessRes.json();
-                        console.log('User has access to companies:', accessList);
-
-                        const allowedCompanyIds = accessList
-                            .filter((access: any) => access.canViewReports)
-                            .map((access: any) => access.companyId);
-
-                        console.log('Allowed company IDs with canViewReports:', allowedCompanyIds);
-
-                        companiesWithKerzner = companiesWithKerzner.filter((company: Company) =>
-                            allowedCompanyIds.includes(company.id)
-                        );
-
-                        console.log('Filtered companies:', companiesWithKerzner.length);
-                    }
-                }
-            } else {
-                console.log('User is SUPERADMIN, showing all companies');
-            }
+            const companiesWithKerzner = organizations
+                .filter((org: any) => {
+                    const kerznerAnswers = org.answers?.filter((a: any) => a.assessmentId === 'kerzner-2024') || [];
+                    return kerznerAnswers.length > 0;
+                })
+                .map((org: any) => ({
+                    ...org,
+                    answersCount: org.answers?.filter((a: any) => a.assessmentId === 'kerzner-2024').length || 0
+                }));
 
             setCompanies(companiesWithKerzner);
         } catch (error) {
