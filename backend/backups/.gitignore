@@ -1,0 +1,5 @@
+# Ignorar todos los backups pero mantener el directorio
+*.sql
+*.sql.gz
+*.dump
+!.gitignore
