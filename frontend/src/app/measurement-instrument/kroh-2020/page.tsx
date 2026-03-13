@@ -27,14 +27,33 @@ export default function KrohAssessmentPage() {
     const [respondentEmail, setRespondentEmail] = useState('');
     const [step, setStep] = useState<'SELECT_ORG' | 'RESPONDENT_DETAILS' | 'ASSESSMENT'>('SELECT_ORG');
 
+    // Helper function to get auth headers
+    const getAuthHeaders = () => {
+        const token = localStorage.getItem('authToken');
+        return {
+            'Content-Type': 'application/json',
+            ...(token && { 'Authorization': `Bearer ${token}` })
+        };
+    };
+
     useEffect(() => {
         const fetchOrganizations = async () => {
             try {
-                const res = await fetch(`${API_URL}/api/organizations`);
+                const res = await fetch(`${API_URL}/api/organizations`, {
+                    headers: getAuthHeaders()
+                });
+
+                if (!res.ok) {
+                    console.error('Failed to fetch organizations:', res.status);
+                    setOrganizations([]);
+                    return;
+                }
+
                 const data = await res.json();
-                setOrganizations(data);
+                setOrganizations(Array.isArray(data) ? data : []);
             } catch (error) {
                 console.error('Error fetching organizations:', error);
+                setOrganizations([]);
             } finally {
                 setIsLoadingOrgs(false);
             }
@@ -71,7 +90,7 @@ export default function KrohAssessmentPage() {
         try {
             const res = await fetch(`${API_URL}/api/assessment/submit`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: getAuthHeaders(),
                 body: JSON.stringify({
                     assessmentId: 'kroh-2020',
                     companyId: selectedCompanyId,
@@ -86,9 +105,13 @@ export default function KrohAssessmentPage() {
             if (res.ok) {
                 const data = await res.json();
                 router.push(`/diagnosis/${data.diagnosisId}`);
+            } else {
+                const errorData = await res.json();
+                alert(errorData.error || 'Error al enviar el diagnóstico. Por favor, intente nuevamente.');
             }
         } catch (error) {
             console.error('Error submitting assessment:', error);
+            alert('Error al enviar el diagnóstico. Por favor, intente nuevamente.');
         } finally {
             setIsSaving(false);
         }
