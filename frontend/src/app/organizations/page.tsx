@@ -36,6 +36,15 @@ export default function OrganizationsPage() {
     const [editingOrg, setEditingOrg] = useState<Organization | null>(null);
     const [profileOrg, setProfileOrg] = useState<Organization | null>(null);
 
+    // Helper function to get auth headers
+    const getAuthHeaders = () => {
+        const token = localStorage.getItem('authToken');
+        return {
+            'Content-Type': 'application/json',
+            ...(token && { 'Authorization': `Bearer ${token}` })
+        };
+    };
+
     useEffect(() => {
         setHasMounted(true);
         fetchOrganizations();
@@ -43,7 +52,9 @@ export default function OrganizationsPage() {
 
     const fetchOrganizations = async () => {
         try {
-            const res = await fetch(`${API_URL}/api/organizations`);
+            const res = await fetch(`${API_URL}/api/organizations`, {
+                headers: getAuthHeaders()
+            });
             const data = await res.json();
             setOrganizations(Array.isArray(data) ? data : []);
         } catch (error) {
@@ -66,7 +77,7 @@ export default function OrganizationsPage() {
 
             const res = await fetch(url, {
                 method,
-                headers: { 'Content-Type': 'application/json' },
+                headers: getAuthHeaders(),
                 body: JSON.stringify(formData)
             });
 
@@ -81,9 +92,14 @@ export default function OrganizationsPage() {
                     size: 'Pyme (11-50)',
                     contactEmail: ''
                 });
+            } else {
+                const errorData = await res.json();
+                console.error('Error response:', errorData);
+                alert(errorData.error || 'Error al guardar la organización');
             }
         } catch (error) {
             console.error('Error saving organization:', error);
+            alert('Error al guardar la organización. Por favor, intente nuevamente.');
         } finally {
             setIsSubmitting(false);
         }
@@ -105,13 +121,18 @@ export default function OrganizationsPage() {
         if (!confirm('¿Está seguro de que desea eliminar esta organización?')) return;
         try {
             const res = await fetch(`${API_URL}/api/organizations/${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: getAuthHeaders()
             });
             if (res.ok) {
                 await fetchOrganizations();
+            } else {
+                const errorData = await res.json();
+                alert(errorData.error || 'Error al eliminar la organización');
             }
         } catch (error) {
             console.error('Error deleting organization:', error);
+            alert('Error al eliminar la organización. Por favor, intente nuevamente.');
         }
     };
 
