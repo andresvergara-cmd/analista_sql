@@ -44,9 +44,35 @@ const app = express();
 const prisma = new PrismaClient();
 const port = process.env.PORT || 3001;
 
+// Trust proxy for Railway/production deployments (fixes X-Forwarded-For error)
+app.set('trust proxy', true);
+
 // Initialize Multi-Agent Orchestrator for SQL queries
 const queryOrchestrator = new MultiAgentOrchestrator(prisma);
 console.log('Multi-Agent SQL Orchestrator initialized');
+
+// Helper function to convert BigInt to String for JSON serialization
+function serializeBigInt(obj: any): any {
+    if (obj === null || obj === undefined) return obj;
+
+    if (typeof obj === 'bigint') {
+        return obj.toString();
+    }
+
+    if (Array.isArray(obj)) {
+        return obj.map(serializeBigInt);
+    }
+
+    if (typeof obj === 'object') {
+        const result: any = {};
+        for (const [key, value] of Object.entries(obj)) {
+            result[key] = serializeBigInt(value);
+        }
+        return result;
+    }
+
+    return obj;
+}
 
 // CORS configuration for development and production
 const allowedOrigins = [
@@ -1531,9 +1557,11 @@ app.post('/api/query', authMiddleware, checkCompanyAccess('queries', 'body'), as
 
         // Format response to match existing interface
         const { result, metadata } = orchestrationResult;
-        res.json({
+
+        // Serialize BigInt values to avoid JSON serialization errors
+        const response = {
             sql: result!.sql,
-            data: result!.data,
+            data: serializeBigInt(result!.data),
             explanation: result!.explanation,
             chartType: result!.visualization.type,
             visualization: result!.visualization,
@@ -1549,7 +1577,9 @@ app.post('/api/query', authMiddleware, checkCompanyAccess('queries', 'body'), as
                     warnings: metadata.validation?.warnings,
                 },
             },
-        });
+        };
+
+        res.json(response);
     } catch (error: any) {
         console.error('[API /query] Error:', error);
         res.status(500).json({ error: error.message || 'Error al procesar la consulta.' });
