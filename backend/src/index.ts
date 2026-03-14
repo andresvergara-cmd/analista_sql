@@ -9,7 +9,7 @@ import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 import { PrismaClient } from '@prisma/client';
-import { calculateKrohMaturity } from './utils/kroh-logic';
+import { calculateKrohMaturity, generateKrohRecommendations, generateKrohRoadmap } from './utils/kroh-logic';
 import { calculateKerznerMaturity, generateKerznerRecommendations, generateKerznerRoadmap } from './utils/kerzner-logic';
 import { generateRoadmap } from './utils/roadmap-generator';
 import { createAuthRouter } from './routes/auth';
@@ -143,10 +143,15 @@ app.post('/api/assessment/submit', authMiddleware, checkCompanyAccess('survey', 
         } else {
             // Kroh et al. 2020 Digital Maturity calculation (default)
             const { foundations, globalScore: score, status } = calculateKrohMaturity(responses);
+            const recommendations = generateKrohRecommendations(foundations);
+            const roadmap = generateKrohRoadmap(foundations, score);
 
             globalScore = score;
             diagnosisResult = {
                 foundations,
+                status,
+                recommendations,
+                roadmap,
                 aiInsights: [
                     { type: 'strength', text: 'Tu enfoque estratégico es sólido.' },
                     { type: 'warning', text: 'Falta agilidad en los procesos.' }
@@ -265,10 +270,15 @@ app.patch('/api/diagnosis/:id/update-response', authMiddleware, async (req, res)
         } else {
             // Kroh et al. 2020 (default)
             const { foundations, globalScore: score, status } = calculateKrohMaturity(currentResponses);
+            const recommendations = generateKrohRecommendations(foundations);
+            const roadmap = generateKrohRoadmap(foundations, score);
 
             newScore = score;
             newDiagnosisResult = {
                 foundations,
+                status,
+                recommendations,
+                roadmap,
                 aiInsights: [
                     { type: 'strength', text: 'Tu enfoque estratégico es sólido.' },
                     { type: 'warning', text: 'Falta agilidad en los procesos.' }
@@ -982,6 +992,7 @@ app.get('/api/organizations/:id/report', authMiddleware, checkCompanyAccess('rep
         // 2. Run instrument-specific logic
         let consolidated: any;
         let roadmap: any[];
+        let recommendations: any[];
         let perceptionByPosition: Record<string, any> = {};
         let perceptionByOrgLevel: Record<string, any> = {};
 
@@ -1049,12 +1060,16 @@ app.get('/api/organizations/:id/report', authMiddleware, checkCompanyAccess('rep
                 perceptionByOrgLevel[orgLevel].maturity = calculateKerznerMaturity(avgResp);
             });
 
-            // Generate roadmap using Kerzner logic
+            // Generate recommendations and roadmap using Kerzner logic
+            recommendations = generateKerznerRecommendations(consolidated.dimensions);
             roadmap = generateKerznerRoadmap(consolidated.dimensions, consolidated.globalScore);
         } else {
             // Kroh Digital Maturity Logic (default)
             consolidated = calculateKrohMaturity(averagedResponses);
-            roadmap = generateRoadmap(consolidated.foundations);
+
+            // Generate recommendations and roadmap using Kroh logic
+            recommendations = generateKrohRecommendations(consolidated.foundations);
+            roadmap = generateKrohRoadmap(consolidated.foundations, consolidated.globalScore);
 
             // Perceptive Gap Analysis (excluding "No Sabe" = 0)
             answers.forEach((a: any) => {
@@ -1116,6 +1131,7 @@ app.get('/api/organizations/:id/report', authMiddleware, checkCompanyAccess('rep
         res.json({
             company,
             consolidated,
+            recommendations,
             roadmap,
             perceptionByPosition,
             perceptionByOrgLevel,
@@ -1167,11 +1183,16 @@ app.put('/api/answers/:id', async (req, res) => {
             };
         } else {
             // Kroh et al. 2020 Digital Maturity calculation (default)
-            const { foundations, globalScore: score } = calculateKrohMaturity(responses);
+            const { foundations, globalScore: score, status } = calculateKrohMaturity(responses);
+            const recommendations = generateKrohRecommendations(foundations);
+            const roadmap = generateKrohRoadmap(foundations, score);
 
             globalScore = score;
             diagnosisResult = {
                 foundations,
+                status,
+                recommendations,
+                roadmap,
                 aiInsights: updatedAnswer.diagnosis?.result ? JSON.parse(updatedAnswer.diagnosis.result).aiInsights : []
             };
         }
@@ -1436,9 +1457,14 @@ app.post('/api/public/survey/:token/submit', surveyLimiter, validateParams(token
             diagnosisResult = { dimensions, maturityLevel, status, recommendations, roadmap };
         } else {
             const { foundations, globalScore: score, status } = calculateKrohMaturity(responses);
+            const recommendations = generateKrohRecommendations(foundations);
+            const roadmap = generateKrohRoadmap(foundations, score);
             globalScore = score;
             diagnosisResult = {
                 foundations,
+                status,
+                recommendations,
+                roadmap,
                 aiInsights: [
                     { type: 'strength', text: 'Tu enfoque estratégico es sólido.' },
                     { type: 'warning', text: 'Falta agilidad en los procesos.' }
