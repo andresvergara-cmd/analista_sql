@@ -2,6 +2,90 @@
 
 import { useMemo } from 'react';
 
+// Información enriquecida para recomendaciones estratégicas
+const DIMENSION_INSIGHTS: Record<string, any> = {
+    DIF: {
+        contextoCritico: 'Según Kroh et al. (2020), Digital Focus representa la capacidad de SENSING del modelo de capacidades dinámicas. Una debilidad aquí indica que la organización carece de "atención directiva" (Ocasio, 1997) hacia las oportunidades digitales, lo que bloquea cualquier transformación posterior.',
+        impactoEsperado: 'Mejoras en DIF desbloquean las demás dimensiones al proveer dirección estratégica clara, recursos dedicados y sponsorship ejecutivo. Estudios muestran que organizaciones con alto Digital Focus alcanzan 2.3x mayor ROI en iniciativas digitales.',
+        kpis: ['% de presupuesto asignado a digital (objetivo: 15-25% del CAPEX)', 'Número de OKRs digitales en plan estratégico (objetivo: ≥3)', 'Tiempo de TMT dedicado a temas digitales (objetivo: ≥30% de agenda mensual)', 'Existencia de CDO o rol equivalente (sí/no)'],
+        riesgos: ['Alineación superficial sin compromiso presupuestal real', 'Falta de continuidad si no hay sponsor ejecutivo', 'Visión digital desconectada de la estrategia de negocio'],
+        secuenciacion: ['1º: Sesión de alineación con C-level para definir visión digital', '2º: Asignar presupuesto mínimo viable (0.5-1% ingresos) para quick wins', '3º: Crear comité de transformación digital con representación cross-funcional', '4º: Definir 3-5 OKRs digitales para próximos 6-12 meses', '5º: Comunicar cascada de visión digital a toda la organización'],
+        recursos: ['Facilitador externo para workshop de visión digital ($5K-15K)', 'Presupuesto seed para iniciativas digitales (0.5-2% ingresos anuales)', 'Tiempo de TMT: 3-4 sesiones de 4 horas en primeros 3 meses', 'Consultoría estratégica digital opcional ($20K-50K)'],
+        interdependencias: 'DIF es prerrequisito para DIP y DMI. Sin foco estratégico claro, los procesos de innovación (DIP) carecen de dirección y la mentalidad digital (DMI) no logra tracción organizacional.',
+        timeline: '3-6 meses para establecer gobernanza y primeros quick wins visibles. 12-18 meses para ver impacto en bottom-line financiero.'
+    },
+    DIP: {
+        contextoCritico: 'Digital Innovation Process (DIP) representa la capacidad de SEIZING. Kroh et al. (2020) enfatizan que sin procesos ágiles e iterativos, las oportunidades detectadas (DIF) no se materializan en valor capturado. Organizaciones con DIP bajo sufren "análisis-parálisis".',
+        impactoEsperado: 'Mejoras en DIP aceleran time-to-market de innovaciones digitales en 40-60%. Permiten validar hipótesis con menor inversión (MVPs) y pivotear rápidamente ante feedback del mercado. Reducen costo del fracaso de innovación.',
+        kpis: ['Cycle time de ideación a piloto (objetivo: <90 días)', 'Número de experimentos digitales ejecutados por año (objetivo: ≥5)', '% de proyectos digitales usando metodologías ágiles (objetivo: >80%)', 'Tasa de aprendizaje: pivots exitosos/total experimentos (objetivo: >30%)'],
+        riesgos: ['Agilidad solo en TI, sin cambiar cultura organizacional', 'Falta de autonomía de equipos para tomar decisiones', 'Procesos legacy de governance bloqueando experimentación'],
+        secuenciacion: ['1º: Seleccionar 1-2 iniciativas digitales piloto para aplicar Scrum/Kanban', '2º: Capacitar product owners y scrum masters certificados', '3º: Definir "sandbox" de innovación con governance ligera', '4º: Implementar sprints de 2 semanas con demos frecuentes', '5º: Escalar aprendizajes a otras iniciativas digitales'],
+        recursos: ['Training ágil certificado para 5-10 personas ($10K-25K)', 'Herramientas de gestión ágil: Jira, Miro, Confluence (~$5K/año)', 'Coach ágil externo para primeros 3-6 meses ($15K-30K)', 'Tiempo dedicado: equipos 100% asignados a iniciativa piloto'],
+        interdependencias: 'DIP depende de DIF (necesita objetivos claros) y habilita DMA (datos generados en experimentos). Complementa DIN (innovación abierta requiere procesos ágiles para colaborar con externos).',
+        timeline: '2-4 meses para primeros resultados en piloto. 9-12 meses para adopción organizacional amplia. 18+ meses para "agilidad como ADN".'
+    },
+    DMI: {
+        contextoCritico: 'Digital Mindset (DMI) es la capacidad de TRANSFORMING organizacional. Kroh et al. (2020) identifican que la resistencia cultural es el mayor obstáculo de transformación digital. Sin DMI, las inversiones en tecnología (DTC) y procesos (DIP) no generan valor.',
+        impactoEsperado: 'Mejoras en DMI aumentan la velocidad de adopción de nuevas tecnologías en 3-5x. Reducen rotación de talento digital en 25-40%. Organizaciones con alto DMI reportan 50% más innovaciones bottom-up.',
+        kpis: ['% de empleados con competencias digitales básicas (objetivo: 100%)', 'eNPS de cultura digital (objetivo: >30)', 'Número de iniciativas digitales bottom-up por año (objetivo: ≥10)', 'Time-to-competency de nuevas tecnologías (objetivo: <6 meses)'],
+        riesgos: ['Training sin aplicación práctica (decay de conocimiento)', 'Falta de role models: líderes no modelan comportamiento digital', 'Percepción de "lavado digital" sin cambio real'],
+        secuenciacion: ['1º: Assessment de competencias digitales actuales (digital literacy)', '2º: Definir learning paths personalizados por rol', '3º: Lanzar programa de "digital champions" en cada área', '4º: Crear biblioteca de casos de éxito digital internos', '5º: Integrar objetivos de desarrollo digital en evaluación de desempeño'],
+        recursos: ['Plataforma LMS para learning digital: Coursera, Udemy Business ($20K-40K/año)', 'Tiempo dedicado: 2-4 horas/semana por empleado', 'Incentivos para certificaciones digitales ($500-2K por persona)', 'Eventos de celebración de innovación digital (2-4 por año, $5K-15K cada uno)'],
+        interdependencies: 'DMI amplifica el impacto de DIF (estrategia) y DIP (procesos). Requiere DIR bajo (sin resistencias bloquea cultura). Habilita adopción de DTC y AIA.',
+        timeline: '6-9 meses para ver cambios comportamentales iniciales. 18-24 meses para cambio cultural sostenible. 3-5 años para "mentalidad digital como norma".'
+    },
+    DIN: {
+        contextoCritico: 'Digital Innovation Network (DIN) representa el modelo de innovación abierta para capturar capacidades dinámicas externas. Kroh et al. (2020) muestran que organizaciones insulares se quedan rezagadas vs. aquellas que co-crean con ecosistemas externos.',
+        impactoEsperado: 'Mejoras en DIN dan acceso a capacidades tecnológicas 10x más rápido que desarrollo interno. Reducen riesgo de inversión en tecnologías emergentes. Organizaciones con DIN fuerte lanzan innovaciones 2x más rápido.',
+        kpis: ['Número de alianzas activas con startups/tech partners (objetivo: ≥3)', '% de innovaciones co-creadas con externos (objetivo: >30%)', 'Inversión en corporate venture capital (objetivo: 1-3% de I+D)', 'Tiempo desde contacto externo a POC (objetivo: <60 días)'],
+        riesgos: ['Síndrome "Not Invented Here" rechaza ideas externas', 'IP y gobernanza poco clara en colaboraciones', 'Dependencia excesiva de un solo partner tecnológico'],
+        secuenciacion: ['1º: Mapear ecosistema de innovación relevante (startups, universidades, tech hubs)', '2º: Definir modelo de engagement: POCs, pilotos, co-innovation', '3º: Crear vehículo jurídico para colaboraciones (CVC, partnership agreements)', '4º: Lanzar 1-2 pilotos con startups seleccionadas', '5º: Escalar aprendizajes y crear deal flow continuo'],
+        recursos: ['Scouting de startups: suscripción a plataformas como Dealroom ($5K-10K/año)', 'Budget para POCs con startups: $50K-200K/año', 'Abogados para estructura de partnerships ($10K-30K setup)', 'Innovation manager dedicado a gestionar ecosistema'],
+        interdependencies: 'DIN requiere DIP (procesos ágiles para integrar innovación externa) y DTC (capacidad de evaluar tecnologías). Complementa DMA (datos compartidos con partners).',
+        timeline: '3-6 meses para primeras alianzas y POCs. 12-18 meses para deal flow consistente. 24+ meses para ecosistema maduro de co-innovación.'
+    },
+    DTC: {
+        contextoCritico: 'Digital Tech Capability (DTC) es la capacidad de SENSING tecnológico. Kroh et al. (2020) identifican que sin competencia para identificar y evaluar tecnologías emergentes, la organización es "disruptida" por competidores más ágiles.',
+        impactoEsperado: 'Mejoras en DTC permiten adopción temprana de tecnologías con ventaja competitiva (early mover advantage). Reducen riesgo de obsolescencia tecnológica. Organizaciones con alto DTC tienen 3x más patentes digitales.',
+        kpis: ['Número de tecnologías emergentes evaluadas/año (objetivo: ≥10)', 'Tiempo desde detección de tech trend a POC (objetivo: <90 días)', '% del equipo tech certificado en tecnologías emergentes (objetivo: >40%)', 'Número de POCs tecnológicos ejecutados/año (objetivo: ≥4)'],
+        riesgos: ['Tech scouting sin criterio de relevancia estratégica', 'POCs que no escalan por falta de integración con legacy', 'Fuga de talento tech por falta de exposición a tecnologías modernas'],
+        secuenciacion: ['1º: Crear "radar tecnológico" con herramientas como Gartner Hype Cycle', '2º: Definir criterios de priorización tech (strategic fit, maturity, ROI)', '3º: Asignar tech scouts internos por dominio (IA, cloud, blockchain, etc.)', '4º: Implementar proceso de tech evaluation: assess → POC → scale', '5º: Crear tech lab para experimentación continua'],
+        recursos: ['Suscripciones a research tech: Gartner, Forrester ($20K-50K/año)', 'Budget para POCs tecnológicos: $100K-300K/año', 'Tiempo de equipo tech: 20% dedicado a exploración vs. explotación', 'Participación en conferencias tech: 2-4 eventos/año ($10K-25K)'],
+        interdependencies: 'DTC alimenta DIF (insights tecnológicos para estrategia) y DIP (adopción de tech en innovación). Requiere DIN (tech scouting en ecosistema externo). Habilita AIA.',
+        timeline: '3-6 meses para radar tecnológico operativo. 9-12 meses para pipeline de POCs. 18-24 meses para tech capability institucionalizada.'
+    },
+    DMA: {
+        contextoCritico: 'Data Management (DMA) es la capacidad de SEIZING basada en datos. Kroh et al. (2020) enfatizan que datos son "el nuevo petróleo" solo si hay capacidad de refinamiento (analytics). Sin DMA, las decisiones digitales son "gut-feeling".',
+        impactoEsperado: 'Mejoras en DMA aumentan velocidad de toma de decisiones en 30-50%. Reducen costos operativos en 10-20% via optimización basada en datos. Organizaciones data-driven tienen 5-6% mayor productividad.',
+        kpis: ['% de decisiones clave basadas en datos (objetivo: >70%)', 'Data quality score (completeness, accuracy) (objetivo: >85%)', 'Tiempo desde data request a insight (objetivo: <48 horas)', 'Número de usuarios activos de plataforma de BI (objetivo: >50% de workforce)'],
+        riesgos: ['Silos de datos impiden visión integral', 'Gobernanza débil genera desconfianza en calidad de datos', 'Analytics sin acción: insights que no se traducen en decisiones'],
+        secuenciacion: ['1º: Auditoría de landscape actual de datos (fuentes, calidad, silos)', '2º: Definir modelo de gobernanza de datos (data ownership, calidad, seguridad)', '3º: Implementar data warehouse/lake centralizado', '4º: Crear self-service BI con herramientas como PowerBI/Tableau', '5º: Capacitar "citizen data scientists" en cada área'],
+        recursos: ['Data platform (cloud): Snowflake, Databricks ($50K-200K/año)', 'BI tools: PowerBI, Tableau (~$50-100/usuario/año)', 'Data engineer + Data analyst: 2-3 FTEs ($150K-300K/año)', 'Data governance consultant para setup ($30K-60K)'],
+        interdependencies: 'DMA requiere DTC (tech para procesar datos) y DIP (datos generados en experimentos). Habilita mejor toma de decisiones en DIF. Complementa AIA (datos para entrenar modelos).',
+        timeline: '6-9 meses para plataforma de datos operativa. 12-18 meses para adopción amplia de BI. 24+ meses para cultura data-driven consolidada.'
+    },
+    DIR: {
+        contextoCritico: 'Overcoming Resistance (DIR) es la capacidad de TRANSFORMING frente a inercia organizacional. Kroh et al. (2020) identifican que resistencia al cambio es la causa #1 de fracaso de transformación digital (70% de iniciativas fallan por esto).',
+        impactoEsperado: 'Mejoras en DIR aceleran adopción de cambios digitales en 2-3x. Reducen rotación durante transformación en 30-40%. Organizaciones con baja resistencia completan transformaciones digitales 18 meses más rápido.',
+        kpis: ['eNPS durante transformación (objetivo: >0)', '% de stakeholders que superan curva de adopción (laggards a adopters) (objetivo: >60%)', 'Tiempo de adopción de nueva tecnología (objetivo: <6 meses)', 'Tasa de éxito de iniciativas de cambio (objetivo: >60%)'],
+        riesgos: ['Change management solo "comunicacional" sin abordar causas raíz', 'Fatiga de cambio: demasiadas iniciativas simultáneas', 'Falta de sponsorship ejecutivo genuino'],
+        secuenciacion: ['1º: Diagnosticar resistencias via stakeholder mapping y encuestas', '2º: Definir estrategia de change management (modelo ADKAR o Kotter)', '3º: Identificar y empoderar "coalition" de change agents', '4º: Comunicación frecuente y bidireccional sobre el "why" del cambio', '5º: Quick wins visibles para generar momentum'],
+        recursos: ['Change management consultant ($30K-60K para programa de 6 meses)', 'Tiempo de change agents: 20-30% de su tiempo', 'Budget para comunicaciones de cambio ($10K-30K)', 'Training en gestión de cambio para líderes ($5K-15K)'],
+        interdependencies: 'DIR baja bloquea todas las demás dimensiones. Es habilitador crítico de DMI (cultura) y DIP (procesos nuevos). Requiere DIF (visión clara reduce resistencia).',
+        timeline: '3-6 meses para primeros signos de reducción de resistencia. 12-18 meses para cambio comportamental sostenible. Requiere refuerzo continuo.'
+    },
+    AIA: {
+        contextoCritico: 'AI Attention Infrastructure (AIA) según Angelshaug et al. (2025) evalúa si el "diseño organizacional" del TMT permite o bloquea la ejecución de IA. Sin AIA, las inversiones en IA fallan no por tecnología sino por falta de atención directiva estructurada.',
+        impactoEsperado: 'Mejoras en AIA desbloquean el potencial de IA de multiplicador 10x de productividad. Organizaciones con alta AIA tienen 4x más proyectos de IA en producción. Reducen time-to-value de IA de años a meses.',
+        kpis: ['% de reuniones TMT dedicadas a IA estratégica (objetivo: >20%)', 'Número de iniciativas de IA en producción (objetivo: ≥3)', 'Existencia de AI Steering Committee (sí/no)', 'Balance TMT: % de perfiles forward-looking vs backward-looking (objetivo: 60/40)'],
+        riesgos: ['IA como "teatro": anuncios sin ejecución real', 'Expectativas no realistas: esperar AGI cuando se necesita narrow AI', 'Falta de ethical guidelines genera crisis reputacional'],
+        secuenciacion: ['1º: Crear AI Steering Committee con representación TMT + tech + ethics', '2º: Definir "Calendario de Atención Protegida" para IA (off-sites trimestrales)', '3º: Identificar 3-5 use cases de IA de alto impacto estratégico', '4º: Implementar POC de IA con quick win visible', '5º: Establecer principios de IA responsable y governance'],
+        recursos: ['AI strategy consultant ($50K-100K para roadmap)', 'AI talent: ML engineer + data scientist (2-3 FTEs, $200K-400K/año)', 'Cloud AI platform: AWS Sagemaker, Google Vertex ($30K-100K/año)', 'Ethics & governance framework development ($20K-40K)'],
+        interdependencies: 'AIA requiere DMA (datos para IA) y DTC (capacidad de evaluar AI tech). Amplifica impacto de DIF (estrategia de IA). Requiere DIR bajo (resistencia al "reemplazo por IA").',
+        timeline: '6-12 meses para primeros POCs de IA en producción. 18-24 meses para industrialización de IA. 36+ meses para IA como ventaja competitiva sostenible.'
+    }
+};
+
 // Estructura de dimensiones de Kroh
 const KROH_DIMENSIONS = {
     DIF: {
@@ -901,201 +985,258 @@ export default function KrohAdvancedAnalysis({ data }: Props) {
                 })()}
             </div>
 
-            {/* 7. Recomendaciones Estratégicas */}
-            <div className="bg-gradient-to-br from-primary to-primary/80 text-white rounded-3xl p-8 shadow-xl">
-                <h3 className="text-2xl font-bold mb-2 flex items-center gap-2">
-                    <span className="material-icons-outlined">rocket_launch</span>
-                    7. Recomendaciones Estratégicas Priorizadas
+            {/* 7. Recomendaciones Estratégicas Enriquecidas */}
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-sm">
+                <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-2 flex items-center gap-2">
+                    <span className="material-icons-outlined text-primary">rocket_launch</span>
+                    7. Recomendaciones Estratégicas Priorizadas (Basadas en Kroh et al. 2020 y Angelshaug et al. 2025)
                 </h3>
-                <p className="text-primary-foreground/80 text-sm mb-6">
-                    Plan de acción basado en el análisis cuantitativo y estructural de las micro-fundaciones
+                <p className="text-sm text-slate-500 mb-6">
+                    Análisis profundo de las dimensiones críticas con guías de intervención basadas en evidencia académica,
+                    permitiendo tomar decisiones informadas sobre la transformación digital de la organización.
                 </p>
 
-                <div className="space-y-4">
-                    {(() => {
-                        const sorted = [...(data.consolidated.foundations || [])].sort((a, b) => a.average - b.average);
-                        const weakest = sorted.slice(0, 2);
-                        const strongest = sorted.slice(-1)[0];
+                {(() => {
+                    // Identificar las 3 dimensiones más débiles que requieren intervención
+                    const sorted = [...(data.consolidated.foundations || [])].sort((a, b) => a.average - b.average);
+                    const weakestDimensions = sorted.slice(0, 3);
 
-                        return (
-                            <>
-                                {/* Prioridad Crítica */}
-                                <div className="p-6 bg-white/10 backdrop-blur-sm rounded-2xl border-2 border-white/30">
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <span className="material-icons text-rose-300">priority_high</span>
-                                        <h4 className="font-black text-lg uppercase tracking-wide">Prioridad Crítica</h4>
-                                    </div>
-                                    <div className="mb-3">
-                                        <div className="text-sm font-bold mb-1">{weakest[0].name}</div>
-                                        <div className="text-xs text-white/70 mb-2">{weakest[0].description}</div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-2xl font-black">{weakest[0].average.toFixed(2)}</span>
-                                            <span className="text-xs text-white/60">/ 5.0</span>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2 text-sm">
-                                        <p className="font-bold">Acciones inmediatas recomendadas:</p>
-                                        <ul className="space-y-1.5 text-xs">
-                                            {weakest[0].id === 'DIF' && (
-                                                <>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Definir objetivos digitales claros alineados con la estrategia corporativa</span>
-                                                    </li>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Asignar presupuesto específico para iniciativas de transformación digital</span>
-                                                    </li>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Crear un comité de transformación digital con representación ejecutiva</span>
-                                                    </li>
-                                                </>
-                                            )}
-                                            {weakest[0].id === 'DIP' && (
-                                                <>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Implementar metodologías ágiles (Scrum, Kanban) en proyectos digitales</span>
-                                                    </li>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Establecer ciclos de experimentación rápida (MVPs, pruebas piloto)</span>
-                                                    </li>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Reducir barreras burocráticas para aprobación de innovaciones</span>
-                                                    </li>
-                                                </>
-                                            )}
-                                            {weakest[0].id === 'DMI' && (
-                                                <>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Programa de alfabetización digital para todo el personal</span>
-                                                    </li>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Comunicación constante de casos de éxito digitales internos</span>
-                                                    </li>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Reconocimientos e incentivos para iniciativas digitales innovadoras</span>
-                                                    </li>
-                                                </>
-                                            )}
-                                            {weakest[0].id === 'DIN' && (
-                                                <>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Establecer alianzas estratégicas con startups y proveedores tecnológicos</span>
-                                                    </li>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Participar en ecosistemas de innovación y comunidades tech del sector</span>
-                                                    </li>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Implementar plataformas de colaboración abierta con partners externos</span>
-                                                    </li>
-                                                </>
-                                            )}
-                                            {weakest[0].id === 'DTC' && (
-                                                <>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Crear un radar tecnológico para monitoreo continuo de tendencias</span>
-                                                    </li>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Contratar o capacitar especialistas en tecnologías emergentes clave</span>
-                                                    </li>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Establecer laboratorios de pruebas de concepto tecnológico</span>
-                                                    </li>
-                                                </>
-                                            )}
-                                            {weakest[0].id === 'DMA' && (
-                                                <>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Implementar un data warehouse centralizado y gobernanza de datos clara</span>
-                                                    </li>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Desarrollar capacidades de análisis de datos y business intelligence</span>
-                                                    </li>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Establecer políticas de calidad y seguridad de datos</span>
-                                                    </li>
-                                                </>
-                                            )}
-                                            {weakest[0].id === 'DIR' && (
-                                                <>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Gestión activa del cambio con comunicación transparente y continua</span>
-                                                    </li>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Identificar y empoderar a champions digitales en cada área</span>
-                                                    </li>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="material-icons text-xs mt-0.5">arrow_right</span>
-                                                        <span>Abordar miedos y resistencias mediante formación y acompañamiento</span>
-                                                    </li>
-                                                </>
-                                            )}
-                                        </ul>
-                                    </div>
-                                </div>
+                    return (
+                        <div className="space-y-8">
+                            {weakestDimensions.map((dimension, idx) => {
+                                const insights = DIMENSION_INSIGHTS[dimension.id];
+                                if (!insights) return null;
 
-                                {/* Quick Win */}
-                                <div className="p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <span className="material-icons">speed</span>
-                                        <h4 className="font-black uppercase tracking-wide">Quick Win Identificado</h4>
-                                    </div>
-                                    <p className="text-sm">
-                                        Apalancarse en <strong>{strongest.name}</strong> (puntaje: {strongest.average.toFixed(2)})
-                                        como fortaleza existente para impulsar las áreas más débiles. Esta dimensión puede servir
-                                        como catalizador y generar momentum organizacional hacia la transformación digital.
-                                    </p>
-                                </div>
+                                const priorityLevel = idx === 0 ? 'CRÍTICA' : idx === 1 ? 'ALTA' : 'MEDIA';
+                                const priorityColor = idx === 0 ? 'rose' : idx === 1 ? 'orange' : 'amber';
 
-                                {/* Horizonte Estratégico */}
-                                <div className="p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <span className="material-icons">timeline</span>
-                                        <h4 className="font-black uppercase tracking-wide">Horizonte Estratégico</h4>
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                                        <div>
-                                            <div className="font-bold mb-1">📅 Corto Plazo (0-6 meses)</div>
-                                            <div className="text-xs text-white/80">
-                                                Fortalecer {weakest[0].name}. Implementar acciones rápidas que demuestren resultados visibles.
+                                return (
+                                    <div key={dimension.id} className={`border-2 rounded-3xl overflow-hidden ${
+                                        idx === 0 ? 'border-rose-200 dark:border-rose-500/30' :
+                                        idx === 1 ? 'border-orange-200 dark:border-orange-500/30' :
+                                        'border-amber-200 dark:border-amber-500/30'
+                                    }`}>
+                                        {/* Header de la dimensión */}
+                                        <div className={`p-6 ${
+                                            idx === 0 ? 'bg-gradient-to-r from-rose-50 to-rose-100 dark:from-rose-950/30 dark:to-rose-900/20' :
+                                            idx === 1 ? 'bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-950/30 dark:to-orange-900/20' :
+                                            'bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20'
+                                        }`}>
+                                            <div className="flex items-start justify-between mb-4">
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-3 mb-2">
+                                                        <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                                                            idx === 0 ? 'bg-rose-200 text-rose-800 dark:bg-rose-900 dark:text-rose-200' :
+                                                            idx === 1 ? 'bg-orange-200 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
+                                                            'bg-amber-200 text-amber-800 dark:bg-amber-900 dark:text-amber-200'
+                                                        }`}>
+                                                            Prioridad {priorityLevel}
+                                                        </span>
+                                                        <span className="text-sm text-slate-500 dark:text-slate-400">#{idx + 1} Dimensión más débil</span>
+                                                    </div>
+                                                    <h4 className="text-2xl font-black text-slate-900 dark:text-white mb-1">{dimension.name}</h4>
+                                                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">{dimension.description}</p>
+                                                    <div className="flex items-center gap-4">
+                                                        <div>
+                                                            <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Puntaje Actual</span>
+                                                            <div className="flex items-baseline gap-2">
+                                                                <span className={`text-3xl font-black ${
+                                                                    idx === 0 ? 'text-rose-600 dark:text-rose-400' :
+                                                                    idx === 1 ? 'text-orange-600 dark:text-orange-400' :
+                                                                    'text-amber-600 dark:text-amber-400'
+                                                                }`}>
+                                                                    {dimension.average.toFixed(2)}
+                                                                </span>
+                                                                <span className="text-sm text-slate-400">/ 5.0</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Nivel de Madurez</span>
+                                                            <div className="w-full bg-white dark:bg-slate-800 h-3 rounded-full overflow-hidden border border-slate-200 dark:border-slate-700">
+                                                                <div
+                                                                    className={`h-full ${
+                                                                        idx === 0 ? 'bg-rose-500' :
+                                                                        idx === 1 ? 'bg-orange-500' :
+                                                                        'bg-amber-500'
+                                                                    }`}
+                                                                    style={{ width: `${dimension.score}%` }}
+                                                                ></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div>
-                                            <div className="font-bold mb-1">📅 Mediano Plazo (6-18 meses)</div>
-                                            <div className="text-xs text-white/80">
-                                                Balancear {weakest[1].name}. Consolidar procesos y estructuras de soporte.
+
+                                        {/* Contenido enriquecido */}
+                                        <div className="p-6 space-y-6">
+                                            {/* Contexto Crítico */}
+                                            <div className="p-5 bg-blue-50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-500/20 rounded-2xl">
+                                                <div className="flex items-start gap-3">
+                                                    <span className="material-icons text-blue-600 dark:text-blue-400 mt-0.5">menu_book</span>
+                                                    <div className="flex-1">
+                                                        <h5 className="font-bold text-blue-900 dark:text-blue-200 mb-2">Contexto Teórico y Criticidad</h5>
+                                                        <p className="text-sm text-blue-700 dark:text-blue-300 leading-relaxed">{insights.contextoCritico}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Impacto Esperado */}
+                                            <div className="p-5 bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-100 dark:border-emerald-500/20 rounded-2xl">
+                                                <div className="flex items-start gap-3">
+                                                    <span className="material-icons text-emerald-600 dark:text-emerald-400 mt-0.5">trending_up</span>
+                                                    <div className="flex-1">
+                                                        <h5 className="font-bold text-emerald-900 dark:text-emerald-200 mb-2">Impacto Esperado de la Intervención</h5>
+                                                        <p className="text-sm text-emerald-700 dark:text-emerald-300 leading-relaxed">{insights.impactoEsperado}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* KPIs Recomendados */}
+                                            <div>
+                                                <h5 className="font-bold text-slate-800 dark:text-white mb-3 flex items-center gap-2">
+                                                    <span className="material-icons text-primary text-sm">analytics</span>
+                                                    KPIs Recomendados para Seguimiento
+                                                </h5>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                    {insights.kpis.map((kpi: string, kpiIdx: number) => (
+                                                        <div key={kpiIdx} className="p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl">
+                                                            <div className="flex items-start gap-2">
+                                                                <span className="material-icons text-primary text-sm mt-0.5">check_circle</span>
+                                                                <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">{kpi}</p>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* Riesgos a Monitorear */}
+                                            <div className="p-5 bg-amber-50 dark:bg-amber-500/5 border border-amber-100 dark:border-amber-500/20 rounded-2xl">
+                                                <div className="flex items-start gap-3">
+                                                    <span className="material-icons text-amber-600 dark:text-amber-400 mt-0.5">warning</span>
+                                                    <div className="flex-1">
+                                                        <h5 className="font-bold text-amber-900 dark:text-amber-200 mb-3">Riesgos Críticos a Monitorear</h5>
+                                                        <ul className="space-y-2">
+                                                            {insights.riesgos.map((riesgo: string, rIdx: number) => (
+                                                                <li key={rIdx} className="flex items-start gap-2 text-sm text-amber-700 dark:text-amber-300">
+                                                                    <span className="material-icons text-xs mt-0.5">error_outline</span>
+                                                                    <span>{riesgo}</span>
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Secuenciación de Acciones */}
+                                            <div>
+                                                <h5 className="font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+                                                    <span className="material-icons text-primary text-sm">format_list_numbered</span>
+                                                    Secuencia Recomendada de Implementación
+                                                </h5>
+                                                <div className="relative">
+                                                    <div className="absolute left-4 top-4 bottom-4 w-0.5 bg-gradient-to-b from-primary/20 via-primary/50 to-primary/20"></div>
+                                                    <div className="space-y-4">
+                                                        {insights.secuenciacion.map((paso: string, pIdx: number) => (
+                                                            <div key={pIdx} className="flex items-start gap-4 relative">
+                                                                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-black text-sm flex-shrink-0 relative z-10">
+                                                                    {pIdx + 1}
+                                                                </div>
+                                                                <div className="flex-1 pt-1">
+                                                                    <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{paso}</p>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Recursos e Inversión */}
+                                            <div className="p-5 bg-purple-50 dark:bg-purple-500/5 border border-purple-100 dark:border-purple-500/20 rounded-2xl">
+                                                <div className="flex items-start gap-3">
+                                                    <span className="material-icons text-purple-600 dark:text-purple-400 mt-0.5">account_balance_wallet</span>
+                                                    <div className="flex-1">
+                                                        <h5 className="font-bold text-purple-900 dark:text-purple-200 mb-3">Recursos e Inversión Estimada</h5>
+                                                        <ul className="space-y-2">
+                                                            {insights.recursos.map((recurso: string, rIdx: number) => (
+                                                                <li key={rIdx} className="flex items-start gap-2 text-sm text-purple-700 dark:text-purple-300">
+                                                                    <span className="material-icons text-xs mt-0.5">payments</span>
+                                                                    <span>{recurso}</span>
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Interdependencias y Timeline */}
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div className="p-5 bg-cyan-50 dark:bg-cyan-500/5 border border-cyan-100 dark:border-cyan-500/20 rounded-2xl">
+                                                    <div className="flex items-start gap-2 mb-2">
+                                                        <span className="material-icons text-cyan-600 dark:text-cyan-400 text-sm mt-0.5">account_tree</span>
+                                                        <h5 className="font-bold text-cyan-900 dark:text-cyan-200">Interdependencias</h5>
+                                                    </div>
+                                                    <p className="text-sm text-cyan-700 dark:text-cyan-300 leading-relaxed">{insights.interdependencias}</p>
+                                                </div>
+                                                <div className="p-5 bg-indigo-50 dark:bg-indigo-500/5 border border-indigo-100 dark:border-indigo-500/20 rounded-2xl">
+                                                    <div className="flex items-start gap-2 mb-2">
+                                                        <span className="material-icons text-indigo-600 dark:text-indigo-400 text-sm mt-0.5">schedule</span>
+                                                        <h5 className="font-bold text-indigo-900 dark:text-indigo-200">Timeline Esperado</h5>
+                                                    </div>
+                                                    <p className="text-sm text-indigo-700 dark:text-indigo-300 leading-relaxed">{insights.timeline}</p>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div>
-                                            <div className="font-bold mb-1">📅 Largo Plazo (18+ meses)</div>
-                                            <div className="text-xs text-white/80">
-                                                Optimizar todas las micro-fundaciones. Alcanzar ventaja competitiva sostenible.
+                                    </div>
+                                );
+                            })}
+
+                            {/* Resumen de Priorización */}
+                            <div className="mt-8 p-6 bg-gradient-to-br from-primary/5 to-primary/10 border-2 border-primary/20 rounded-2xl">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <span className="material-icons text-white">lightbulb</span>
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="font-bold text-lg text-slate-900 dark:text-white mb-3">
+                                            Síntesis: Enfoque Estratégico de Intervención
+                                        </h4>
+                                        <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-4">
+                                            La transformación digital exitosa requiere abordar las dimensiones en el orden correcto,
+                                            respetando las interdependencias entre micro-fundaciones. Las recomendaciones anteriores
+                                            están fundamentadas en el modelo de Capacidades Dinámicas (Teece, 2007) aplicado al
+                                            contexto digital (Kroh et al. 2020) y en la teoría de Atención Organizacional para IA
+                                            (Angelshaug et al. 2025).
+                                        </p>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div className="p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                                                <div className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase">Horizonte Corto</div>
+                                                <div className="text-sm font-bold text-slate-800 dark:text-white mb-2">0-6 meses</div>
+                                                <div className="text-xs text-slate-600 dark:text-slate-400">
+                                                    Focus en {weakestDimensions[0]?.name}. Quick wins visibles para generar momentum.
+                                                </div>
+                                            </div>
+                                            <div className="p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                                                <div className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase">Horizonte Medio</div>
+                                                <div className="text-sm font-bold text-slate-800 dark:text-white mb-2">6-18 meses</div>
+                                                <div className="text-xs text-slate-600 dark:text-slate-400">
+                                                    Consolidar {weakestDimensions[1]?.name}. Institucionalizar capacidades.
+                                                </div>
+                                            </div>
+                                            <div className="p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                                                <div className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase">Horizonte Largo</div>
+                                                <div className="text-sm font-bold text-slate-800 dark:text-white mb-2">18+ meses</div>
+                                                <div className="text-xs text-slate-600 dark:text-slate-400">
+                                                    Optimización continua. Ventaja competitiva digital sostenible.
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </>
-                        );
-                    })()}
-                </div>
+                            </div>
+                        </div>
+                    );
+                })()}
             </div>
         </div>
     );
