@@ -1,17 +1,13 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --background: #f6f7f8;
   --foreground: #0f172a;
   --primary: #136dec;
   --background-dark: #101822;
-}
-
-@theme inline {
-  --color-background-light: #f6f7f8;
-  --color-background-dark: #101822;
-  --color-primary: #136dec;
-  --font-display: "Inter", sans-serif;
+  color-scheme: light dark;
 }
 
 @media (prefers-color-scheme: dark) {
