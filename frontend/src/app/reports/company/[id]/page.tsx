@@ -232,7 +232,7 @@ export default function CompanyReportPage() {
             // Generate filename
             const filename = `Reporte_${data.company.name.replace(/\s+/g, '_')}_${instrumentTitle.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
 
-            // Configure html2pdf options
+            // Configure html2pdf options with workaround for LAB colors
             const opt = {
                 margin: 10,
                 filename: filename,
@@ -240,8 +240,45 @@ export default function CompanyReportPage() {
                 html2canvas: {
                     scale: 2,
                     useCORS: true,
+                    allowTaint: true,
                     logging: false,
-                    backgroundColor: '#ffffff'
+                    backgroundColor: '#ffffff',
+                    onclone: (clonedDoc: Document) => {
+                        // Fix LAB color issues by converting all computed styles to RGB
+                        const allElements = clonedDoc.querySelectorAll('*');
+                        allElements.forEach((el) => {
+                            if (el instanceof HTMLElement) {
+                                try {
+                                    const computed = window.getComputedStyle(el);
+
+                                    // Force compute and set RGB values for all color properties
+                                    const colorProps = [
+                                        'color', 'backgroundColor', 'borderColor',
+                                        'borderTopColor', 'borderRightColor',
+                                        'borderBottomColor', 'borderLeftColor',
+                                        'outlineColor', 'textDecorationColor'
+                                    ];
+
+                                    colorProps.forEach(prop => {
+                                        const value = computed.getPropertyValue(prop);
+                                        if (value && value !== 'transparent' && value !== 'rgba(0, 0, 0, 0)') {
+                                            el.style.setProperty(prop, value);
+                                        }
+                                    });
+                                } catch (e) {
+                                    // Ignore errors for individual elements
+                                }
+                            }
+                        });
+
+                        // Ensure canvas elements (charts) are visible
+                        const canvases = clonedDoc.querySelectorAll('canvas');
+                        canvases.forEach((canvas) => {
+                            if (canvas instanceof HTMLCanvasElement) {
+                                canvas.style.display = 'block';
+                            }
+                        });
+                    }
                 },
                 jsPDF: {
                     unit: 'mm' as const,
