@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function DiagnosticsListPage() {
     const diagnostics = [
-        { id: 'kroh-2020', name: 'Madurez Digital (Kroh et al. 2020)', status: 'Activo', items: 32, description: 'Evalúa la madurez digital organizacional' },
+        { id: 'kroh-2020', name: 'Madurez Digital (Kroh et al. 2020 + Angelshaug 2025)', status: 'Activo', items: 32, description: 'Evalúa la madurez digital organizacional con 8 micro-fundaciones' },
         { id: 'kerzner-2024', name: 'Madurez en Gestión de Proyectos (Kerzner)', status: 'Activo', items: 20, description: 'Evalúa la madurez en gestión de proyectos PM' },
         { id: 'ind-40', name: 'Preparación Industria 4.0', status: 'Draft', items: 25, description: 'Preparación para transformación digital industrial' },
     ];

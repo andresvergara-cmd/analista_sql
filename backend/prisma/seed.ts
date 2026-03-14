@@ -54,13 +54,13 @@ async function main() {
     });
     console.log('Sample organization created:', sampleOrg.name);
 
-    // Create Kroh et al. 2020 Assessment
+    // Create Kroh et al. 2020 + Angelshaug 2025 Assessment
     const krohAssessment = await prisma.assessment.upsert({
         where: { id: 'kroh-2020' },
         update: {},
         create: {
             id: 'kroh-2020',
-            title: 'Diagnóstico de Madurez Digital (Kroh et al. 2020)',
+            title: 'Diagnóstico de Madurez Digital (Kroh et al. 2020 + Angelshaug 2025)',
             tenantId: tenant.id,
             questions: {} // Initial empty questions
         }

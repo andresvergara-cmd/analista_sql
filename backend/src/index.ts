@@ -102,7 +102,7 @@ app.post('/api/assessment/submit', authMiddleware, checkCompanyAccess('survey', 
             update: {},
             create: {
                 id: assessmentId,
-                title: assessmentId === 'kroh-2020' ? 'Diagnóstico de Madurez Digital (Kroh 2020)' : assessmentId,
+                title: assessmentId === 'kroh-2020' ? 'Diagnóstico de Madurez Digital (Kroh et al. 2020 + Angelshaug 2025)' : assessmentId,
                 questions: [], // Required field
                 tenantId: 'default-tenant' // Ensure tenantId is provided
             }
@@ -1322,7 +1322,7 @@ app.post('/api/public/survey/:token/submit', surveyLimiter, validateParams(token
             create: {
                 id: link.assessmentId,
                 title: link.assessmentId === 'kroh-2020'
-                    ? 'Diagnóstico de Madurez Digital (Kroh 2020)'
+                    ? 'Diagnóstico de Madurez Digital (Kroh et al. 2020 + Angelshaug 2025)'
                     : link.assessmentId === 'kerzner-2024'
                         ? 'Diagnóstico de Madurez en Gestión de Proyectos (Kerzner 2024)'
                         : link.assessmentId,

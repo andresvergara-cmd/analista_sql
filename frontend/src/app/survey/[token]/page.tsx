@@ -65,7 +65,7 @@ export default function PublicSurveyPage() {
 
     const instrumentTitle = isKerzner
         ? 'Madurez en Gestión de Proyectos (Kerzner)'
-        : 'Diagnóstico de Madurez Digital (Kroh et al. 2020)';
+        : 'Diagnóstico de Madurez Digital (Kroh et al. 2020 + Angelshaug 2025)';
 
     const handleAnswer = (itemId: string, value: number) => {
         setAnswers(prev => ({ ...prev, [itemId]: value }));

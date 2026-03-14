@@ -6,7 +6,7 @@ export default function ReportsPage() {
     const instruments = [
         {
             id: 'kroh',
-            name: 'Madurez Digital (Kroh et al. 2020)',
+            name: 'Madurez Digital (Kroh et al. 2020 + Angelshaug 2025)',
             description: 'Análisis de madurez digital organizacional basado en 8 micro-fundaciones',
             icon: 'analytics',
             color: 'from-blue-500 to-indigo-600',
