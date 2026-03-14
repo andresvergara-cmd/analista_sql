@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { RadarChart } from '@/components/RadarChart';
 import KrohAdvancedAnalysis from '@/components/KrohAdvancedAnalysis';
 import KerznerAdvancedAnalysis from '@/components/KerznerAdvancedAnalysis';
-import jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
@@ -228,16 +228,31 @@ export default function CompanyReportPage() {
         setIsGeneratingPDF(true);
 
         try {
-            // Capture the current tab
             const element = reportRef.current;
+
+            // Wait a bit to ensure all charts are fully rendered
+            await new Promise(resolve => setTimeout(resolve, 500));
 
             // Use html2canvas to capture the content
             const canvas = await html2canvas(element, {
                 scale: 2,
                 useCORS: true,
-                logging: false,
-                backgroundColor: '#ffffff'
+                allowTaint: true,
+                logging: true, // Enable logging to see what's happening
+                backgroundColor: '#ffffff',
+                windowWidth: element.scrollWidth,
+                windowHeight: element.scrollHeight,
+                onclone: (clonedDoc) => {
+                    // Ensure canvas elements are visible in the clone
+                    const clonedElement = clonedDoc.querySelector('[data-pdf-content]') || clonedDoc.body;
+                    const canvases = clonedElement.querySelectorAll('canvas');
+                    canvases.forEach((canvas: any) => {
+                        canvas.style.display = 'block';
+                    });
+                }
             });
+
+            console.log('Canvas captured:', canvas.width, 'x', canvas.height);
 
             const imgData = canvas.toDataURL('image/png');
 
@@ -272,9 +287,12 @@ export default function CompanyReportPage() {
             // Download the PDF
             pdf.save(filename);
 
-        } catch (error) {
+            console.log('PDF generated successfully');
+
+        } catch (error: any) {
             console.error('Error generating PDF:', error);
-            alert('Error al generar el PDF. Por favor, intente nuevamente.');
+            console.error('Error details:', error.message, error.stack);
+            alert(`Error al generar el PDF: ${error.message || 'Error desconocido'}. Revise la consola para más detalles.`);
         } finally {
             setIsGeneratingPDF(false);
         }
