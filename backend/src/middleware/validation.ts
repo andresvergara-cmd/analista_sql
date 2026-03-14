@@ -15,7 +15,12 @@ export function validate(schema: z.ZodSchema, source: 'body' | 'params' | 'query
       const validated = await schema.parseAsync(dataToValidate);
 
       // Replace the original data with validated/sanitized data
-      req[source] = validated;
+      // For query params, we need to use Object.assign since req.query is read-only
+      if (source === 'query') {
+        Object.assign(req.query, validated);
+      } else {
+        (req as any)[source] = validated;
+      }
 
       next();
     } catch (error) {

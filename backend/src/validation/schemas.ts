@@ -243,8 +243,10 @@ export const paginationSchema = z.object({
 
 export const reportQuerySchema = z.object({
   instrument: z
-    .string({ message: 'Instrumento es requerido' })
-    .min(1, 'Instrumento no puede estar vacío'),
+    .string()
+    .min(1, 'Instrumento no puede estar vacío')
+    .optional()
+    .default('kroh-2020'),
 });
 
 /**

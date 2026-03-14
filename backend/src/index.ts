@@ -927,6 +927,9 @@ app.get('/api/organizations/:id/report', authMiddleware, checkCompanyAccess('rep
     const id = getParam(req.params.id);
     const instrument = (typeof req.query.instrument === 'string' ? req.query.instrument : 'kroh-2020');
 
+    console.log('🔍 Report endpoint - req.query:', req.query);
+    console.log('🔍 Report endpoint - instrument value:', instrument);
+
     try {
         // Optimized: filter answers by instrument at database level to avoid N+1
         const company = await prisma.company.findUnique({
@@ -1056,7 +1059,12 @@ app.get('/api/organizations/:id/report', authMiddleware, checkCompanyAccess('rep
             instrument
         });
     } catch (error: any) {
-        res.status(500).json({ error: error.message });
+        console.error('Error generating report:', error);
+        console.error('Stack trace:', error.stack);
+        res.status(500).json({
+            error: error.message,
+            details: error.stack
+        });
     }
 });
 
