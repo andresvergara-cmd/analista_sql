@@ -652,59 +652,6 @@ export default function CompanyReportPage() {
                                 </div>
                             </div>
                         )}
-
-                        {/* 3. Hoja de Ruta y 4. Benchmarking */}
-                        <div className="lg:col-span-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-sm">
-                            <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-8 flex items-center gap-2">
-                                <span className="material-icons-outlined text-primary">timeline</span>
-                                3. Hoja de Ruta de Intervención Priorizada
-                            </h3>
-                            <div className="space-y-6">
-                                {data.roadmap.slice(0, 4).map((item, i) => (
-                                    <div key={i} className="flex gap-4 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 border-l-4 border-l-primary hover:shadow-md transition-shadow">
-                                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-xs shrink-0">
-                                            {i + 1}
-                                        </div>
-                                        <div>
-                                            <h4 className="font-bold text-slate-800 dark:text-white mb-1">{item.title}</h4>
-                                            <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">{item.description}</p>
-                                            <span className="text-[10px] font-black text-primary bg-primary/5 px-2 py-1 rounded-md uppercase tracking-widest">{item.horizon}</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="lg:col-span-4 bg-primary text-white border border-primary rounded-3xl p-8 shadow-xl shadow-primary/20 flex flex-col justify-between">
-                            <div>
-                                <h3 className="text-xl font-black mb-2 flex items-center gap-2">
-                                    <span className="material-icons">flag</span>
-                                    4. Benchmarking (Línea Base)
-                                </h3>
-                                <p className="text-primary-foreground/70 text-sm font-medium mb-8">Estado actual de la madurez digital para futuras comparaciones.</p>
-
-                                <div className="space-y-6">
-                                    <div className="p-5 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/10">
-                                        <p className="text-[10px] font-black uppercase tracking-widest mb-1 opacity-70">Línea Base Global</p>
-                                        <div className="text-4xl font-black">{data.consolidated.globalScore}</div>
-                                        <p className="text-xs font-bold mt-2 opacity-90">{data.consolidated.status}</p>
-                                    </div>
-                                    <div className="p-5 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/10">
-                                        <p className="text-[10px] font-black uppercase tracking-widest mb-2 opacity-70">Posición en el Mercado (Sector)</p>
-                                        <div className="flex items-center gap-2">
-                                            <div className="flex-1 bg-white/20 h-2 rounded-full overflow-hidden">
-                                                <div className="bg-white h-full w-[65%]"></div>
-                                            </div>
-                                            <span className="text-xs font-bold font-mono">Top 35%</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button className="mt-8 w-full bg-white text-primary py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-colors shadow-lg shadow-black/10">
-                                Emitir Certificado Línea Base
-                            </button>
-                        </div>
                     </div>
                 </div>
             )}
