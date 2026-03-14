@@ -11,13 +11,13 @@ export default function Sidebar() {
   const { sidebarOpen, setSidebarOpen } = useSidebar();
 
   const menuItems = [
-    { href: "/", label: "Panel Principal", icon: "dashboard" },
-    { href: "/organizations", label: "Organizaciones", icon: "business" },
-    { href: "/measurement-instrument", label: "Instrumento de Medición", icon: "fact_check" },
-    { href: "/reports", label: "Reportes", icon: "description" },
-    { href: "/analysis", label: "Análisis con IA", icon: "psychology" },
-    { href: "/query", label: "Consultas SQL", icon: "table_view" },
-    { href: "/config", label: "Configuración", icon: "settings" },
+    { href: "/", label: "Panel Principal", icon: "dashboard", disabled: false },
+    { href: "/organizations", label: "Organizaciones", icon: "business", disabled: false },
+    { href: "/measurement-instrument", label: "Instrumento de Medición", icon: "fact_check", disabled: false },
+    { href: "/reports", label: "Reportes", icon: "description", disabled: false },
+    { href: "/query", label: "Consultas SQL", icon: "table_view", disabled: false },
+    { href: "/config", label: "Configuración", icon: "settings", disabled: false },
+    { href: "/analysis", label: "Análisis con IA", icon: "psychology", disabled: true, disabledMessage: "Módulo en construcción. Se habilitará una vez se tenga más información del cliente." },
   ];
 
   // Determine if we are in a sub-module (like assessment or diagnosis)
@@ -57,6 +57,35 @@ export default function Sidebar() {
       <nav className="flex-1 px-4 space-y-1.5 mt-4">
         {menuItems.map((item) => {
           const active = isModuleActive(item.href);
+
+          if (item.disabled) {
+            return (
+              <div
+                key={item.href}
+                className="relative group/tooltip"
+              >
+                <div
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 cursor-not-allowed opacity-50 text-slate-400 dark:text-slate-600"
+                >
+                  <span className="material-icons-outlined text-[20px]">
+                    {item.icon}
+                  </span>
+                  {item.label}
+                  <span className="material-icons text-[16px] ml-auto">lock</span>
+                </div>
+                {/* Tooltip */}
+                <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-3 py-2 bg-slate-800 dark:bg-slate-700 text-white text-xs rounded-lg shadow-lg opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all duration-200 w-64 z-50">
+                  <div className="flex items-start gap-2">
+                    <span className="material-icons text-[16px] text-amber-400 flex-shrink-0">info</span>
+                    <p className="leading-relaxed">{item.disabledMessage}</p>
+                  </div>
+                  {/* Arrow */}
+                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-8 border-transparent border-r-slate-800 dark:border-r-slate-700"></div>
+                </div>
+              </div>
+            );
+          }
+
           return (
             <Link
               key={item.href}
