@@ -54,6 +54,12 @@ SECURITY CONSTRAINTS (CRITICAL):
 - Never expose passwords or sensitive data
 - Always use proper JOINs with explicit ON conditions
 
+SQL RULES (CRITICAL - FOLLOW STRICTLY):
+- GROUP BY RULE: If using GROUP BY, ALL non-aggregated columns in SELECT must be in GROUP BY clause
+- AGGREGATION RULE: Use aggregate functions (COUNT, AVG, SUM, MAX, MIN) correctly
+- ORDER BY RULE: Columns in ORDER BY must be in SELECT or be part of an aggregate
+- NO mixing of aggregated and non-aggregated columns without proper GROUP BY
+
 OUTPUT FORMAT (JSON only):
 {
   "sql": "SELECT ... (use $1, $2 for parameters)",
@@ -71,12 +77,12 @@ Query: "¿Cuántos diagnósticos tiene la empresa?"
   "estimatedComplexity": "low"
 }
 
-Query: "Puntaje promedio por dimensión"
+Query: "Listar todos los diagnósticos"
 {
-  "sql": "SELECT d.\\"result\\" FROM \\"Diagnosis\\" d JOIN \\"Answer\\" a ON d.\\"answerId\\" = a.\\"id\\" WHERE a.\\"companyId\\" = $1 ORDER BY d.\\"createdAt\\" DESC LIMIT 1000",
+  "sql": "SELECT d.\\"id\\", d.\\"score\\", d.\\"result\\", d.\\"createdAt\\", a.\\"studentName\\" FROM \\"Diagnosis\\" d JOIN \\"Answer\\" a ON d.\\"answerId\\" = a.\\"id\\" WHERE a.\\"companyId\\" = $1 ORDER BY d.\\"createdAt\\" DESC LIMIT 1000",
   "parameters": ["company-uuid"],
-  "explanation": "Obtiene los resultados de diagnósticos para extraer dimensiones y calcular promedios",
-  "estimatedComplexity": "medium"
+  "explanation": "Lista todos los diagnósticos con sus detalles ordenados por fecha",
+  "estimatedComplexity": "low"
 }`;
 
     const userPrompt = `USER QUERY: "${userQuery}"${companyId ? `\nCOMPANY ID: ${companyId}` : ''}
