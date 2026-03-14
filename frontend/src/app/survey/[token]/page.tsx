@@ -63,6 +63,9 @@ export default function PublicSurveyPage() {
         : { 1: 'Muy Bajo', 3: 'Medio', 5: 'Muy Alto' };
     const progress = step === 'ASSESSMENT' ? ((currentSectionIndex + 1) / sections.length) * 100 : 0;
 
+    // Identificar si la sección actual es DIR (preguntas invertidas)
+    const isReversedScale = currentSection?.id === 'DIR';
+
     const instrumentTitle = isKerzner
         ? 'Madurez en Gestión de Proyectos (Kerzner)'
         : 'Diagnóstico de Madurez Digital (Kroh et al. 2020 + Angelshaug 2025)';
@@ -265,9 +268,29 @@ export default function PublicSurveyPage() {
                     <div className="mb-8">
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-medium text-primary">Sección {currentSectionIndex + 1} de {sections.length}</span>
+                            <span className="text-xs font-bold text-slate-500">
+                                {currentSection.items.filter(item => answers[item.id] !== undefined).length} de {currentSection.items.length} respondidas
+                            </span>
                         </div>
                         <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">{currentSection.title}</h2>
                         <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">{currentSection.description}</p>
+
+                        {/* Alerta para escala invertida */}
+                        {isReversedScale && (
+                            <div className="mt-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl p-4">
+                                <div className="flex items-start gap-3">
+                                    <span className="material-icons text-amber-600 dark:text-amber-400 text-xl mt-0.5">warning</span>
+                                    <div className="flex-1">
+                                        <p className="font-bold text-amber-900 dark:text-amber-100 text-sm mb-1">⚠️ Atención: Escala Invertida</p>
+                                        <p className="text-xs text-amber-800 dark:text-amber-200 leading-relaxed">
+                                            Estas preguntas están formuladas en <strong>negativo</strong> (barreras, resistencias, falta de capacidades).
+                                            Un puntaje <strong>bajo (1-2)</strong> indica que su organización <strong>NO tiene estas barreras</strong> (favorable).
+                                            Un puntaje <strong>alto (4-5)</strong> indica que <strong>SÍ existen estas barreras</strong> (desfavorable).
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Questions */}
@@ -283,22 +306,87 @@ export default function PublicSurveyPage() {
                                             {item.text}
                                         </label>
 
-                                        <div className={`grid grid-cols-1 gap-3 ${isKerzner ? 'md:grid-cols-7' : 'md:grid-cols-5'}`}>
-                                            {Array.from({ length: scaleMax }, (_, i) => i + 1).map((val) => (
-                                                <button
-                                                    key={val}
-                                                    onClick={() => handleAnswer(item.id, val)}
-                                                    className={`flex flex-col items-center p-3 border rounded-lg transition-all group ${answers[item.id] === val
-                                                        ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
-                                                        : 'border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 hover:border-primary'
-                                                        }`}
-                                                >
-                                                    <span className={`text-lg font-bold mb-1 ${answers[item.id] === val ? 'text-primary' : 'text-slate-400 group-hover:text-primary'}`}>{val}</span>
-                                                    <span className={`text-[8px] uppercase font-bold text-center leading-tight ${answers[item.id] === val ? 'text-primary' : 'text-slate-400 group-hover:text-primary'}`}>
-                                                        {(scaleLabels as any)[val] || ''}
-                                                    </span>
-                                                </button>
-                                            ))}
+                                        {/* Opción "No Sabe" */}
+                                        <div className="mb-4">
+                                            <button
+                                                onClick={() => handleAnswer(item.id, 0)}
+                                                className={`w-full flex items-center justify-center gap-2 p-3 border rounded-xl transition-all ${answers[item.id] === 0
+                                                    ? 'border-slate-400 bg-slate-100 dark:bg-slate-800 ring-2 ring-slate-400/30'
+                                                    : 'border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 hover:border-slate-400'
+                                                    }`}
+                                            >
+                                                <span className="material-icons text-slate-500 text-sm">help_outline</span>
+                                                <span className={`text-sm font-bold ${answers[item.id] === 0 ? 'text-slate-700 dark:text-slate-300' : 'text-slate-500'}`}>
+                                                    No Sé / No Aplica
+                                                </span>
+                                            </button>
+                                        </div>
+
+                                        {/* Escala de respuestas */}
+                                        <div className={`grid gap-2 ${isKerzner ? 'grid-cols-7' : 'grid-cols-5'}`}>
+                                            {Array.from({ length: scaleMax }, (_, i) => i + 1).map((val) => {
+                                                const isSelected = answers[item.id] === val;
+                                                const isLow = val <= 2;
+                                                const isMid = val === 3 || val === 4;
+                                                const isHigh = val >= 5;
+
+                                                // Colores según el valor y si es escala invertida
+                                                let bgColor = '';
+                                                let textColor = '';
+                                                let ringColor = '';
+
+                                                if (isSelected) {
+                                                    if (isReversedScale) {
+                                                        // En escala invertida: bajo es bueno (verde), alto es malo (rojo)
+                                                        if (isLow) {
+                                                            bgColor = 'bg-emerald-50 dark:bg-emerald-900/20';
+                                                            textColor = 'text-emerald-600 dark:text-emerald-400';
+                                                            ringColor = 'ring-emerald-500/30';
+                                                        } else if (isMid) {
+                                                            bgColor = 'bg-amber-50 dark:bg-amber-900/20';
+                                                            textColor = 'text-amber-600 dark:text-amber-400';
+                                                            ringColor = 'ring-amber-500/30';
+                                                        } else {
+                                                            bgColor = 'bg-red-50 dark:bg-red-900/20';
+                                                            textColor = 'text-red-600 dark:text-red-400';
+                                                            ringColor = 'ring-red-500/30';
+                                                        }
+                                                    } else {
+                                                        // Escala normal: bajo es malo (rojo), alto es bueno (verde)
+                                                        if (isLow) {
+                                                            bgColor = 'bg-red-50 dark:bg-red-900/20';
+                                                            textColor = 'text-red-600 dark:text-red-400';
+                                                            ringColor = 'ring-red-500/30';
+                                                        } else if (isMid) {
+                                                            bgColor = 'bg-amber-50 dark:bg-amber-900/20';
+                                                            textColor = 'text-amber-600 dark:text-amber-400';
+                                                            ringColor = 'ring-amber-500/30';
+                                                        } else {
+                                                            bgColor = 'bg-emerald-50 dark:bg-emerald-900/20';
+                                                            textColor = 'text-emerald-600 dark:text-emerald-400';
+                                                            ringColor = 'ring-emerald-500/30';
+                                                        }
+                                                    }
+                                                }
+
+                                                return (
+                                                    <button
+                                                        key={val}
+                                                        onClick={() => handleAnswer(item.id, val)}
+                                                        className={`flex flex-col items-center p-3 border rounded-lg transition-all group ${isSelected
+                                                            ? `${bgColor} border-transparent ring-2 ${ringColor}`
+                                                            : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/50 hover:border-primary hover:bg-primary/5'
+                                                            }`}
+                                                    >
+                                                        <span className={`text-lg font-bold mb-1 ${isSelected ? textColor : 'text-slate-400 group-hover:text-primary'}`}>
+                                                            {val}
+                                                        </span>
+                                                        <span className={`text-[8px] uppercase font-bold text-center leading-tight ${isSelected ? textColor : 'text-slate-400 group-hover:text-primary'}`}>
+                                                            {(scaleLabels as any)[val] || ''}
+                                                        </span>
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </div>

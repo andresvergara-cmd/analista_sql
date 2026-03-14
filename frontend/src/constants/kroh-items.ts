@@ -72,12 +72,12 @@ export const KROH_MICROFOUNDATIONS = [
     {
         id: "DIR",
         title: "Overcoming Resistance",
-        description: "Superación de barreras internas y resistencia al cambio (Escala Invertida).",
+        description: "Superación de barreras internas y resistencia al cambio. IMPORTANTE: Estas preguntas evalúan BARRERAS. Un puntaje BAJO es favorable (pocas barreras), un puntaje ALTO es desfavorable (muchas barreras).",
         items: [
-            { id: "I34", text: "Nuestros empleados carecen de las competencias para desarrollar innovaciones digitales." },
-            { id: "I35", text: "Nuestros empleados no están dispuestos a desarrollar innovaciones digitales." },
-            { id: "I36", text: "Nuestros empleados perciben las condiciones legales (ej. leyes de protección de datos) como barreras." },
-            { id: "I38", text: "Nuestros procesos internos y altos niveles de burocracia son barreras para desarrollar innovación digital." }
+            { id: "I34", text: "⚠️ [BARRERA] Nuestros empleados carecen de las competencias para desarrollar innovaciones digitales." },
+            { id: "I35", text: "⚠️ [BARRERA] Nuestros empleados no están dispuestos a desarrollar innovaciones digitales." },
+            { id: "I36", text: "⚠️ [BARRERA] Nuestros empleados perciben las condiciones legales (ej. leyes de protección de datos) como barreras." },
+            { id: "I38", text: "⚠️ [BARRERA] Nuestros procesos internos y altos niveles de burocracia son barreras para desarrollar innovación digital." }
         ]
     },
     {
