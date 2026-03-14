@@ -75,6 +75,7 @@ model Answer {
   studentEmail       String
   respondentName     String?
   respondentPosition String?
+  respondentOrgLevel String?
   respondentEmail    String?
   responses          Json
   submittedAt        DateTime   @default(now())

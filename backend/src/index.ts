@@ -93,7 +93,7 @@ app.use('/api/auth', createAuthRouter(prisma));
 
 // Submit answers and generate diagnosis (AI placeholder)
 app.post('/api/assessment/submit', authMiddleware, checkCompanyAccess('survey', 'body'), validateBody(submitSurveyResponseSchema), async (req, res) => {
-    const { assessmentId, studentName, studentEmail, responses, companyId, respondentName, respondentPosition, respondentEmail } = req.body;
+    const { assessmentId, studentName, studentEmail, responses, companyId, respondentName, respondentPosition, respondentOrgLevel, respondentEmail } = req.body;
 
     try {
         // Ensure assessment exists
@@ -116,6 +116,7 @@ app.post('/api/assessment/submit', authMiddleware, checkCompanyAccess('survey', 
                 studentEmail,
                 respondentName,
                 respondentPosition,
+                respondentOrgLevel,
                 respondentEmail,
                 responses,
             },
@@ -201,7 +202,7 @@ app.get('/api/diagnosis/:id', async (req, res) => {
 
 // Update a single response and recalculate diagnosis
 app.patch('/api/diagnosis/:id/update-response', authMiddleware, async (req, res) => {
-    const { id } = req.params;
+    const diagnosisId = getParam(req.params.id);
     const { itemId, value } = req.body;
 
     try {
@@ -209,9 +210,6 @@ app.patch('/api/diagnosis/:id/update-response', authMiddleware, async (req, res)
         if (!itemId || value === undefined || value < 0 || value > 5) {
             return res.status(400).json({ error: 'Datos inválidos. El valor debe estar entre 0 (No Sabe) y 5.' });
         }
-
-        // Ensure id is a string
-        const diagnosisId = Array.isArray(id) ? id[0] : id;
 
         // 1. Buscar diagnóstico
         const diagnosis = await prisma.diagnosis.findUnique({
@@ -226,16 +224,24 @@ app.patch('/api/diagnosis/:id/update-response', authMiddleware, async (req, res)
             return res.status(404).json({ error: 'Diagnóstico no encontrado' });
         }
 
-        if (!diagnosis.answer || !diagnosis.answerId) {
+        if (!diagnosis.answerId) {
             return res.status(400).json({ error: 'El diagnóstico no tiene respuestas asociadas' });
         }
 
+        const answer = await prisma.answer.findUnique({
+            where: { id: diagnosis.answerId }
+        });
+
+        if (!answer) {
+            return res.status(404).json({ error: 'Respuesta no encontrada' });
+        }
+
         // 2. Actualizar respuesta
-        const currentResponses = diagnosis.answer.responses as Record<string, number>;
+        const currentResponses = answer.responses as Record<string, number>;
         currentResponses[itemId] = value;
 
         await prisma.answer.update({
-            where: { id: diagnosis.answerId },
+            where: { id: answer.id },
             data: { responses: currentResponses }
         });
 
@@ -977,6 +983,7 @@ app.get('/api/organizations/:id/report', authMiddleware, checkCompanyAccess('rep
         let consolidated: any;
         let roadmap: any[];
         let perceptionByPosition: Record<string, any> = {};
+        let perceptionByOrgLevel: Record<string, any> = {};
 
         if (instrument === 'kerzner-2024') {
             // Kerzner PM Maturity Logic
@@ -1014,6 +1021,34 @@ app.get('/api/organizations/:id/report', authMiddleware, checkCompanyAccess('rep
                 perceptionByPosition[pos].maturity = calculateKerznerMaturity(avgResp);
             });
 
+            // Generate perception analysis by organizational level
+            answers.forEach((a: any) => {
+                const orgLevel = a.respondentOrgLevel || 'Otro';
+                if (!perceptionByOrgLevel[orgLevel]) {
+                    perceptionByOrgLevel[orgLevel] = { count: 0, items: {}, itemCounts: {} };
+                }
+                perceptionByOrgLevel[orgLevel].count++;
+                const resp = a.responses as any;
+                Object.keys(resp).forEach(k => {
+                    const val = resp[k];
+                    if (val === 0 || val === undefined || val === null) return;
+                    if (!perceptionByOrgLevel[orgLevel].items[k]) perceptionByOrgLevel[orgLevel].items[k] = 0;
+                    if (!perceptionByOrgLevel[orgLevel].itemCounts[k]) perceptionByOrgLevel[orgLevel].itemCounts[k] = 0;
+                    perceptionByOrgLevel[orgLevel].items[k] += val;
+                    perceptionByOrgLevel[orgLevel].itemCounts[k]++;
+                });
+            });
+
+            // Calculate maturity for each organizational level
+            Object.keys(perceptionByOrgLevel).forEach(orgLevel => {
+                const data = perceptionByOrgLevel[orgLevel];
+                const avgResp: Record<string, number> = {};
+                Object.keys(data.items).forEach(k => {
+                    avgResp[k] = data.itemCounts[k] > 0 ? data.items[k] / data.itemCounts[k] : 0;
+                });
+                perceptionByOrgLevel[orgLevel].maturity = calculateKerznerMaturity(avgResp);
+            });
+
             // Generate roadmap using Kerzner logic
             roadmap = generateKerznerRoadmap(consolidated.dimensions, consolidated.globalScore);
         } else {
@@ -1048,6 +1083,34 @@ app.get('/api/organizations/:id/report', authMiddleware, checkCompanyAccess('rep
                 });
                 perceptionByPosition[pos].maturity = calculateKrohMaturity(avgResp);
             });
+
+            // Perceptive Gap Analysis by Organizational Level
+            answers.forEach((a: any) => {
+                const orgLevel = a.respondentOrgLevel || 'Otro';
+                if (!perceptionByOrgLevel[orgLevel]) {
+                    perceptionByOrgLevel[orgLevel] = { count: 0, items: {}, itemCounts: {} };
+                }
+                perceptionByOrgLevel[orgLevel].count++;
+                const resp = a.responses as any;
+                Object.keys(resp).forEach(k => {
+                    const val = resp[k];
+                    if (val === 0 || val === undefined || val === null) return;
+                    if (!perceptionByOrgLevel[orgLevel].items[k]) perceptionByOrgLevel[orgLevel].items[k] = 0;
+                    if (!perceptionByOrgLevel[orgLevel].itemCounts[k]) perceptionByOrgLevel[orgLevel].itemCounts[k] = 0;
+                    perceptionByOrgLevel[orgLevel].items[k] += val;
+                    perceptionByOrgLevel[orgLevel].itemCounts[k]++;
+                });
+            });
+
+            // Average the perception by organizational level
+            Object.keys(perceptionByOrgLevel).forEach(orgLevel => {
+                const data = perceptionByOrgLevel[orgLevel];
+                const avgResp: Record<string, number> = {};
+                Object.keys(data.items).forEach(k => {
+                    avgResp[k] = data.itemCounts[k] > 0 ? data.items[k] / data.itemCounts[k] : 0;
+                });
+                perceptionByOrgLevel[orgLevel].maturity = calculateKrohMaturity(avgResp);
+            });
         }
 
         res.json({
@@ -1055,6 +1118,7 @@ app.get('/api/organizations/:id/report', authMiddleware, checkCompanyAccess('rep
             consolidated,
             roadmap,
             perceptionByPosition,
+            perceptionByOrgLevel,
             answers,
             instrument
         });
@@ -1302,7 +1366,7 @@ app.get('/api/public/survey/:token', async (req, res) => {
 // Submit survey responses via public link (no auth)
 app.post('/api/public/survey/:token/submit', surveyLimiter, validateParams(tokenParamSchema), validateBody(submitPublicSurveyResponseSchema), async (req, res) => {
     const token = getParam(req.params.token);
-    const { respondentName, respondentPosition, respondentEmail, responses } = req.body;
+    const { respondentName, respondentPosition, respondentOrgLevel, respondentEmail, responses } = req.body;
 
     try {
         const link = await prisma.surveyLink.findUnique({
@@ -1354,6 +1418,7 @@ app.post('/api/public/survey/:token/submit', surveyLimiter, validateParams(token
                 studentEmail: respondentEmail,
                 respondentName,
                 respondentPosition,
+                respondentOrgLevel,
                 respondentEmail,
                 responses,
             },

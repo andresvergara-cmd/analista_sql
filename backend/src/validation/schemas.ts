@@ -165,6 +165,13 @@ export const submitSurveyResponseSchema = z.object({
     .optional()
     .nullable(),
 
+  respondentOrgLevel: z
+    .enum(['Estratégico', 'Táctico', 'Operativo'], {
+      message: 'Nivel organizacional debe ser: Estratégico, Táctico u Operativo'
+    })
+    .optional()
+    .nullable(),
+
   respondentEmail: z
     .string()
     .email('Email del respondiente inválido')
@@ -195,6 +202,11 @@ export const submitPublicSurveyResponseSchema = z.object({
     .min(1, 'Posición del respondiente no puede estar vacía')
     .max(255, 'Posición del respondiente no puede exceder 255 caracteres')
     .trim(),
+
+  respondentOrgLevel: z
+    .enum(['Estratégico', 'Táctico', 'Operativo'], {
+      message: 'Nivel organizacional debe ser: Estratégico, Táctico u Operativo'
+    }),
 
   respondentEmail: z
     .string({ message: 'Email del respondiente es requerido' })

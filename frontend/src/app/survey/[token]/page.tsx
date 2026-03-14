@@ -26,6 +26,7 @@ export default function PublicSurveyPage() {
 
     const [respondentName, setRespondentName] = useState('');
     const [respondentPosition, setRespondentPosition] = useState('');
+    const [respondentOrgLevel, setRespondentOrgLevel] = useState('');
     const [respondentEmail, setRespondentEmail] = useState('');
 
     const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
@@ -101,6 +102,7 @@ export default function PublicSurveyPage() {
                 body: JSON.stringify({
                     respondentName,
                     respondentPosition,
+                    respondentOrgLevel,
                     respondentEmail,
                     responses: answers,
                 })
@@ -209,6 +211,19 @@ export default function PublicSurveyPage() {
                             />
                         </div>
                         <div>
+                            <label className="block text-[10px] uppercase font-black tracking-widest text-slate-400 mb-2">Nivel Organizacional *</label>
+                            <select
+                                value={respondentOrgLevel}
+                                onChange={(e) => setRespondentOrgLevel(e.target.value)}
+                                className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl px-6 py-4 text-slate-800 dark:text-white font-bold focus:ring-2 focus:ring-primary outline-none transition-all"
+                            >
+                                <option value="">Seleccione un nivel...</option>
+                                <option value="Estratégico">Estratégico (VP, C-Level, Gerente)</option>
+                                <option value="Táctico">Táctico (Director, Líder)</option>
+                                <option value="Operativo">Operativo (Analista, Asistente, Profesional)</option>
+                            </select>
+                        </div>
+                        <div>
                             <label className="block text-[10px] uppercase font-black tracking-widest text-slate-400 mb-2">Correo Electrónico *</label>
                             <input
                                 type="email"
@@ -222,7 +237,7 @@ export default function PublicSurveyPage() {
 
                     <button
                         onClick={() => {
-                            if (respondentName && respondentPosition && respondentEmail) {
+                            if (respondentName && respondentPosition && respondentOrgLevel && respondentEmail) {
                                 setStep('ASSESSMENT');
                             } else {
                                 alert('Por favor complete todos los campos.');

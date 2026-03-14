@@ -44,6 +44,7 @@ interface ReportData {
     };
     roadmap: any[];
     perceptionByPosition: Record<string, any>;
+    perceptionByOrgLevel: Record<string, any>;
     answers: Answer[];
     instrument?: string;
 }
@@ -588,6 +589,69 @@ export default function CompanyReportPage() {
                                 )}
                             </div>
                         </div>
+
+                        {/* 2B. Brechas por Nivel Organizacional */}
+                        {data.perceptionByOrgLevel && Object.keys(data.perceptionByOrgLevel).length > 0 && (
+                            <div className="lg:col-span-12 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-sm">
+                                <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2 flex items-center gap-2">
+                                    <span className="material-icons-outlined text-primary">account_tree</span>
+                                    Análisis por Nivel Organizacional
+                                </h3>
+                                <p className="text-sm text-slate-500 mb-8 font-medium">Percepción de la madurez digital según el nivel jerárquico en la organización.</p>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {Object.entries(data.perceptionByOrgLevel).map(([level, result]: [string, any]) => {
+                                        // Definir íconos y colores según el nivel
+                                        const levelConfig: Record<string, { icon: string; color: string; bg: string }> = {
+                                            'Estratégico': { icon: 'corporate_fare', color: 'text-purple-600', bg: 'bg-purple-50 dark:bg-purple-900/20' },
+                                            'Táctico': { icon: 'group', color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20' },
+                                            'Operativo': { icon: 'engineering', color: 'text-green-600', bg: 'bg-green-50 dark:bg-green-900/20' },
+                                            'Otro': { icon: 'person', color: 'text-slate-600', bg: 'bg-slate-50 dark:bg-slate-800' }
+                                        };
+                                        const config = levelConfig[level] || levelConfig['Otro'];
+
+                                        return (
+                                            <div key={level} className={`p-6 rounded-2xl border border-slate-100 dark:border-slate-800 ${config.bg}`}>
+                                                <div className="flex items-center justify-between mb-4">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className={`material-icons text-sm ${config.color}`}>{config.icon}</span>
+                                                        <span className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest">{level}</span>
+                                                    </div>
+                                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white dark:bg-slate-800 shadow-sm">{result.count} encuestas</span>
+                                                </div>
+                                                <div className="text-3xl font-black text-slate-800 dark:text-white mb-1">
+                                                    {result.maturity.globalScore}
+                                                </div>
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase mb-4">{result.maturity.status}</p>
+
+                                                <div className="space-y-2">
+                                                    {(result.maturity.dimensions || result.maturity.foundations || []).slice(0, 3).map((f: any) => (
+                                                        <div key={f.id} className="flex justify-between items-center text-[10px]">
+                                                            <span className="font-medium text-slate-500">{f.name}</span>
+                                                            <span className="font-bold text-slate-700 dark:text-slate-300">{f.average.toFixed(2)}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+
+                                    {Object.keys(data.perceptionByOrgLevel).length > 1 && (
+                                        <div className="lg:col-span-3 p-6 bg-blue-50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-500/20 rounded-2xl">
+                                            <p className="text-sm text-blue-700 dark:text-blue-300 font-medium">
+                                                <span className="material-icons text-xs align-middle mr-1">info</span>
+                                                <strong>Brecha Jerárquica:</strong> Existe una diferencia de {
+                                                    (() => {
+                                                        const scores = Object.values(data.perceptionByOrgLevel).map((r: any) => r.maturity.globalScore);
+                                                        return (Math.max(...scores) - Math.min(...scores)).toFixed(1);
+                                                    })()
+                                                } puntos entre los diferentes niveles organizacionales. Esta brecha puede indicar desalineación estratégica entre la alta dirección y los equipos operativos.
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
 
                         {/* 3. Hoja de Ruta y 4. Benchmarking */}
                         <div className="lg:col-span-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-sm">
