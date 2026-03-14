@@ -30,6 +30,7 @@ import {
 import { apiLimiter, strictLimiter, surveyLimiter } from './middleware/rate-limit';
 import { executeNaturalQuery } from './utils/query-engine';
 import { indexDocuments, getRAGStatus } from './utils/rag-engine';
+import MultiAgentOrchestrator from './agents/orchestrator';
 
 console.log('BACKEND STARTING...');
 
@@ -42,6 +43,10 @@ const getParam = (param: string | string[] | undefined): string => {
 const app = express();
 const prisma = new PrismaClient();
 const port = process.env.PORT || 3001;
+
+// Initialize Multi-Agent Orchestrator for SQL queries
+const queryOrchestrator = new MultiAgentOrchestrator(prisma);
+console.log('Multi-Agent SQL Orchestrator initialized');
 
 // CORS configuration for development and production
 const allowedOrigins = [
@@ -1512,10 +1517,41 @@ app.post('/api/query', authMiddleware, checkCompanyAccess('queries', 'body'), as
             return;
         }
 
-        const result = await executeNaturalQuery(prisma, nlQuery.trim(), companyId, company.name);
-        res.json(result);
+        // Use Multi-Agent Orchestrator for intelligent SQL generation
+        const orchestrationResult = await queryOrchestrator.processQuery(
+            nlQuery.trim(),
+            companyId,
+            company.name
+        );
+
+        if (!orchestrationResult.success) {
+            res.status(400).json({ error: orchestrationResult.error || 'Error al procesar la consulta.' });
+            return;
+        }
+
+        // Format response to match existing interface
+        const { result, metadata } = orchestrationResult;
+        res.json({
+            sql: result!.sql,
+            data: result!.data,
+            explanation: result!.explanation,
+            chartType: result!.visualization.type,
+            visualization: result!.visualization,
+            metadata: {
+                provider: result!.provider,
+                cached: result!.cached,
+                rowCount: result!.rowCount,
+                executionTime: result!.executionTime,
+                complexity: metadata.sqlPlan?.complexity,
+                agentTimings: metadata.agentTimings,
+                validation: {
+                    securityLevel: metadata.validation?.securityLevel,
+                    warnings: metadata.validation?.warnings,
+                },
+            },
+        });
     } catch (error: any) {
-        console.error('Query engine error:', error);
+        console.error('[API /query] Error:', error);
         res.status(500).json({ error: error.message || 'Error al procesar la consulta.' });
     }
 });
