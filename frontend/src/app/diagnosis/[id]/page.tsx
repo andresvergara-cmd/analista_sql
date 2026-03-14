@@ -32,6 +32,13 @@ export default function DiagnosisPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [viewMode, setViewMode] = useState<'report' | 'table'>('report');
 
+    // Estados para edición
+    const [editingItemId, setEditingItemId] = useState<string | null>(null);
+    const [editValue, setEditValue] = useState<number>(0);
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
+    const [saveError, setSaveError] = useState<string | null>(null);
+
     useEffect(() => {
         const fetchDiagnosis = async () => {
             try {
@@ -74,6 +81,86 @@ export default function DiagnosisPage() {
         if (score >= 3.5) return 'Avanzado';
         if (score >= 2.5) return 'En Transformación Digital';
         return 'En Desarrollo';
+    };
+
+    // Funciones para edición
+    const handleStartEdit = (itemId: string, currentValue: number) => {
+        setEditingItemId(itemId);
+        setEditValue(currentValue);
+        setSaveSuccess(null);
+        setSaveError(null);
+    };
+
+    const handleCancelEdit = () => {
+        setEditingItemId(null);
+        setEditValue(0);
+        setSaveError(null);
+    };
+
+    const handleSaveEdit = async (itemId: string) => {
+        // Validación
+        if (editValue < 0 || editValue > 5) {
+            setSaveError('El valor debe estar entre 0 (No Sabe) y 5');
+            return;
+        }
+
+        setIsSaving(true);
+        setSaveError(null);
+
+        try {
+            const token = localStorage.getItem('authToken');
+            const res = await fetch(`${API_URL}/api/diagnosis/${id}/update-response`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    itemId,
+                    value: editValue
+                })
+            });
+
+            if (!res.ok) {
+                throw new Error('Error al actualizar respuesta');
+            }
+
+            const updatedDiagnosis = await res.json();
+
+            // Actualizar estado local
+            setResponses(prev => ({ ...prev, [itemId]: editValue }));
+
+            // Recalcular diagnóstico con nueva data
+            if (updatedDiagnosis.result) {
+                const result = JSON.parse(updatedDiagnosis.result);
+                const colors = [
+                    'bg-blue-500', 'bg-indigo-500', 'bg-violet-500',
+                    'bg-purple-500', 'bg-fuchsia-500', 'bg-pink-500', 'bg-rose-500'
+                ];
+
+                setData({
+                    companyName: updatedDiagnosis.assessment?.title || 'Evaluación Kroh 2020',
+                    score: updatedDiagnosis.score,
+                    status: getStatus(updatedDiagnosis.score),
+                    foundations: result.foundations.map((f: any, i: number) => ({
+                        ...f,
+                        color: colors[i % colors.length]
+                    })),
+                    aiInsights: result.aiInsights || []
+                });
+            }
+
+            // Mostrar éxito
+            setSaveSuccess(itemId);
+            setTimeout(() => setSaveSuccess(null), 3000);
+
+            setEditingItemId(null);
+        } catch (error) {
+            console.error('Error updating response:', error);
+            setSaveError('No se pudo actualizar la respuesta. Intente nuevamente.');
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     if (isLoading) {
@@ -272,7 +359,7 @@ export default function DiagnosisPage() {
                     )}
                 </>
             ) : (
-                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-xl mb-12">
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-xl">
                     <header className="p-8 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
                         <h2 className="text-xl font-bold flex items-center gap-2">
                             <span className="material-icons-outlined text-primary">storage</span>
@@ -282,48 +369,140 @@ export default function DiagnosisPage() {
                             {Object.keys(responses).length} Ítems Registrados
                         </div>
                     </header>
+
+                    {/* Mensaje de error global */}
+                    {saveError && (
+                        <div className="mx-8 mt-6 p-4 bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-500/30 rounded-xl flex items-start gap-3">
+                            <span className="material-icons-outlined text-rose-500 text-xl">error</span>
+                            <div className="flex-1">
+                                <p className="text-sm font-semibold text-rose-800 dark:text-rose-300 mb-1">Error al guardar</p>
+                                <p className="text-xs text-rose-600 dark:text-rose-400">{saveError}</p>
+                            </div>
+                            <button
+                                onClick={() => setSaveError(null)}
+                                className="material-icons-outlined text-rose-400 hover:text-rose-600 text-lg"
+                            >
+                                close
+                            </button>
+                        </div>
+                    )}
+
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
                                     <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">ID Ítem</th>
                                     <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Valor Capturado</th>
-                                    <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Estado</th>
+                                    <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Estado / Acciones</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                                {Object.entries(responses).sort((a, b) => a[0].localeCompare(b[0])).map(([id, val]) => (
-                                    <tr key={id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                                        <td className="px-8 py-4">
-                                            <span className="text-xs font-black text-primary">{id}</span>
-                                        </td>
-                                        <td className="px-8 py-4">
-                                            <span className="text-lg font-black text-slate-800 dark:text-white">{val}</span>
-                                        </td>
-                                        <td className="px-8 py-4">
-                                            <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider bg-emerald-500/10 px-2 py-0.5 rounded-full">Validado</span>
-                                        </td>
-                                    </tr>
-                                ))}
+                                {Object.entries(responses).sort((a, b) => a[0].localeCompare(b[0])).map(([itemId, val]) => {
+                                    const isEditing = editingItemId === itemId;
+                                    const hasSuccess = saveSuccess === itemId;
+
+                                    return (
+                                        <tr
+                                            key={itemId}
+                                            className={`transition-all ${hasSuccess
+                                                    ? 'bg-emerald-50 dark:bg-emerald-900/20'
+                                                    : isEditing
+                                                        ? 'bg-blue-50 dark:bg-blue-900/20'
+                                                        : 'hover:bg-slate-50/50 dark:hover:bg-slate-800/30'
+                                                }`}
+                                        >
+                                            {/* ID del ítem */}
+                                            <td className="px-8 py-4">
+                                                <span className="text-xs font-black text-primary">{itemId}</span>
+                                            </td>
+
+                                            {/* Valor - Editable */}
+                                            <td className="px-8 py-4">
+                                                {isEditing ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <input
+                                                            type="number"
+                                                            min="0"
+                                                            max="5"
+                                                            value={editValue}
+                                                            onChange={(e) => setEditValue(parseInt(e.target.value) || 0)}
+                                                            className="w-20 px-3 py-2 text-lg font-bold text-slate-900 dark:text-white bg-white dark:bg-slate-800 border-2 border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                                            disabled={isSaving}
+                                                            autoFocus
+                                                        />
+                                                        <span className="text-xs text-slate-400">(0-5)</span>
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-lg font-black text-slate-800 dark:text-white">{val}</span>
+                                                )}
+                                            </td>
+
+                                            {/* Estado / Acciones */}
+                                            <td className="px-8 py-4">
+                                                {isEditing ? (
+                                                    <div className="flex items-center gap-2">
+                                                        {/* Botón Guardar */}
+                                                        <button
+                                                            onClick={() => handleSaveEdit(itemId)}
+                                                            disabled={isSaving}
+                                                            className="flex items-center gap-1 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        >
+                                                            {isSaving ? (
+                                                                <>
+                                                                    <span className="material-icons-outlined text-sm animate-spin">refresh</span>
+                                                                    Guardando...
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <span className="material-icons-outlined text-sm">check</span>
+                                                                    Guardar
+                                                                </>
+                                                            )}
+                                                        </button>
+
+                                                        {/* Botón Cancelar */}
+                                                        <button
+                                                            onClick={handleCancelEdit}
+                                                            disabled={isSaving}
+                                                            className="flex items-center gap-1 px-3 py-1.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        >
+                                                            <span className="material-icons-outlined text-sm">close</span>
+                                                            Cancelar
+                                                        </button>
+                                                    </div>
+                                                ) : hasSuccess ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="material-icons-outlined text-emerald-500 text-sm">check_circle</span>
+                                                        <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">Actualizado</span>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                                                            Validado
+                                                        </span>
+
+                                                        {/* Botón Editar */}
+                                                        <button
+                                                            onClick={() => handleStartEdit(itemId, val)}
+                                                            className="flex items-center gap-1 px-3 py-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 hover:border-primary dark:hover:border-primary text-slate-700 dark:text-slate-200 hover:text-primary text-xs font-semibold rounded-lg transition-all hover:shadow-md"
+                                                        >
+                                                            <span className="material-icons-outlined text-sm">edit</span>
+                                                            Editar
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>
                     <div className="p-8 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500 font-medium leading-relaxed">
-                        <span className="font-bold text-primary">Nota Técnica:</span> Estos valores representan la entrada cruda (Likert 1-5). El sistema aplica transformaciones de inversión para items de resistencia (I34, I35, I36, I38) durante el cálculo de promedios por micro-fundación.
+                        <span className="font-bold text-primary">Nota Técnica:</span> Estos valores representan la entrada cruda (Likert 0-5, donde 0 = No Sabe). El sistema aplica transformaciones de inversión para ítems de resistencia (I34, I35, I36, I38) durante el cálculo de promedios por micro-fundación.
                     </div>
                 </div>
             )}
-
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-                <button className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-10 py-4 rounded-2xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all">
-                    <span className="material-icons-outlined text-lg">file_download</span>
-                    Exportar Informe PDF
-                </button>
-                <button className="w-full sm:w-auto flex items-center justify-center gap-2 bg-primary text-white px-10 py-4 rounded-2xl font-bold text-sm hover:bg-primary/90 transition-all shadow-xl shadow-primary/20">
-                    <span className="material-icons-outlined text-lg">auto_fix_high</span>
-                    Generar Plan de Acción (IA)
-                </button>
-            </div>
         </div>
     );
 }

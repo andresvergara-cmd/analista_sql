@@ -199,6 +199,90 @@ app.get('/api/diagnosis/:id', async (req, res) => {
     }
 });
 
+// Update a single response and recalculate diagnosis
+app.patch('/api/diagnosis/:id/update-response', authMiddleware, async (req, res) => {
+    const { id } = req.params;
+    const { itemId, value } = req.body;
+
+    try {
+        // Validación
+        if (!itemId || value === undefined || value < 0 || value > 5) {
+            return res.status(400).json({ error: 'Datos inválidos. El valor debe estar entre 0 (No Sabe) y 5.' });
+        }
+
+        // 1. Buscar diagnóstico
+        const diagnosis = await prisma.diagnosis.findUnique({
+            where: { id },
+            include: {
+                answer: true,
+                assessment: true
+            }
+        });
+
+        if (!diagnosis) {
+            return res.status(404).json({ error: 'Diagnóstico no encontrado' });
+        }
+
+        // 2. Actualizar respuesta
+        const currentResponses = diagnosis.answer.responses as Record<string, number>;
+        currentResponses[itemId] = value;
+
+        await prisma.answer.update({
+            where: { id: diagnosis.answerId },
+            data: { responses: currentResponses }
+        });
+
+        // 3. Recalcular diagnóstico
+        let newDiagnosisResult: any;
+        let newScore: number;
+
+        if (diagnosis.assessmentId === 'kerzner-2024') {
+            const { dimensions, globalScore: score, maturityLevel, status } = calculateKerznerMaturity(currentResponses);
+            const recommendations = generateKerznerRecommendations(dimensions);
+            const roadmap = generateKerznerRoadmap(dimensions, score);
+
+            newScore = score;
+            newDiagnosisResult = {
+                dimensions,
+                maturityLevel,
+                status,
+                recommendations,
+                roadmap
+            };
+        } else {
+            // Kroh et al. 2020 (default)
+            const { foundations, globalScore: score, status } = calculateKrohMaturity(currentResponses);
+
+            newScore = score;
+            newDiagnosisResult = {
+                foundations,
+                aiInsights: [
+                    { type: 'strength', text: 'Tu enfoque estratégico es sólido.' },
+                    { type: 'warning', text: 'Falta agilidad en los procesos.' }
+                ]
+            };
+        }
+
+        // 4. Actualizar diagnóstico
+        const updatedDiagnosis = await prisma.diagnosis.update({
+            where: { id },
+            data: {
+                result: JSON.stringify(newDiagnosisResult),
+                score: newScore
+            },
+            include: {
+                answer: true,
+                assessment: true
+            }
+        });
+
+        res.json(updatedDiagnosis);
+    } catch (error: any) {
+        console.error('Error updating response:', error);
+        res.status(500).json({ error: 'Error al actualizar respuesta' });
+    }
+});
+
 // List organizations (with authentication and permission filtering)
 app.get('/api/organizations', authMiddleware, async (req, res) => {
     try {
