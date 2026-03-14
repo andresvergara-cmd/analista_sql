@@ -47,10 +47,31 @@ export default function KrohReportsPage() {
             const orgs = await res.json();
             const organizations = Array.isArray(orgs) ? orgs : (orgs.organizations || []);
 
+            console.log('📊 Organizations received:', organizations);
+            console.log('📊 Organizations count:', organizations.length);
+
+            // Debug each organization
+            organizations.forEach((org: any, idx: number) => {
+                console.log(`\n--- Org ${idx + 1}: ${org.name} ---`);
+                console.log('  Has answers:', org.answers !== undefined);
+                console.log('  Answers:', org.answers);
+                if (org.answers) {
+                    console.log('  Answers count:', org.answers.length);
+                    org.answers.forEach((a: any, i: number) => {
+                        console.log(`  Answer ${i + 1}:`, {
+                            id: a.id,
+                            assessmentId: a.assessmentId,
+                            studentEmail: a.studentEmail
+                        });
+                    });
+                }
+            });
+
             // Filter companies with kroh-2020 answers
             const companiesWithKroh = organizations
                 .filter((org: any) => {
                     const krohAnswers = org.answers?.filter((a: any) => a.assessmentId === 'kroh-2020') || [];
+                    console.log(`🔍 ${org.name}: krohAnswers count = ${krohAnswers.length}`);
                     return krohAnswers.length > 0;
                 })
                 .map((org: any) => ({
@@ -58,6 +79,7 @@ export default function KrohReportsPage() {
                     answersCount: org.answers?.filter((a: any) => a.assessmentId === 'kroh-2020').length || 0
                 }));
 
+            console.log('✅ Companies with Kroh data:', companiesWithKroh);
             setCompanies(companiesWithKroh);
         } catch (error) {
             console.error('Error fetching companies:', error);

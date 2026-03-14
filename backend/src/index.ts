@@ -210,9 +210,12 @@ app.patch('/api/diagnosis/:id/update-response', authMiddleware, async (req, res)
             return res.status(400).json({ error: 'Datos inválidos. El valor debe estar entre 0 (No Sabe) y 5.' });
         }
 
+        // Ensure id is a string
+        const diagnosisId = Array.isArray(id) ? id[0] : id;
+
         // 1. Buscar diagnóstico
         const diagnosis = await prisma.diagnosis.findUnique({
-            where: { id },
+            where: { id: diagnosisId },
             include: {
                 answer: true,
                 assessment: true
@@ -221,6 +224,10 @@ app.patch('/api/diagnosis/:id/update-response', authMiddleware, async (req, res)
 
         if (!diagnosis) {
             return res.status(404).json({ error: 'Diagnóstico no encontrado' });
+        }
+
+        if (!diagnosis.answer || !diagnosis.answerId) {
+            return res.status(400).json({ error: 'El diagnóstico no tiene respuestas asociadas' });
         }
 
         // 2. Actualizar respuesta
@@ -265,7 +272,7 @@ app.patch('/api/diagnosis/:id/update-response', authMiddleware, async (req, res)
 
         // 4. Actualizar diagnóstico
         const updatedDiagnosis = await prisma.diagnosis.update({
-            where: { id },
+            where: { id: diagnosisId },
             data: {
                 result: JSON.stringify(newDiagnosisResult),
                 score: newScore
