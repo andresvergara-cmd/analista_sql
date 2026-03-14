@@ -6,8 +6,7 @@ import Link from 'next/link';
 import { RadarChart } from '@/components/RadarChart';
 import KrohAdvancedAnalysis from '@/components/KrohAdvancedAnalysis';
 import KerznerAdvancedAnalysis from '@/components/KerznerAdvancedAnalysis';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+import html2pdf from 'html2pdf.js';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
@@ -230,62 +229,29 @@ export default function CompanyReportPage() {
         try {
             const element = reportRef.current;
 
-            // Wait a bit to ensure all charts are fully rendered
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            // Use html2canvas to capture the content
-            const canvas = await html2canvas(element, {
-                scale: 2,
-                useCORS: true,
-                allowTaint: true,
-                logging: true, // Enable logging to see what's happening
-                backgroundColor: '#ffffff',
-                windowWidth: element.scrollWidth,
-                windowHeight: element.scrollHeight,
-                onclone: (clonedDoc) => {
-                    // Ensure canvas elements are visible in the clone
-                    const clonedElement = clonedDoc.querySelector('[data-pdf-content]') || clonedDoc.body;
-                    const canvases = clonedElement.querySelectorAll('canvas');
-                    canvases.forEach((canvas: any) => {
-                        canvas.style.display = 'block';
-                    });
-                }
-            });
-
-            console.log('Canvas captured:', canvas.width, 'x', canvas.height);
-
-            const imgData = canvas.toDataURL('image/png');
-
-            // Create PDF
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
-
-            const imgWidth = 210; // A4 width in mm
-            const pageHeight = 297; // A4 height in mm
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            let heightLeft = imgHeight;
-            let position = 0;
-
-            // Add first page
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-
-            // Add additional pages if content is longer than one page
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-            }
-
             // Generate filename
             const filename = `Reporte_${data.company.name.replace(/\s+/g, '_')}_${instrumentTitle.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
 
-            // Download the PDF
-            pdf.save(filename);
+            // Configure html2pdf options
+            const opt = {
+                margin: 10,
+                filename: filename,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff'
+                },
+                jsPDF: {
+                    unit: 'mm',
+                    format: 'a4',
+                    orientation: 'portrait'
+                }
+            };
+
+            // Generate and download PDF
+            await html2pdf().set(opt).from(element).save();
 
             console.log('PDF generated successfully');
 
