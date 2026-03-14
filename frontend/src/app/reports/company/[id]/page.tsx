@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { RadarChart } from '@/components/RadarChart';
 import KrohAdvancedAnalysis from '@/components/KrohAdvancedAnalysis';
 import KerznerAdvancedAnalysis from '@/components/KerznerAdvancedAnalysis';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
@@ -66,7 +68,9 @@ export default function CompanyReportPage() {
     const [linkMaxResponses, setLinkMaxResponses] = useState<number>(0);
     const [generatedLinkUrl, setGeneratedLinkUrl] = useState<string | null>(null);
     const [copiedLink, setCopiedLink] = useState(false);
+    const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
+    const reportRef = useRef<HTMLDivElement>(null);
     const isKerzner = instrument === 'kerzner-2024';
     const instrumentTitle = isKerzner ? 'Madurez en Gestión de Proyectos (Kerzner)' : 'Madurez Digital (Kroh)';
     const dimensionsOrFoundations = data?.consolidated?.dimensions || data?.consolidated?.foundations || [];
@@ -218,6 +222,64 @@ export default function CompanyReportPage() {
         }
     };
 
+    const handleDownloadPDF = async () => {
+        if (!reportRef.current || !data) return;
+
+        setIsGeneratingPDF(true);
+
+        try {
+            // Capture the current tab
+            const element = reportRef.current;
+
+            // Use html2canvas to capture the content
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#ffffff'
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+
+            // Create PDF
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const imgWidth = 210; // A4 width in mm
+            const pageHeight = 297; // A4 height in mm
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            // Add first page
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            // Add additional pages if content is longer than one page
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            // Generate filename
+            const filename = `Reporte_${data.company.name.replace(/\s+/g, '_')}_${instrumentTitle.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+
+            // Download the PDF
+            pdf.save(filename);
+
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            alert('Error al generar el PDF. Por favor, intente nuevamente.');
+        } finally {
+            setIsGeneratingPDF(false);
+        }
+    };
+
     if (isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
@@ -242,7 +304,7 @@ export default function CompanyReportPage() {
     }
 
     return (
-        <div className="max-w-7xl mx-auto py-8 px-4">
+        <div ref={reportRef} className="max-w-7xl mx-auto py-8 px-4">
             <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
                     <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
@@ -264,8 +326,22 @@ export default function CompanyReportPage() {
                         <span className="material-icons text-sm">link</span>
                         Generar Enlace
                     </button>
-                    <button className="bg-primary text-white px-6 py-2 rounded-xl text-sm font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">
-                        Descargar PDF
+                    <button
+                        onClick={handleDownloadPDF}
+                        disabled={isGeneratingPDF}
+                        className="bg-primary text-white px-6 py-2 rounded-xl text-sm font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    >
+                        {isGeneratingPDF ? (
+                            <>
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                Generando...
+                            </>
+                        ) : (
+                            <>
+                                <span className="material-icons text-sm">download</span>
+                                Descargar PDF
+                            </>
+                        )}
                     </button>
                 </div>
             </header>
